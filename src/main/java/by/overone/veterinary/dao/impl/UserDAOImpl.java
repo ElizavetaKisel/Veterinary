@@ -18,6 +18,7 @@ public class UserDAOImpl implements UserDAO {
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
     private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?, ?, null)";
     private final static String ADD_USER_DETAILS_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
+    private final static String UPDATE_USER_QUERY = "UPDATE user SET login=?, password=?, email=? WHERE user_id=?";
 
     @Override
     public List<User> getUsers() {
@@ -37,7 +38,7 @@ public class UserDAOImpl implements UserDAO {
             }
         }catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        }finally {
             try {
                 connection.close();
             }catch (SQLException e){
@@ -66,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
 
         }catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        }finally {
             try {
                 connection.close();
             }catch (SQLException e){
@@ -122,7 +123,26 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User updateUser(User user) {
-        return null;
+        try {
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_QUERY);
+            
+            preparedStatement.setString(1,user.getLogin());
+            preparedStatement.setString(2,user.getPassword());
+            preparedStatement.setString(3,user.getEmail());
+            preparedStatement.setLong(4, user.getId());
+
+            preparedStatement.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return user;
     }
 
     @Override
