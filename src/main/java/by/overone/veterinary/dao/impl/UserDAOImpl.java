@@ -16,6 +16,7 @@ public class UserDAOImpl implements UserDAO {
     private static Connection connection;
 
     private final static String GET_USERS_QUERY ="SELECT * FROM user";
+    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
 
     @Override
     public List<User> getUsers() {
@@ -47,7 +48,31 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User getUserById(long id) {
-        return null;
+
+        User user = new User();
+        try{
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_ID_QUERY);
+            preparedStatement.setLong(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                user.setId(resultSet.getLong("user_id"));
+                user.setLogin(resultSet.getString("login"));
+                user.setPassword(resultSet.getString("password"));
+                user.setEmail(resultSet.getString("email"));
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return user;
     }
 
     @Override
