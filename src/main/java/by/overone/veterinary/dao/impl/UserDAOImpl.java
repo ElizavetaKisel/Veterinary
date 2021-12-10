@@ -4,6 +4,7 @@ import by.overone.veterinary.dao.DBConnect;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.model.Role;
+import by.overone.veterinary.model.Status;
 import by.overone.veterinary.model.User;
 
 import java.sql.*;
@@ -14,11 +15,12 @@ public class UserDAOImpl implements UserDAO {
 
     private static Connection connection;
 
-    private final static String GET_USERS_QUERY ="SELECT * FROM user";
-    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM user WHERE user_id=?";
-    private final static String ADD_USER_QUERY = "INSERT INTO user VALUE (0, ?, ?, ?, ?, null)";
+    private final static String GET_USERS_QUERY ="SELECT * FROM users";
+    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM users WHERE user_id=?";
+    private final static String ADD_USER_QUERY = "INSERT INTO users VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_USER_DETAILS_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
-    private final static String UPDATE_USER_QUERY = "UPDATE user SET login=?, password=?, email=? WHERE user_id=?";
+    private final static String UPDATE_USER_QUERY = "UPDATE users SET login=?, password=?, email=? WHERE user_id=?";
+    private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=?";
 
     @Override
     public List<User> getUsers() {
@@ -34,6 +36,7 @@ public class UserDAOImpl implements UserDAO {
                 user.setLogin(resultSet.getString("login"));
                 user.setPassword(resultSet.getString("password"));
                 user.setEmail(resultSet.getString("email"));
+                user.setEmail(resultSet.getString("role"));
                 users.add(user);
             }
         }catch (SQLException e) {
@@ -63,6 +66,7 @@ public class UserDAOImpl implements UserDAO {
                 user.setLogin(resultSet.getString("login"));
                 user.setPassword(resultSet.getString("password"));
                 user.setEmail(resultSet.getString("email"));
+                user.setEmail(resultSet.getString("role"));
             }
 
         }catch (SQLException e) {
@@ -88,6 +92,7 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.setString(4, Role.USER.toString());
+            preparedStatement.setString(5, Status.ACTIVE.toString());
 
             preparedStatement.executeUpdate();
 
@@ -122,7 +127,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User updateUser(long id, User user) {
         try {
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_QUERY);
@@ -130,7 +135,7 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement.setString(1,user.getLogin());
             preparedStatement.setString(2,user.getPassword());
             preparedStatement.setString(3,user.getEmail());
-            preparedStatement.setLong(4, user.getId());
+            preparedStatement.setLong(4, id);
 
             preparedStatement.executeUpdate();
         }catch (SQLException e) {
@@ -146,7 +151,28 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User deleteUser(long id) {
-        return null;
+    public boolean deleteUser(long id) {
+        try{
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_QUERY);
+            preparedStatement.setString(1,Status.DELETED.toString());
+            preparedStatement.setLong(2,id);
+
+            preparedStatement.executeUpdate();
+
+        }catch (SQLException e){
+            try {
+                connection.rollback();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 }

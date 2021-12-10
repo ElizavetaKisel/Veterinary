@@ -13,8 +13,8 @@ public interface UserDAO {
 
     User addUser(User user) throws DaoException;
 
-    User updateUser(User user);
+    User updateUser(long id, User user);
 
-    User deleteUser(long id);
+    boolean deleteUser(long id);
 
 }
