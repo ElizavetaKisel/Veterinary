@@ -17,11 +17,13 @@ public class UserDAOImpl implements UserDAO {
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM users WHERE user_id=? and status = 'ACTIVE'";
     private final static String ADD_USER_QUERY = "INSERT INTO users VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_USER_DETAILS_ID_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
-    private final static String ADD_USER_DETAILS_QUERY = "UPDATE user_details SET name=?, surname=?, address=?, phone_number=? WHERE users_user_id=?";
+    private final static String ADD_USER_DETAILS_QUERY = "UPDATE user_details JOIN users ON user_id = users_user_id" +
+            " SET name=?, surname=?, address=?, phone_number=? WHERE login=?";
     private final static String UPDATE_USER_QUERY = "UPDATE users SET login=?, password=?, email=? WHERE user_id=?";
     private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=?";
     private final static String GET_USER_DATA_QUERY = "SELECT * FROM users JOIN user_details " +
-            "ON users.user_id = user_details.users_user_id WHERE user_login=? and status = 'ACTIVE'";
+            "ON user_id = users_user_id WHERE user_login=? and status = 'ACTIVE'";
+
     @Override
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -156,16 +158,16 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserDetails addUserDetails(User user, UserDetails userDetails) throws DaoException {
+    public UserDetails addUserDetails(String login, UserDetails userDetails) throws DaoException {
         try {
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(ADD_USER_DETAILS_QUERY);
 
             preparedStatement.setString(1, userDetails.getName());
             preparedStatement.setString(2, userDetails.getSurname());
-            preparedStatement.setString(3, userDetails.getAddress());
-            preparedStatement.setString(4, userDetails.getPhoneNumber());
-            preparedStatement.setLong(5, user.getId());
+            preparedStatement.setString(3, userDetails.getPhoneNumber());
+            preparedStatement.setString(4, userDetails.getAddress());
+            preparedStatement.setString(5,login);
 
             preparedStatement.executeUpdate();
 

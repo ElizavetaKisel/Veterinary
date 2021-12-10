@@ -17,7 +17,7 @@ public interface UserDAO {
 
     User addUser(User user) throws DaoException;
 
-    UserDetails addUserDetails(User user, UserDetails userDetails) throws DaoException;
+    UserDetails addUserDetails(String login, UserDetails userDetails) throws DaoException;
 
     User updateUser(long id, User user);
 
