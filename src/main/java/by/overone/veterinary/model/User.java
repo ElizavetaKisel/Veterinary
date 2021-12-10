@@ -13,9 +13,4 @@ public class User {
     private String role;
     private String status;
 
-    public User(String login, String password, String email){
-        this.login = login;
-        this.password = login;
-        this.email = email;
-    }
 }

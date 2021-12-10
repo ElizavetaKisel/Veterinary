@@ -3,9 +3,7 @@ package by.overone.veterinary.dao.impl;
 import by.overone.veterinary.dao.DBConnect;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
-import by.overone.veterinary.model.Role;
-import by.overone.veterinary.model.Status;
-import by.overone.veterinary.model.User;
+import by.overone.veterinary.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,13 +13,15 @@ public class UserDAOImpl implements UserDAO {
 
     private static Connection connection;
 
-    private final static String GET_USERS_QUERY ="SELECT * FROM users";
-    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM users WHERE user_id=?";
+    private final static String GET_USERS_QUERY ="SELECT * FROM users WHERE status = 'ACTIVE'";
+    private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM users WHERE user_id=? and status = 'ACTIVE'";
     private final static String ADD_USER_QUERY = "INSERT INTO users VALUE (0, ?, ?, ?, ?, ?)";
-    private final static String ADD_USER_DETAILS_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
+    private final static String ADD_USER_DETAILS_ID_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
+    private final static String ADD_USER_DETAILS_QUERY = "UPDATE user_details SET name=?, surname=?, address=?, phone_number=? WHERE users_user_id=?";
     private final static String UPDATE_USER_QUERY = "UPDATE users SET login=?, password=?, email=? WHERE user_id=?";
     private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=?";
-
+    private final static String GET_USER_DATA_QUERY = "SELECT * FROM users JOIN user_details " +
+            "ON users.user_id = user_details.users_user_id WHERE user_login=? and status = 'ACTIVE'";
     @Override
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -34,7 +34,6 @@ public class UserDAOImpl implements UserDAO {
                 User user = new User();
                 user.setId(resultSet.getLong("user_id"));
                 user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
                 user.setEmail(resultSet.getString("email"));
                 user.setEmail(resultSet.getString("role"));
                 users.add(user);
@@ -82,6 +81,36 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public UserData getUserData(String login) {
+        UserData userData = new UserData();
+        try{
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_DATA_QUERY);
+            preparedStatement.setString(1,login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                userData.setLogin(resultSet.getString("login"));
+                userData.setEmail(resultSet.getString("email"));
+                userData.setEmail(resultSet.getString("name"));
+                userData.setEmail(resultSet.getString("surname"));
+                userData.setEmail(resultSet.getString("address"));
+                userData.setEmail(resultSet.getString("phone_number"));
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return userData;
+    }
+
+    @Override
     public User addUser(User user) throws DaoException {
         try {
             connection = DBConnect.getConnection();
@@ -101,7 +130,7 @@ public class UserDAOImpl implements UserDAO {
                 user.setId(resultSet.getLong(1));
             }
 
-            preparedStatement = connection.prepareStatement(ADD_USER_DETAILS_QUERY);
+            preparedStatement = connection.prepareStatement(ADD_USER_DETAILS_ID_QUERY);
             preparedStatement.setLong(1, user.getId());
             preparedStatement.executeUpdate();
 
@@ -124,6 +153,33 @@ public class UserDAOImpl implements UserDAO {
             }
         }
         return user;
+    }
+
+    @Override
+    public UserDetails addUserDetails(User user, UserDetails userDetails) throws DaoException {
+        try {
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_USER_DETAILS_QUERY);
+
+            preparedStatement.setString(1, userDetails.getName());
+            preparedStatement.setString(2, userDetails.getSurname());
+            preparedStatement.setString(3, userDetails.getAddress());
+            preparedStatement.setString(4, userDetails.getPhoneNumber());
+            preparedStatement.setLong(5, user.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException("Details not added", e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return userDetails;
     }
 
     @Override
