@@ -25,7 +25,7 @@ public class UserDAOImpl implements UserDAO {
             "ON user_id = users_user_id WHERE user_login=? and status = 'ACTIVE'";
 
     @Override
-    public List<User> getUsers() {
+    public List<User> getUsers() throws DaoException {
         List<User> users = new ArrayList<>();
         try {
             connection = DBConnect.getConnection();
@@ -41,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
                 users.add(user);
             }
         }catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("error", e);
         }finally {
             try {
                 connection.close();

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserDAO {
 
-    List<User> getUsers();
+    List<User> getUsers() throws DaoException;
 
     User getUserById(long id);
 
