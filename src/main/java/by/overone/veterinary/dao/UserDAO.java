@@ -1,6 +1,7 @@
 package by.overone.veterinary.dao;
 
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserData;
 import by.overone.veterinary.model.UserDetails;
@@ -15,7 +16,7 @@ public interface UserDAO {
 
     UserData getUserData(String login);
 
-    User addUser(User user) throws DaoException;
+    User addUser(User user) throws DaoException, DaoExistException;
 
     UserDetails addUserDetails(String login, UserDetails userDetails) throws DaoException;
 

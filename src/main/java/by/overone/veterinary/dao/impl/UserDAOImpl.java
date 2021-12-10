@@ -3,6 +3,7 @@ package by.overone.veterinary.dao.impl;
 import by.overone.veterinary.dao.DBConnect;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.model.*;
 
 import java.sql.*;
@@ -41,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
                 users.add(user);
             }
         }catch (SQLException e) {
-            throw new DaoException("error", e);
+            throw new DaoException("Dao error", e);
         }finally {
             try {
                 connection.close();
@@ -113,7 +114,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User addUser(User user) throws DaoException {
+    public User addUser(User user) throws DaoException, DaoExistException {
         try {
             connection = DBConnect.getConnection();
             connection.setAutoCommit(false);
@@ -139,7 +140,7 @@ public class UserDAOImpl implements UserDAO {
             connection.commit();
 
         }catch (SQLIntegrityConstraintViolationException ex){
-            throw new DaoException("Duplicate user", ex);
+            throw new DaoExistException("Duplicate user", ex);
         }catch (SQLException e){
             try {
                 connection.rollback();
