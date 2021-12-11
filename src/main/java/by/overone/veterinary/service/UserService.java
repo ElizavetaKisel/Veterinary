@@ -6,6 +6,7 @@ import by.overone.veterinary.model.UserData;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
+import by.overone.veterinary.service.exception.ServiceNotFoundException;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface UserService {
 
     void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
 
-    UserData getUserData(String login);
+    UserData getUserData(String login) throws ServiceNotFoundException;
 }

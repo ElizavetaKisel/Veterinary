@@ -3,6 +3,7 @@ package by.overone.veterinary.service.impl;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;
+import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dao.impl.UserDAOImpl;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
@@ -12,6 +13,7 @@ import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
+import by.overone.veterinary.service.exception.ServiceNotFoundException;
 import by.overone.veterinary.util.validator.UserValidator;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -41,17 +43,13 @@ public class UserServiceImpl implements UserService {
     public void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException {
         try {
             UserValidator.validateRegistrationData(userRegistrationDTO);
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        }
-
-        User user = new User();
-        user.setLogin(userRegistrationDTO.getLogin());
-        user.setEmail(userRegistrationDTO.getEmail());
-        user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
-
-        try {
+            User user = new User();
+            user.setLogin(userRegistrationDTO.getLogin());
+            user.setEmail(userRegistrationDTO.getEmail());
+            user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
             userDAO.addUser(user);
+        } catch (ValidationException e) {
+            e.getMessage();
         } catch (DaoExistException e) {
             throw new ServiceExistException("User already exist", e);
         } catch (DaoException e) {
@@ -64,11 +62,9 @@ public class UserServiceImpl implements UserService {
 
         try {
             UserValidator.validateUserDetails(userDetails);
-        } catch (ValidationException e) {
-            e.printStackTrace();
-        }
-        try {
             userDAO.addUserDetails(login, userDetails);
+        } catch (ValidationException e) {
+            e.getMessage();
         } catch (DaoException e) {
            throw new ServiceException("Details not added", e);
         }
@@ -76,7 +72,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserData getUserData(String login) {
-        return null;
+    public UserData getUserData(String login) throws ServiceNotFoundException {
+        UserData userData;
+        try {
+            userData = userDAO.getUserData(login);
+        } catch (DaoNotFoundException e) {
+            throw new ServiceNotFoundException("User not found", e);
+        }
+        return userData;
     }
+
 }

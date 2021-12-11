@@ -4,6 +4,7 @@ import by.overone.veterinary.dao.DBConnect;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;
+import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.*;
 
 import java.sql.*;
@@ -19,7 +20,7 @@ public class UserDAOImpl implements UserDAO {
     private final static String ADD_USER_QUERY = "INSERT INTO users VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_USER_DETAILS_ID_QUERY = "INSERT INTO user_details (users_user_id) VALUE (?)";
     private final static String ADD_USER_DETAILS_QUERY = "UPDATE user_details JOIN users ON user_id = users_user_id" +
-            " SET name=?, surname=?, address=?, phone_number=? WHERE login=?";
+            " SET name=?, surname=?, address=?, phone_number=? WHERE login=? and status = 'ACTIVE'";
     private final static String UPDATE_USER_QUERY = "UPDATE users SET login=?, password=?, email=? WHERE user_id=?";
     private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=?";
     private final static String GET_USER_DATA_QUERY = "SELECT * FROM users JOIN user_details " +
@@ -84,7 +85,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserData getUserData(String login) {
+    public UserData getUserData(String login) throws DaoNotFoundException {
         UserData userData = new UserData();
         try{
             connection = DBConnect.getConnection();
@@ -102,7 +103,7 @@ public class UserDAOImpl implements UserDAO {
             }
 
         }catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoNotFoundException("User not found", e);
         }finally {
             try {
                 connection.close();
