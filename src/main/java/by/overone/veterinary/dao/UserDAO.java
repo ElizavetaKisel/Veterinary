@@ -15,7 +15,7 @@ public interface UserDAO {
 
     User getUserById(long id) throws DaoNotFoundException, DaoException;
 
-    UserInfoDTO getUserData(long id) throws DaoNotFoundException, DaoException;
+    UserInfoDTO getUserInfo(long id) throws DaoNotFoundException, DaoException;
 
     User addUser(User user) throws DaoException, DaoExistException;
 

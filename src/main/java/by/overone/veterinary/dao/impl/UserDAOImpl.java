@@ -87,7 +87,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserInfoDTO getUserData(long id) throws DaoNotFoundException, DaoException {
+    public UserInfoDTO getUserInfo(long id) throws DaoNotFoundException, DaoException {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         try{
             connection = DBConnect.getConnection();

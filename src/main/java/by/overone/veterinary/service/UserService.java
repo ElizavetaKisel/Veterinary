@@ -18,7 +18,7 @@ public interface UserService {
 
     void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
 
-    UserInfoDTO getUserData(long id) throws ServiceNotFoundException, ServiceException;
+    UserInfoDTO getUserInfo(long id) throws ServiceNotFoundException, ServiceException;
 
     void deleteUser(long id) throws ServiceNotFoundException;
 }
