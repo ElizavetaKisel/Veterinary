@@ -95,4 +95,21 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserDataDTO getUserById(long id) throws ServiceNotFoundException, ServiceException {
+        UserDataDTO userDataDTO = new UserDataDTO();
+        try {
+            User user = userDAO.getUserById(id);
+            userDataDTO.setId(user.getId());
+            userDataDTO.setLogin(user.getLogin());
+            userDataDTO.setEmail(user.getEmail());
+            userDataDTO.setRole(user.getRole());
+        } catch (DaoNotFoundException e) {
+            throw new ServiceNotFoundException("User not found", e);
+        }catch (DaoException ex){
+            throw new ServiceException(ex);
+        }
+        return userDataDTO;
+    }
+
 }

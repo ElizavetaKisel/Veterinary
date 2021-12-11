@@ -68,7 +68,6 @@ public class UserDAOImpl implements UserDAO {
             if (resultSet.next()) {
                 user.setId(resultSet.getLong("user_id"));
                 user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
                 user.setEmail(resultSet.getString("email"));
                 user.setEmail(resultSet.getString("role"));
             }else {
