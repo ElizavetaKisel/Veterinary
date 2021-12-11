@@ -8,7 +8,7 @@ import by.overone.veterinary.dao.impl.UserDAOImpl;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.model.User;
-import by.overone.veterinary.model.UserData;
+import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.service.exception.ServiceException;
@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
     public void addUserDetails(String login, UserDetails userDetails) throws ServiceException {
 
         try {
-            UserValidator.validateUserDetails(userDetails);
+//            UserValidator.validateUserDetails(userDetails);
             userDAO.addUserDetails(login, userDetails);
-        } catch (ValidationException e) {
-            e.getMessage();
+//        } catch (ValidationException e) {
+//            e.printStackTrace();
         } catch (DaoException e) {
            throw new ServiceException("Details not added", e);
         }
@@ -72,14 +72,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserData getUserData(String login) throws ServiceNotFoundException {
-        UserData userData;
+    public UserInfoDTO getUserData(long id) throws ServiceNotFoundException, ServiceException {
+        UserInfoDTO userInfoDTO;
         try {
-            userData = userDAO.getUserData(login);
+            userInfoDTO = userDAO.getUserData(id);
+        } catch (DaoNotFoundException e) {
+            throw new ServiceNotFoundException("User not found", e);
+        }catch (DaoException ex){
+            throw new ServiceException(ex);
+        }
+        return userInfoDTO;
+    }
+
+    @Override
+    public void deleteUser(long id) throws ServiceNotFoundException {
+
+        try {
+            userDAO.deleteUser(id);
         } catch (DaoNotFoundException e) {
             throw new ServiceNotFoundException("User not found", e);
         }
-        return userData;
+
     }
 
 }

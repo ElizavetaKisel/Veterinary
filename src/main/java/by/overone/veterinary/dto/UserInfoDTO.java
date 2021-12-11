@@ -1,9 +1,9 @@
-package by.overone.veterinary.model;
+package by.overone.veterinary.dto;
 
 import lombok.Data;
 
 @Data
-public class UserData {
+public class UserInfoDTO {
 
     private String login;
     private String email;

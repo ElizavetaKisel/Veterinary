@@ -4,7 +4,7 @@ import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.User;
-import by.overone.veterinary.model.UserData;
+import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.UserDetails;
 
 import java.util.List;
@@ -13,9 +13,9 @@ public interface UserDAO {
 
     List<User> getUsers() throws DaoException;
 
-    User getUserById(long id);
+    User getUserById(long id) throws DaoNotFoundException, DaoException;
 
-    UserData getUserData(String login) throws DaoNotFoundException;
+    UserInfoDTO getUserData(long id) throws DaoNotFoundException, DaoException;
 
     User addUser(User user) throws DaoException, DaoExistException;
 
@@ -23,6 +23,6 @@ public interface UserDAO {
 
     User updateUser(long id, User user);
 
-    boolean deleteUser(long id);
+    boolean deleteUser(long id) throws DaoNotFoundException;
 
 }

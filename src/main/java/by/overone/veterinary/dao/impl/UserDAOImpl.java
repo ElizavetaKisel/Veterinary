@@ -5,6 +5,7 @@ import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
+import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.*;
 
 import java.sql.*;
@@ -22,9 +23,9 @@ public class UserDAOImpl implements UserDAO {
     private final static String ADD_USER_DETAILS_QUERY = "UPDATE user_details JOIN users ON user_id = users_user_id" +
             " SET name=?, surname=?, address=?, phone_number=? WHERE login=? and status = 'ACTIVE'";
     private final static String UPDATE_USER_QUERY = "UPDATE users SET login=?, password=?, email=? WHERE user_id=?";
-    private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=?";
+    private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=? and status = 'ACTIVE'";
     private final static String GET_USER_DATA_QUERY = "SELECT * FROM users JOIN user_details " +
-            "ON user_id = users_user_id WHERE user_login=? and status = 'ACTIVE'";
+            "ON user_id = users_user_id WHERE user_id=? and status = 'ACTIVE'";
 
     @Override
     public List<User> getUsers() throws DaoException {
@@ -55,7 +56,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getUserById(long id) {
+    public User getUserById(long id) throws DaoNotFoundException, DaoException {
 
         User user = new User();
         try{
@@ -64,16 +65,17 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 user.setId(resultSet.getLong("user_id"));
                 user.setLogin(resultSet.getString("login"));
                 user.setPassword(resultSet.getString("password"));
                 user.setEmail(resultSet.getString("email"));
                 user.setEmail(resultSet.getString("role"));
+            }else {
+                throw new DaoNotFoundException("User not found");
             }
-
         }catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("error",e);
         }finally {
             try {
                 connection.close();
@@ -85,33 +87,34 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserData getUserData(String login) throws DaoNotFoundException {
-        UserData userData = new UserData();
+    public UserInfoDTO getUserData(long id) throws DaoNotFoundException, DaoException {
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
         try{
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_DATA_QUERY);
-            preparedStatement.setString(1,login);
+            preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                userData.setLogin(resultSet.getString("login"));
-                userData.setEmail(resultSet.getString("email"));
-                userData.setEmail(resultSet.getString("name"));
-                userData.setEmail(resultSet.getString("surname"));
-                userData.setEmail(resultSet.getString("address"));
-                userData.setEmail(resultSet.getString("phone_number"));
+            if (resultSet.next()) {
+                userInfoDTO.setLogin(resultSet.getString("login"));
+                userInfoDTO.setEmail(resultSet.getString("email"));
+                userInfoDTO.setEmail(resultSet.getString("name"));
+                userInfoDTO.setEmail(resultSet.getString("surname"));
+                userInfoDTO.setEmail(resultSet.getString("address"));
+                userInfoDTO.setEmail(resultSet.getString("phone_number"));
+            }else {
+                throw new DaoNotFoundException("User not found");
             }
-
-        }catch (SQLException e) {
-            throw new DaoNotFoundException("User not found", e);
-        }finally {
+        } catch (SQLException ex) {
+            throw new DaoException("dao error", ex);
+        } finally {
             try {
                 connection.close();
             }catch (SQLException e){
                 e.printStackTrace();
             }
         }
-        return userData;
+        return userInfoDTO;
     }
 
     @Override
@@ -167,8 +170,8 @@ public class UserDAOImpl implements UserDAO {
 
             preparedStatement.setString(1, userDetails.getName());
             preparedStatement.setString(2, userDetails.getSurname());
-            preparedStatement.setString(3, userDetails.getPhoneNumber());
-            preparedStatement.setString(4, userDetails.getAddress());
+            preparedStatement.setString(3, userDetails.getAddress());
+            preparedStatement.setString(4, userDetails.getPhoneNumber());
             preparedStatement.setString(5,login);
 
             preparedStatement.executeUpdate();
@@ -211,7 +214,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean deleteUser(long id) {
+    public boolean deleteUser(long id) throws DaoNotFoundException {
         try{
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_QUERY);
@@ -220,16 +223,12 @@ public class UserDAOImpl implements UserDAO {
 
             preparedStatement.executeUpdate();
 
-        }catch (SQLException e){
-            try {
-                connection.rollback();
-            }catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }finally {
+        } catch (SQLException e) {
+            throw new DaoNotFoundException("User not deleted", e);
+        } finally {
             try {
                 connection.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }

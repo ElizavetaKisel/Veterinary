@@ -2,7 +2,7 @@ package by.overone.veterinary.service;
 
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
-import by.overone.veterinary.model.UserData;
+import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
@@ -18,5 +18,7 @@ public interface UserService {
 
     void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
 
-    UserData getUserData(String login) throws ServiceNotFoundException;
+    UserInfoDTO getUserData(long id) throws ServiceNotFoundException, ServiceException;
+
+    void deleteUser(long id) throws ServiceNotFoundException;
 }
