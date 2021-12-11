@@ -15,7 +15,7 @@ public interface UserService {
 
     void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException;
 
-    void addUserDetails(String login, UserDetails userDetails);
+    void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
 
     UserData getUserData(String login);
 }
