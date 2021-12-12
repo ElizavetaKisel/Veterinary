@@ -34,7 +34,7 @@ public class UserValidator {
     }
 
     public static boolean validateUserDetails(UserDetails user) throws ValidationException {
-        if (validatePhoneNumber(user.getPhoneNumber()) == true) {
+        if (validatePhoneNumber(user.getPhoneNumber())) {
             return validatePhoneNumber(user.getPhoneNumber());
         }else {
             throw new ValidationException("Incorrect format");

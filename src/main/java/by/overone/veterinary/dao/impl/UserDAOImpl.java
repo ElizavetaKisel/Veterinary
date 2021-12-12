@@ -7,6 +7,7 @@ import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.*;
+import by.overone.veterinary.util.constant.UserConstant;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
 
-    private static Connection connection;
+    private Connection connection;
 
     private final static String GET_USERS_QUERY ="SELECT * FROM users WHERE status = 'ACTIVE'";
     private final static String GET_USER_BY_ID_QUERY = "SELECT * FROM users WHERE user_id=? and status = 'ACTIVE'";
@@ -37,10 +38,10 @@ public class UserDAOImpl implements UserDAO {
 
             while(resultSet.next()){
                 User user = new User();
-                user.setId(resultSet.getLong("user_id"));
-                user.setLogin(resultSet.getString("login"));
-                user.setEmail(resultSet.getString("email"));
-                user.setEmail(resultSet.getString("role"));
+                user.setId(resultSet.getLong(UserConstant.USER_ID));
+                user.setLogin(resultSet.getString(UserConstant.LOGIN));
+                user.setEmail(resultSet.getString(UserConstant.EMAIL));
+                user.setRole(resultSet.getString(UserConstant.ROLE));
                 users.add(user);
             }
         }catch (SQLException e) {
@@ -66,10 +67,10 @@ public class UserDAOImpl implements UserDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                user.setId(resultSet.getLong("user_id"));
-                user.setLogin(resultSet.getString("login"));
-                user.setEmail(resultSet.getString("email"));
-                user.setEmail(resultSet.getString("role"));
+                user.setId(resultSet.getLong(UserConstant.USER_ID));
+                user.setLogin(resultSet.getString(UserConstant.LOGIN));
+                user.setEmail(resultSet.getString(UserConstant.EMAIL));
+                user.setRole(resultSet.getString(UserConstant.ROLE));
             }else {
                 throw new DaoNotFoundException("User not found");
             }
@@ -95,12 +96,12 @@ public class UserDAOImpl implements UserDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                userInfoDTO.setLogin(resultSet.getString("login"));
-                userInfoDTO.setEmail(resultSet.getString("email"));
-                userInfoDTO.setEmail(resultSet.getString("name"));
-                userInfoDTO.setEmail(resultSet.getString("surname"));
-                userInfoDTO.setEmail(resultSet.getString("address"));
-                userInfoDTO.setEmail(resultSet.getString("phone_number"));
+                userInfoDTO.setLogin(resultSet.getString(UserConstant.LOGIN));
+                userInfoDTO.setName(resultSet.getString(UserConstant.NAME));
+                userInfoDTO.setSurname(resultSet.getString(UserConstant.SURNAME));
+                userInfoDTO.setEmail(resultSet.getString(UserConstant.EMAIL));
+                userInfoDTO.setAddress(resultSet.getString(UserConstant.ADDRESS));
+                userInfoDTO.setPhoneNumber(resultSet.getString(UserConstant.PHONE_NUMBER));
             }else {
                 throw new DaoNotFoundException("User not found");
             }

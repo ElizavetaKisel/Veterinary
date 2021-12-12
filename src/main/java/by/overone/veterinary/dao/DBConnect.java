@@ -9,7 +9,6 @@ public class DBConnect {
     private static String dbUser = "root";
     private static String password = "root";
 
-    private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, dbUser, password);
