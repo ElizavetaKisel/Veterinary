@@ -1,6 +1,6 @@
 package by.overone.veterinary.dao.impl;
 
-import by.overone.veterinary.dao.DBConnect;
+import by.overone.veterinary.dao.conection.DBConnect;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;

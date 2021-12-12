@@ -1,4 +1,4 @@
-package by.overone.veterinary.dao;
+package by.overone.veterinary.dao.conection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
