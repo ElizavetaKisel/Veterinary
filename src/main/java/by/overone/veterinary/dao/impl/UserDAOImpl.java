@@ -214,7 +214,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean deleteUser(long id) throws DaoNotFoundException {
+    public boolean deleteUser(long id) throws DaoException {
         try{
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_QUERY);
@@ -224,7 +224,7 @@ public class UserDAOImpl implements UserDAO {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DaoNotFoundException("User not deleted", e);
+            throw new DaoException("dao error", e);
         } finally {
             try {
                 connection.close();

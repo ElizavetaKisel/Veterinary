@@ -20,7 +20,7 @@ public interface UserService {
 
     UserInfoDTO getUserInfo(long id) throws ServiceNotFoundException, ServiceException;
 
-    void deleteUser(long id) throws ServiceNotFoundException;
+    void deleteUser(long id) throws ServiceNotFoundException, ServiceException;
 
     UserDataDTO getUserById(long id) throws ServiceNotFoundException, ServiceException;
 }

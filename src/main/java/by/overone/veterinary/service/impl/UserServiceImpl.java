@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
     public void addUserDetails(String login, UserDetails userDetails) throws ServiceException {
 
         try {
-//            UserValidator.validateUserDetails(userDetails);
+            UserValidator.validateUserDetails(userDetails);
             userDAO.addUserDetails(login, userDetails);
-//        } catch (ValidationException e) {
-//            e.printStackTrace();
+        } catch (ValidationException e) {
+            e.printStackTrace();
         } catch (DaoException e) {
            throw new ServiceException("Details not added", e);
         }
@@ -85,12 +85,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(long id) throws ServiceNotFoundException {
-
+    public void deleteUser(long id) throws ServiceNotFoundException, ServiceException {
+        getUserById(id);
         try {
             userDAO.deleteUser(id);
-        } catch (DaoNotFoundException e) {
-            throw new ServiceNotFoundException("User not found", e);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
         }
 
     }

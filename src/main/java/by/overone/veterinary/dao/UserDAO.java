@@ -23,6 +23,6 @@ public interface UserDAO {
 
     User updateUser(long id, User user);
 
-    boolean deleteUser(long id) throws DaoNotFoundException;
+    boolean deleteUser(long id) throws DaoException;
 
 }
