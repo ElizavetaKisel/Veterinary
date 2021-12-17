@@ -23,4 +23,6 @@ public interface PetService {
 
     void deletePet(long id) throws ServiceException, ServiceNotFoundException;
 
+    List<PetDataDTO> getPetsByUserId(long user_id) throws ServiceNotFoundException, ServiceException;
+
 }

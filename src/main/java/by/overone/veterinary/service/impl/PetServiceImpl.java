@@ -82,4 +82,19 @@ public class PetServiceImpl implements PetService {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public List<PetDataDTO> getPetsByUserId(long user_id) throws ServiceNotFoundException, ServiceException {
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.getUserById(user_id);
+        List<PetDataDTO> petsDataDTO;
+        try {
+            petsDataDTO = petDAO.getPetsByUserId(user_id).stream()
+                    .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                    .collect(Collectors.toList());
+        }catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+        return petsDataDTO;
+    }
 }

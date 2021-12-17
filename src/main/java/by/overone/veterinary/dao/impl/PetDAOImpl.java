@@ -22,6 +22,37 @@ public class PetDAOImpl implements PetDAO {
     private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (pets_pet_id, users_user_id) VALUE (?, ?)";
     private final static String DELETE_PET_QUERY = "UPDATE pets SET status=? WHERE pet_id=? and status = 'ACTIVE'";
     private final static String UPDATE_PET_QUERY = "UPDATE pets SET name=?, type=?, breed=?, age=? WHERE pet_id=?";
+    private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users WHERE users_user_id=? and status= 'ACTIVE'";
+
+    @Override
+    public List<Pet> getPetsByUserId(long user_id) throws DaoException {
+        List<Pet> pets = new ArrayList<>();
+        try {
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_PETS_BY_USER_ID_QUERY);
+            preparedStatement.setLong(1,user_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                Pet pet = new Pet();
+                pet.setId(resultSet.getLong(PetConstant.PET_ID));
+                pet.setName(resultSet.getString(PetConstant.NAME));
+                pet.setType(resultSet.getString(PetConstant.TYPE));
+                pet.setBreed(resultSet.getString(PetConstant.BREED));
+                pet.setAge(resultSet.getInt(PetConstant.AGE));
+                pets.add(pet);
+            }
+        }catch (SQLException e) {
+            throw new DaoException("Dao error", e);
+        }finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return pets;
+    }
 
     @Override
     public Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException {
