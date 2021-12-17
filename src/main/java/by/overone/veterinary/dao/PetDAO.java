@@ -2,6 +2,7 @@ package by.overone.veterinary.dao;
 
 
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.Pet;
 
@@ -13,7 +14,7 @@ public interface PetDAO {
 
     Pet getPetById(long id) throws DaoNotFoundException, DaoException;
 
-    Pet addPet(Pet pet);
+    Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException;
 
   //  Pet updatePet(Pet pet);
 

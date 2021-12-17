@@ -3,8 +3,11 @@ package by.overone.veterinary.dao.impl;
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.conection.DBConnect;
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.Pet;
+import by.overone.veterinary.model.Role;
+import by.overone.veterinary.model.Status;
 import by.overone.veterinary.util.constant.PetConstant;
 
 import java.sql.*;
@@ -16,6 +19,53 @@ public class PetDAOImpl implements PetDAO {
     private Connection connection;
     private static final String GET_PETS_QUERY = "SELECT * FROM pets";
     private final static String GET_PET_BY_ID_QUERY = "SELECT * FROM pets WHERE pet_id=?";
+    private final static String ADD_USER_QUERY = "INSERT INTO pets VALUE (0, ?, ?, ?, ?)";
+    private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (pets_pet_id, users_user_id) VALUE (?, ?)";
+
+    @Override
+    public Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException {
+        try {
+            connection = DBConnect.getConnection();
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_USER_QUERY, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, pet.getName());
+            preparedStatement.setString(2, pet.getType());
+            preparedStatement.setString(3, pet.getBreed());
+            preparedStatement.setInt(4, pet.getAge());
+
+            preparedStatement.executeUpdate();
+
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            while (resultSet.next()) {
+                pet.setId(resultSet.getLong(1));
+            }
+
+            preparedStatement = connection.prepareStatement(ADD_PETS_HAS_USERS_ID_QUERY);
+            preparedStatement.setLong(1, pet.getId());
+            preparedStatement.setLong(2,user_id);
+            preparedStatement.executeUpdate();
+
+            connection.commit();
+
+        }catch (SQLIntegrityConstraintViolationException ex){
+            throw new DaoExistException("Duplicate pet", ex);
+        }catch (SQLException e){
+            try {
+                connection.rollback();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw new DaoException("dao error", e);
+        }finally {
+            try {
+                connection.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return pet;
+    }
 
     @Override
     public List<Pet> getPets() throws DaoException {
@@ -74,11 +124,6 @@ public class PetDAOImpl implements PetDAO {
             }
         }
         return pet;
-    }
-
-    @Override
-    public Pet addPet(Pet pet) {
-      return null;
     }
 
     @Override
