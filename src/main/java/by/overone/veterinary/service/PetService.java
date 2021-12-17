@@ -21,6 +21,6 @@ public interface PetService {
 
     void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException;
 
-    void deletePet(long id);
+    void deletePet(long id) throws ServiceException, ServiceNotFoundException;
 
 }
