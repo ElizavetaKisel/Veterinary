@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PetService {
 
-    List<PetDataDTO> getPets();
+    List<PetDataDTO> getPets() throws ServiceException;
 
     PetDataDTO getPetById(long id);
 
