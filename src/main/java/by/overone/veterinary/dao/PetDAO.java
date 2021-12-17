@@ -16,7 +16,7 @@ public interface PetDAO {
 
     Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException;
 
-  //  Pet updatePet(Pet pet);
+    Pet updatePet(long id, Pet pet);
 
     boolean deletePet(long id) throws DaoException;
 }
