@@ -2,6 +2,7 @@ package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dao.impl.PetDAOImpl;
 import by.overone.veterinary.dto.PetDataDTO;
@@ -9,9 +10,13 @@ import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Pet;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.exception.ServiceException;
+import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
+import by.overone.veterinary.util.validator.UserValidator;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,8 +58,14 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void addPet(long pet_id, Pet pet) {
-
+    public void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException {
+        try {
+            petDAO.addPet(user_id, pet);
+        } catch (DaoExistException e) {
+            throw new ServiceExistException("User already exist", e);
+        } catch (DaoException e) {
+            throw new ServiceException("Service error", e);
+        }
     }
 
     @Override
