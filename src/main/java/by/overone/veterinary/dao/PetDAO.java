@@ -18,5 +18,5 @@ public interface PetDAO {
 
   //  Pet updatePet(Pet pet);
 
-    boolean deletePet(long id);
+    boolean deletePet(long id) throws DaoException;
 }

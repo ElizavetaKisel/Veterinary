@@ -6,7 +6,6 @@ import by.overone.veterinary.dao.exception.DaoException;
 import by.overone.veterinary.dao.exception.DaoExistException;
 import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.Pet;
-import by.overone.veterinary.model.Role;
 import by.overone.veterinary.model.Status;
 import by.overone.veterinary.util.constant.PetConstant;
 
@@ -17,22 +16,24 @@ import java.util.List;
 public class PetDAOImpl implements PetDAO {
 
     private Connection connection;
-    private static final String GET_PETS_QUERY = "SELECT * FROM pets";
-    private final static String GET_PET_BY_ID_QUERY = "SELECT * FROM pets WHERE pet_id=?";
-    private final static String ADD_USER_QUERY = "INSERT INTO pets VALUE (0, ?, ?, ?, ?)";
+    private static final String GET_PETS_QUERY = "SELECT * FROM pets WHERE status= 'ACTIVE'";
+    private final static String GET_PET_BY_ID_QUERY = "SELECT * FROM pets WHERE pet_id=? and status = 'ACTIVE'";
+    private final static String ADD_PET_QUERY = "INSERT INTO pets VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (pets_pet_id, users_user_id) VALUE (?, ?)";
+    private final static String DELETE_PET_QUERY = "UPDATE pets SET status=? WHERE pet_id=? and status = 'ACTIVE'";
 
     @Override
     public Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException {
         try {
             connection = DBConnect.getConnection();
             connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_USER_QUERY, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_PET_QUERY, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, pet.getName());
             preparedStatement.setString(2, pet.getType());
             preparedStatement.setString(3, pet.getBreed());
             preparedStatement.setInt(4, pet.getAge());
+            preparedStatement.setString(3, Status.ACTIVE.toString());
 
             preparedStatement.executeUpdate();
 
@@ -127,7 +128,24 @@ public class PetDAOImpl implements PetDAO {
     }
 
     @Override
-    public boolean deletePet(long id) {
-        return false;
+    public boolean deletePet(long id) throws DaoException {
+        try{
+            connection = DBConnect.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PET_QUERY);
+            preparedStatement.setString(1,Status.DELETED.toString());
+            preparedStatement.setLong(2,id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException("dao error", e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 }

@@ -13,6 +13,7 @@ public class Pet {
     private String type;
     private String breed;
     private int age;
+    private String status;
 
     public Pet (String name, String type, String breed, int age){
         this.name = name;
