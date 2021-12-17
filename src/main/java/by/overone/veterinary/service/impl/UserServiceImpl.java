@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException {
+    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException, ValidationException {
         try {
             UserValidator.validateRegistrationData(userRegistrationDTO);
             User user = new User();
@@ -48,8 +48,6 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userRegistrationDTO.getEmail());
             user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
             userDAO.addUser(user);
-        } catch (ValidationException e) {
-            e.getMessage();
         } catch (DaoExistException e) {
             throw new ServiceExistException("User already exist", e);
         } catch (DaoException e) {
@@ -59,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserDetails(String login, UserDetails userDetails) throws ServiceException {
-
+        //getUserById(id);
         try {
             UserValidator.validateUserDetails(userDetails);
             userDAO.addUserDetails(login, userDetails);

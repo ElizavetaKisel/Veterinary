@@ -7,14 +7,20 @@ import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
+import by.overone.veterinary.util.validator.exception.ValidationException;
 
 import java.util.List;
 
 public interface UserService {
+    /**
+     * 
+     * @return
+     * @throws ServiceException
+     */
 
     List<UserDataDTO> getAllUsers() throws ServiceException;
 
-    void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException;
+    void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException, ValidationException;
 
     void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
 
