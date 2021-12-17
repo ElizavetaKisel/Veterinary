@@ -1,24 +1,19 @@
 package by.overone.veterinary.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.management.ConstructorParameters;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Pet {
     private long id;
-    private String name;
-    private String type;
-    private String breed;
-    private int age;
+    @NonNull private String name;
+    @NonNull private String type;
+    @NonNull private String breed;
+    @NonNull private int age;
     private String status;
 
-    public Pet (String name, String type, String breed, int age){
-        this.name = name;
-        this.type = type;
-        this.breed = breed;
-        this.age = age;
-    }
 }

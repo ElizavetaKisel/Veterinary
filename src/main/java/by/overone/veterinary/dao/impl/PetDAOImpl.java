@@ -70,7 +70,7 @@ public class PetDAOImpl implements PetDAO {
     }
 
     @Override
-    public Pet updatePet(long id, Pet pet) {
+    public Pet updatePet(long id, Pet pet) throws DaoException {
         try {
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PET_QUERY);
@@ -91,7 +91,7 @@ public class PetDAOImpl implements PetDAO {
 
             preparedStatement.executeUpdate();
         }catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("dao error", e);
         }finally {
             try {
                 connection.close();
