@@ -2,12 +2,16 @@ package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dao.impl.PetDAOImpl;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.exception.ServiceException;
+import by.overone.veterinary.service.exception.ServiceNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,8 +35,21 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDataDTO getPetById(long id) {
-        return null;
+    public PetDataDTO getPetById(long id) throws ServiceNotFoundException, ServiceException {
+        PetDataDTO petDataDTO = new PetDataDTO();
+        try {
+            Pet pet = petDAO.getPetById(id);
+            petDataDTO.setId(pet.getId());
+            petDataDTO.setName(pet.getName());
+            petDataDTO.setType(pet.getType());
+            petDataDTO.setBreed(pet.getBreed());
+            petDataDTO.setAge(pet.getAge());
+        } catch (DaoNotFoundException e) {
+            throw new ServiceNotFoundException("Pet not found", e);
+        }catch (DaoException ex){
+            throw new ServiceException(ex);
+        }
+        return petDataDTO;
     }
 
     @Override
@@ -41,7 +58,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void updatePet(long id, Pet pet) throws ServiceException {
+    public void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException {
         getPetById(id);
         try {
             petDAO.updatePet(id, pet);

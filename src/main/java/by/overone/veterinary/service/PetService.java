@@ -6,6 +6,7 @@ import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.exception.ServiceException;
+import by.overone.veterinary.service.exception.ServiceNotFoundException;
 
 import java.util.List;
 
@@ -13,11 +14,11 @@ public interface PetService {
 
     List<PetDataDTO> getPets() throws ServiceException;
 
-    PetDataDTO getPetById(long id);
+    PetDataDTO getPetById(long id) throws ServiceNotFoundException, ServiceException;
 
     void addPet(long user_id, Pet pet);
 
-    void updatePet(long id, Pet pet) throws ServiceException;
+    void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException;
 
     void deletePet(long id);
 
