@@ -56,11 +56,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserDetails(String login, UserDetails userDetails) throws ServiceException {
-        //getUserById(id);
+    public void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException {
+        getUserById(id);
         try {
             UserValidator.validateUserDetails(userDetails);
-            userDAO.addUserDetails(login, userDetails);
+            userDAO.addUserDetails(id, userDetails);
         } catch (ValidationException e) {
             e.printStackTrace();
         } catch (DaoException e) {

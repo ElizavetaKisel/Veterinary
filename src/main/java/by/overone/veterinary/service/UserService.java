@@ -22,7 +22,7 @@ public interface UserService {
 
     void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException, ValidationException;
 
-    void addUserDetails(String login, UserDetails userDetails) throws ServiceException;
+    void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException;
 
     UserInfoDTO getUserInfo(long id) throws ServiceNotFoundException, ServiceException;
 
