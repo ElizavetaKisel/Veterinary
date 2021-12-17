@@ -110,4 +110,14 @@ public class UserServiceImpl implements UserService {
         return userDataDTO;
     }
 
+    @Override
+    public void updateUser(long id, User user) throws ServiceNotFoundException, ServiceException {
+        getUserById(id);
+        try {
+            userDAO.updateUser(id, user);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+    }
+
 }

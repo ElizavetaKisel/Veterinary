@@ -190,7 +190,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User updateUser(long id, User user) {
+    public User updateUser(long id, User user) throws DaoException {
         try {
             connection = DBConnect.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_QUERY);
@@ -211,7 +211,7 @@ public class UserDAOImpl implements UserDAO {
 
             preparedStatement.executeUpdate();
         }catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("dao error", e);
         }finally {
             try {
                 connection.close();
