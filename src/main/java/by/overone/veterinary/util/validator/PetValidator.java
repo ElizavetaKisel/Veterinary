@@ -1,11 +1,12 @@
 package by.overone.veterinary.util.validator;
 
+import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
 public class PetValidator {
 
-    public static boolean validatePet(Pet pet) throws ValidationException {
+    public static boolean validatePet(PetDataDTO pet) throws ValidationException {
         return validateName(pet.getName()) && validateType(pet.getType())
                 && validateBreed(pet.getBreed()) && validateAge(pet.getAge());
     }

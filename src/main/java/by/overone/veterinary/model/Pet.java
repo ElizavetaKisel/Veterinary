@@ -7,13 +7,13 @@ import javax.management.ConstructorParameters;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
+
 public class Pet {
     private long id;
-    @NonNull private String name;
-    @NonNull private String type;
-    @NonNull private String breed;
-    @NonNull private int age;
+    private String name;
+    private String type;
+    private String breed;
+    private int age;
     private String status;
 
 }

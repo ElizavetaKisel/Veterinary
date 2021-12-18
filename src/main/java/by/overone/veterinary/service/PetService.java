@@ -1,8 +1,5 @@
 package by.overone.veterinary.service;
 
-import by.overone.veterinary.dao.exception.DaoException;
-import by.overone.veterinary.dao.exception.DaoExistException;
-import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.exception.ServiceException;
@@ -18,7 +15,7 @@ public interface PetService {
 
     PetDataDTO getPetById(long id) throws ServiceNotFoundException, ServiceException;
 
-    void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException, ValidationException;
+    void addPet(long user_id, PetDataDTO petDataDTO) throws ServiceExistException, ServiceException, ValidationException;
 
     void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException;
 

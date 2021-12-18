@@ -65,7 +65,7 @@ public class PetDAOImpl implements PetDAO {
             preparedStatement.setString(2, pet.getType());
             preparedStatement.setString(3, pet.getBreed());
             preparedStatement.setInt(4, pet.getAge());
-            preparedStatement.setString(3, Status.ACTIVE.toString());
+            preparedStatement.setString(5, Status.ACTIVE.toString());
 
             preparedStatement.executeUpdate();
 

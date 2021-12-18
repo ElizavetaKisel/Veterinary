@@ -7,12 +7,15 @@ import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dao.impl.PetDAOImpl;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
 import by.overone.veterinary.util.validator.PetValidator;
 import by.overone.veterinary.util.validator.exception.ValidationException;
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,9 +56,14 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException, ValidationException {
-        PetValidator.validatePet(pet);
+    public void addPet(long user_id, PetDataDTO petDataDTO) throws ServiceExistException, ServiceException, ValidationException {
+        PetValidator.validatePet(petDataDTO);
         try {
+            Pet pet = new Pet();
+            pet.setName(petDataDTO.getName());
+            pet.setType(petDataDTO.getType());
+            pet.setBreed(petDataDTO.getBreed());
+            pet.setAge(petDataDTO.getAge());
             petDAO.addPet(user_id, pet);
         } catch (DaoExistException e) {
             throw new ServiceExistException("User already exist", e);
