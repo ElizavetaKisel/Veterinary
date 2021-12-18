@@ -22,7 +22,8 @@ public class PetDAOImpl implements PetDAO {
     private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (pets_pet_id, users_user_id) VALUE (?, ?)";
     private final static String DELETE_PET_QUERY = "UPDATE pets SET status=? WHERE pet_id=? and status = 'ACTIVE'";
     private final static String UPDATE_PET_QUERY = "UPDATE pets SET name=?, type=?, breed=?, age=? WHERE pet_id=?";
-    private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users WHERE users_user_id=? and status= 'ACTIVE'";
+    private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users" +
+            " ON pet_id = pets_pet_id WHERE users_user_id=? and status= 'ACTIVE'";
 
     @Override
     public List<Pet> getPetsByUserId(long user_id) throws DaoException {
