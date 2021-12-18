@@ -14,6 +14,7 @@ import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
+import by.overone.veterinary.util.validator.UserDetailsValidator;
 import by.overone.veterinary.util.validator.UserValidator;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -56,13 +57,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException {
+    public void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException, ValidationException {
         getUserById(id);
         try {
-            UserValidator.validateUserDetails(userDetails);
+            UserDetailsValidator.validateUserDetails(userDetails);
             userDAO.addUserDetails(id, userDetails);
-        } catch (ValidationException e) {
-            e.printStackTrace();
         } catch (DaoException e) {
            throw new ServiceException("Details not added", e);
         }

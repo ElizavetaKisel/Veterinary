@@ -8,6 +8,7 @@ import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
+import by.overone.veterinary.util.validator.exception.ValidationException;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface PetService {
 
     PetDataDTO getPetById(long id) throws ServiceNotFoundException, ServiceException;
 
-    void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException;
+    void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException, ValidationException;
 
     void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException;
 

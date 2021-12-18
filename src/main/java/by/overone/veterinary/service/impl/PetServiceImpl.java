@@ -11,8 +11,8 @@ import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.exception.ServiceException;
 import by.overone.veterinary.service.exception.ServiceExistException;
 import by.overone.veterinary.service.exception.ServiceNotFoundException;
-
-
+import by.overone.veterinary.util.validator.PetValidator;
+import by.overone.veterinary.util.validator.exception.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException {
+    public void addPet(long user_id, Pet pet) throws ServiceExistException, ServiceException, ValidationException {
+        PetValidator.validatePet(pet);
         try {
             petDAO.addPet(user_id, pet);
         } catch (DaoExistException e) {
