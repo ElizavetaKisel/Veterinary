@@ -13,23 +13,22 @@ import by.overone.veterinary.util.validator.exception.ValidationException;
 import java.util.List;
 
 public interface UserService {
-    /**
-     * 
-     * @return
-     * @throws ServiceException
-     */
+//    /**
+//     *
+//     * @return
+//     */
 
-    List<UserDataDTO> getAllUsers() throws ServiceException;
+    List<UserDataDTO> getAllUsers();
 
-    void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException, ValidationException;
-
-    void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException, ValidationException;
-
-    UserInfoDTO getUserInfo(long id) throws ServiceNotFoundException, ServiceException;
-
-    void deleteUser(long id) throws ServiceNotFoundException, ServiceException;
-
-    UserDataDTO getUserById(long id) throws ServiceNotFoundException, ServiceException;
-
-    void updateUser(long id, User user) throws ServiceNotFoundException, ServiceException;
+//    void addUser(UserRegistrationDTO userRegistrationDTO) throws ServiceException, ServiceExistException, ValidationException;
+//
+//    void addUserDetails(long id, UserDetails userDetails) throws ServiceException, ServiceNotFoundException, ValidationException;
+//
+//    UserInfoDTO getUserInfo(long id) throws ServiceNotFoundException, ServiceException;
+//
+//    void deleteUser(long id) throws ServiceNotFoundException, ServiceException;
+//
+//    UserDataDTO getUserById(long id) throws ServiceNotFoundException, ServiceException;
+//
+//    void updateUser(long id, User user) throws ServiceNotFoundException, ServiceException;
 }

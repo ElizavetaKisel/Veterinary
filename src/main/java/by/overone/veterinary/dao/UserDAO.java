@@ -11,18 +11,18 @@ import java.util.List;
 
 public interface UserDAO {
 
-    List<User> getUsers() throws DaoException;
-
-    User getUserById(long id) throws DaoNotFoundException, DaoException;
-
-    UserInfoDTO getUserInfo(long id) throws DaoNotFoundException, DaoException;
-
-    User addUser(User user) throws DaoException, DaoExistException;
-
-    UserDetails addUserDetails(long id, UserDetails userDetails) throws DaoException;
-
-    User updateUser(long id, User user) throws DaoException;
-
-    boolean deleteUser(long id) throws DaoException;
+    List<User> getUsers();
+//
+//    User getUserById(long id) throws DaoNotFoundException, DaoException;
+//
+//    UserInfoDTO getUserInfo(long id) throws DaoNotFoundException, DaoException;
+//
+//    User addUser(User user) throws DaoException, DaoExistException;
+//
+//    UserDetails addUserDetails(long id, UserDetails userDetails) throws DaoException;
+//
+//    User updateUser(long id, User user) throws DaoException;
+//
+//    boolean deleteUser(long id) throws DaoException;
 
 }
