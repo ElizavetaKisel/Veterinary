@@ -6,8 +6,8 @@ import by.overone.veterinary.util.validator.exception.ValidationException;
 public class UserDetailsValidator {
 
     private final static String PHONE_REGEX = "^(\\+375|80)(17|29|33|44)[0-9]{7}$";
-    private final static String NAME_REGEX = "^([A-ZА-Я])";
-    private final static String SURNAME_REGEX = "^([A-ZА-Я])";
+    private final static String NAME_REGEX = "^[А-Л]{1}[a-zа-я]*$";
+    private final static String SURNAME_REGEX = "^[A-ZА-Я].*$";
 
     public static boolean validateUserDetails(UserDetails user) throws ValidationException {
         return validateName(user.getName()) && validateSurname(user.getSurname())
@@ -39,7 +39,7 @@ public class UserDetailsValidator {
     }
 
     public static boolean validateSurname(String surname) throws ValidationException {
-        if (surname != null && !surname.isBlank() && surname.matches(SURNAME_REGEX)) {
+        if (surname != null && !surname.isBlank()) {
             return true;
         }else {
             throw new ValidationException("Incorrect format of surname");
