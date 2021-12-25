@@ -1,109 +1,76 @@
 package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
-import by.overone.veterinary.dao.exception.DaoException;
-import by.overone.veterinary.dao.exception.DaoExistException;
-import by.overone.veterinary.dao.exception.DaoNotFoundException;
-import by.overone.veterinary.dao.impl.PetDAOImpl;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
-import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
-import by.overone.veterinary.service.exception.ServiceException;
-import by.overone.veterinary.service.exception.ServiceExistException;
-import by.overone.veterinary.service.exception.ServiceNotFoundException;
+import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.util.validator.PetValidator;
 import by.overone.veterinary.util.validator.exception.ValidationException;
-import org.apache.commons.codec.digest.DigestUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
-    private final PetDAO petDAO = new PetDAOImpl();
+    private final PetDAO petDAO;
+    private final UserService userService;
 
     @Override
-    public List<PetDataDTO> getPets() throws ServiceException {
+    public List<PetDataDTO> getPets() {
         List<PetDataDTO> petsDataDTO;
 
-        try {
-            petsDataDTO = petDAO.getPets().stream()
-                    .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
-                    .collect(Collectors.toList());
-        }catch (DaoException e) {
-            throw new ServiceException(e);
-        }
+        petsDataDTO = petDAO.getPets().stream()
+                .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .collect(Collectors.toList());
         return petsDataDTO;
     }
 
     @Override
-    public PetDataDTO getPetById(long id) throws ServiceNotFoundException, ServiceException {
+    public PetDataDTO getPetById(long id) {
         PetDataDTO petDataDTO = new PetDataDTO();
-        try {
-            Pet pet = petDAO.getPetById(id);
-            petDataDTO.setId(pet.getId());
-            petDataDTO.setName(pet.getName());
-            petDataDTO.setType(pet.getType());
-            petDataDTO.setBreed(pet.getBreed());
-            petDataDTO.setAge(pet.getAge());
-        } catch (DaoNotFoundException e) {
-            throw new ServiceNotFoundException("Pet not found", e);
-        }catch (DaoException ex){
-            throw new ServiceException(ex);
-        }
+        Pet pet = petDAO.getPetById(id);
+        petDataDTO.setId(pet.getId());
+        petDataDTO.setName(pet.getName());
+        petDataDTO.setType(pet.getType());
+        petDataDTO.setBreed(pet.getBreed());
+        petDataDTO.setAge(pet.getAge());
         return petDataDTO;
     }
 
     @Override
-    public void addPet(long user_id, PetDataDTO petDataDTO) throws ServiceExistException, ServiceException, ValidationException {
+    public void addPet(long user_id, PetDataDTO petDataDTO) throws ValidationException {
         PetValidator.validatePet(petDataDTO);
-        try {
-            Pet pet = new Pet();
-            pet.setName(petDataDTO.getName());
-            pet.setType(petDataDTO.getType());
-            pet.setBreed(petDataDTO.getBreed());
-            pet.setAge(petDataDTO.getAge());
-            petDAO.addPet(user_id, pet);
-        } catch (DaoExistException e) {
-            throw new ServiceExistException("User already exist", e);
-        } catch (DaoException e) {
-            throw new ServiceException("Service error", e);
-        }
+        Pet pet = new Pet();
+        pet.setName(petDataDTO.getName());
+        pet.setType(petDataDTO.getType());
+        pet.setBreed(petDataDTO.getBreed());
+        pet.setAge(petDataDTO.getAge());
+        petDAO.addPet(user_id, pet);
     }
 
     @Override
-    public void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException {
+    public void deletePet(long id) {
         getPetById(id);
-        try {
-            petDAO.updatePet(id, pet);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
-    public void deletePet(long id) throws ServiceException, ServiceNotFoundException {
-        getPetById(id);
-        try {
-            petDAO.deletePet(id);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<PetDataDTO> getPetsByUserId(long user_id) throws ServiceNotFoundException, ServiceException {
-        UserServiceImpl userService = new UserServiceImpl();
+    public List<PetDataDTO> getPetsByUserId(long user_id) {
         userService.getUserById(user_id);
         List<PetDataDTO> petsDataDTO;
-        try {
-            petsDataDTO = petDAO.getPetsByUserId(user_id).stream()
-                    .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
-                    .collect(Collectors.toList());
-        }catch (DaoException e) {
-            throw new ServiceException(e);
-        }
+        petsDataDTO = petDAO.getPetsByUserId(user_id).stream()
+                .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .collect(Collectors.toList());
         return petsDataDTO;
     }
+
+//    @Override
+//    public void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException {
+//        getPetById(id);
+//        petDAO.updatePet(id, pet);
+//    }
 }

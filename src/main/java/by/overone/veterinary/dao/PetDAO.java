@@ -1,24 +1,20 @@
 package by.overone.veterinary.dao;
 
-
-import by.overone.veterinary.dao.exception.DaoException;
-import by.overone.veterinary.dao.exception.DaoExistException;
-import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.model.Pet;
 
 import java.util.List;
 
 public interface PetDAO {
 
-    List<Pet> getPets() throws DaoException;
+    List<Pet> getPets();
 
-    Pet getPetById(long id) throws DaoNotFoundException, DaoException;
+    Pet getPetById(long id);
 
-    Pet addPet(long user_id, Pet pet) throws DaoExistException, DaoException;
+    Pet addPet(long user_id, Pet pet);
 
-    Pet updatePet(long id, Pet pet) throws DaoException;
+    boolean deletePet(long id);
 
-    boolean deletePet(long id) throws DaoException;
+    List<Pet> getPetsByUserId(long user_id);
 
-    List<Pet> getPetsByUserId(long user_id) throws DaoException;
+//    Pet updatePet(long id, Pet pet);
 }

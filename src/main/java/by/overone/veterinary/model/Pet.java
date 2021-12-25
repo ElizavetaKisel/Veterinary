@@ -7,7 +7,6 @@ import javax.management.ConstructorParameters;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Pet {
     private long id;
     private String name;

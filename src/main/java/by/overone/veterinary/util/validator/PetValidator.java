@@ -1,7 +1,6 @@
 package by.overone.veterinary.util.validator;
 
 import by.overone.veterinary.dto.PetDataDTO;
-import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
 public class PetValidator {

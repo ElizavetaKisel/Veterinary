@@ -2,9 +2,6 @@ package by.overone.veterinary.dao.impl;
 
 
 import by.overone.veterinary.dao.UserDAO;
-import by.overone.veterinary.dao.exception.DaoException;
-import by.overone.veterinary.dao.exception.DaoExistException;
-import by.overone.veterinary.dao.exception.DaoNotFoundException;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
