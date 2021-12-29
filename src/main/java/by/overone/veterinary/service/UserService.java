@@ -4,7 +4,6 @@ import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
-import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
@@ -20,13 +19,13 @@ public interface UserService {
 
     void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException;
 
-    void addUserDetails(long id, UserDetails userDetails) throws ValidationException;
-
     UserInfoDTO getUserInfo(long id);
 
     void deleteUser(long id);
 
     UserDataDTO getUserById(long id);
 
-    void updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException;
+    UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException;
+
+    UserDetails updateUserDetails(long id, UserDetails userDetails) throws ValidationException;
 }

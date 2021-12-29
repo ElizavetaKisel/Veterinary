@@ -5,6 +5,7 @@ import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.User;
+import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -28,12 +29,12 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping("{id}/info")
     public UserInfoDTO userInfo(@PathVariable long id) {
         return userService.getUserInfo(id);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("{id}/delete")
     public void deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
     }
@@ -43,8 +44,13 @@ public class UserController {
         userService.addUser(userRegistrationDTO);
     }
 
-    @PostMapping("/update/{id}")
-    public void updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) throws ValidationException {
-        userService.updateUser(id, user);
+    @PostMapping("{id}/update")
+    public UserDataDTO updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) throws ValidationException {
+        return userService.updateUser(id, user);
+    }
+
+    @PostMapping("{id}/update_details")
+    public UserDetails updateUserDetails(@PathVariable long id, @RequestBody UserDetails user) throws ValidationException {
+        return userService.updateUserDetails(id, user);
     }
 }

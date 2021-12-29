@@ -49,13 +49,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserDetails(long id, UserDetails userDetails) throws ValidationException {
-        getUserById(id);
-        UserDetailsValidator.validateUserDetails(userDetails);
-        userDAO.addUserDetails(id, userDetails);
-    }
-
-    @Override
     public UserInfoDTO getUserInfo(long id) {
         UserInfoDTO userInfoDTO;
         userInfoDTO = userDAO.getUserInfo(id);
@@ -74,16 +67,15 @@ public class UserServiceImpl implements UserService {
     public UserDataDTO getUserById(long id) {
         UserDataDTO userDataDTO = new UserDataDTO();
         User user = userDAO.getUserById(id);
-        userDataDTO.setId(user.getUser_id());
+        userDataDTO.setUser_id(user.getUser_id());
         userDataDTO.setLogin(user.getLogin());
         userDataDTO.setEmail(user.getEmail());
         userDataDTO.setRole(user.getRole());
         return userDataDTO;
     }
 
-    @Transactional
     @Override
-    public void updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException {
+    public UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException {
         getUserById(id);
         UserValidator.validateUpdate(userUpdateDTO);
         if (userUpdateDTO.getPassword() != null) {
@@ -92,7 +84,14 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDTO.getRole() != null) {
             userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
         }
-        userDAO.updateUser(id, userUpdateDTO);
+        return userDAO.updateUser(id, userUpdateDTO);
+    }
+
+    @Override
+    public UserDetails updateUserDetails(long id, UserDetails userDetails) throws ValidationException {
+        getUserById(id);
+        UserDetailsValidator.validateUserDetails(userDetails);
+        return userDAO.updateUserDetails(id, userDetails);
     }
 
 }

@@ -2,19 +2,16 @@ package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.service.PetService;
+import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/pets")
+@RequestMapping("/pets")
 public class PetController {
-
     private final PetService petService;
 
     @GetMapping
@@ -32,8 +29,13 @@ public class PetController {
         return petService.getPetsByUserId(id);
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     public void deletePet(@PathVariable long id) {
         petService.deletePet(id);
+    }
+
+    @PostMapping("{id}/update")
+    public PetDataDTO updateUser(@PathVariable long id, @RequestBody PetDataDTO pet) throws ValidationException {
+        return petService.updatePet(id, pet);
     }
 }

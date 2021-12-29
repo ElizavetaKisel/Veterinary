@@ -18,6 +18,6 @@ public interface PetService {
 
     List<PetDataDTO> getPetsByUserId(long user_id);
 
-//    void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException;
+    PetDataDTO updatePet(long id, PetDataDTO pet);
 
 }

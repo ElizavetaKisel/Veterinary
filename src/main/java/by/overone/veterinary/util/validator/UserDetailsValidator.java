@@ -11,38 +11,50 @@ public class UserDetailsValidator {
 
     public static boolean validateUserDetails(UserDetails user) throws ValidationException {
         return validateName(user.getName()) && validateSurname(user.getSurname())
-                && validatePhoneNumber(user.getPhoneNumber()) && validateAddress(user.getAddress());
+                && validatePhoneNumber(user.getPhone_number()) && validateAddress(user.getAddress());
     }
 
-    public static boolean validatePhoneNumber(String phoneNumber) throws ValidationException {
-        if (phoneNumber != null && !phoneNumber.isBlank() && phoneNumber.matches(PHONE_REGEX)) {
-            return true;
-        }else {
-            throw new ValidationException("Incorrect format of phoneNumber");
+    public static boolean validatePhoneNumber(String phone_number) throws ValidationException {
+        if (phone_number != null) {
+            if (!phone_number.isBlank() && phone_number.matches(PHONE_REGEX)) {
+                return true;
+            } else {
+                throw new ValidationException("Incorrect format of phone number");
+            }
         }
+        return true;
     }
 
     public static boolean validateAddress(String address) throws ValidationException {
-        if(address != null && !address.isBlank()) {
-            return true;
-        }else {
-            throw new ValidationException("Incorrect format of address");
+        if (address != null) {
+            if (!address.isBlank()) {
+                return true;
+            } else {
+                throw new ValidationException("Incorrect format of address");
+            }
         }
+        return true;
     }
 
     public static boolean validateName(String name) throws ValidationException {
-        if (name != null && !name.isBlank() && name.matches(NAME_REGEX)) {
-            return true;
-        }else {
-            throw new ValidationException("Incorrect format of name");
+        if (name != null) {
+            if (!name.isBlank() && name.matches(NAME_REGEX)) {
+                return true;
+            } else {
+                throw new ValidationException("Incorrect format of name");
+            }
         }
+        return true;
     }
 
     public static boolean validateSurname(String surname) throws ValidationException {
-        if (surname != null && !surname.isBlank()) {
-            return true;
-        }else {
-            throw new ValidationException("Incorrect format of surname");
+        if (surname != null) {
+            if (!surname.isBlank()) {
+                return true;
+            } else {
+                throw new ValidationException("Incorrect format of surname");
+            }
         }
+        return true;
     }
 }

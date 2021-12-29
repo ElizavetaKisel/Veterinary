@@ -1,5 +1,6 @@
 package by.overone.veterinary.dao;
 
+import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public interface PetDAO {
 
     boolean deletePetByUserId(long user_id);
 
-//    Pet updatePet(long id, Pet pet);
+    PetDataDTO updatePet(long id, PetDataDTO pet);
 }
