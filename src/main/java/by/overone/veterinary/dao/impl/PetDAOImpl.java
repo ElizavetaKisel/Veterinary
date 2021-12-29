@@ -1,6 +1,7 @@
 package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.PetDAO;
+import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Status;
 import lombok.RequiredArgsConstructor;
@@ -81,36 +82,25 @@ public class PetDAOImpl implements PetDAO {
         return true;
     }
 
-    //    @Override
-//    public Pet updatePet(long id, Pet pet) throws DaoException {
-//        try {
-//            connection = DBConnect.getConnection();
-//            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PET_QUERY);
-//
-//            if (pet.getName() != null) {
-//                preparedStatement.setString(1, pet.getName());
-//            }
-//            if (pet.getType() != null) {
-//                preparedStatement.setString(2, pet.getType());
-//            }
-//            if (pet.getBreed() != null) {
-//                preparedStatement.setString(3, pet.getBreed());
-//            }
-//            if (pet.getAge() != 0) {
-//                preparedStatement.setInt(4, pet.getAge());
-//            }
-//            preparedStatement.setLong(5, id);
-//
-//            preparedStatement.executeUpdate();
-//        }catch (SQLException e) {
-//            throw new DaoException("dao error", e);
-//        }finally {
-//            try {
-//                connection.close();
-//            }catch (SQLException e){
-//                e.printStackTrace();
-//            }
-//        }
-//        return pet;
-//    }
+
+    private final static String START_UPDATE_PET_QUERY = "UPDATE pets SET ";
+    private final static String END_UPDATE_PET_QUERY = " WHERE pet_id=?";
+
+    @Override
+    public PetDataDTO updatePet(long id, PetDataDTO pet) {
+            if (pet.getName() != null) {
+                jdbcTemplate.update(START_UPDATE_PET_QUERY + "name=?" + END_UPDATE_PET_QUERY, pet.getName(), id);
+            }
+            if (pet.getType() != null) {
+                jdbcTemplate.update(START_UPDATE_PET_QUERY + "type=?" + END_UPDATE_PET_QUERY, pet.getType(), id);
+            }
+            if (pet.getBreed() != null) {
+                jdbcTemplate.update(START_UPDATE_PET_QUERY + "breed=?" + END_UPDATE_PET_QUERY, pet.getBreed(), id);
+            }
+            if (pet.getAge() != 0) {
+                jdbcTemplate.update(START_UPDATE_PET_QUERY + "age=?" + END_UPDATE_PET_QUERY, pet.getAge(), id);
+            }
+
+            return jdbcTemplate.queryForObject(GET_PET_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(PetDataDTO.class));
+    }
 }

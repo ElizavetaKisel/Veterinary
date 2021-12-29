@@ -34,7 +34,7 @@ public class PetServiceImpl implements PetService {
     public PetDataDTO getPetById(long id) {
         PetDataDTO petDataDTO = new PetDataDTO();
         Pet pet = petDAO.getPetById(id);
-        petDataDTO.setId(pet.getPet_id());
+        petDataDTO.setPet_id(pet.getPet_id());
         petDataDTO.setName(pet.getName());
         petDataDTO.setType(pet.getType());
         petDataDTO.setBreed(pet.getBreed());
@@ -56,6 +56,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public void deletePet(long id) {
         getPetById(id);
+        deletePet(id);
     }
 
     @Override
@@ -68,9 +69,9 @@ public class PetServiceImpl implements PetService {
         return petsDataDTO;
     }
 
-//    @Override
-//    public void updatePet(long id, Pet pet) throws ServiceException, ServiceNotFoundException {
-//        getPetById(id);
-//        petDAO.updatePet(id, pet);
-//    }
+    @Override
+    public PetDataDTO updatePet(long id, PetDataDTO pet)  {
+        getPetById(id);
+        return petDAO.updatePet(id, pet);
+    }
 }

@@ -1,6 +1,6 @@
 package by.overone.veterinary.dao;
 
-import by.overone.veterinary.dao.exception.DaoException;
+import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.dto.UserInfoDTO;
@@ -18,10 +18,10 @@ public interface UserDAO {
 
     User addUser(User user);
 
-    UserDetails addUserDetails(long id, UserDetails userDetails);
-
     boolean deleteUser(long id);
 
-    User updateUser(long id, UserUpdateDTO user);
+    UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO);
+
+    UserDetails updateUserDetails(long id, UserDetails userDetails);
 
 }
