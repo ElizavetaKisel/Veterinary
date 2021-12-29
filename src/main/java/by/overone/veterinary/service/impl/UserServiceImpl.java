@@ -4,6 +4,7 @@ import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
+import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.UserDetails;
@@ -80,14 +81,18 @@ public class UserServiceImpl implements UserService {
         return userDataDTO;
     }
 
-//    @Override
-//    public void updateUser(long id, User user) throws ServiceNotFoundException, ServiceException {
-//        getUserById(id);
-//        try {
-//            userDAO.updateUser(id, user);
-//        } catch (DaoException e) {
-//            throw new ServiceException(e);
-//        }
-//    }
+    @Transactional
+    @Override
+    public void updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException {
+        getUserById(id);
+        UserValidator.validateUpdate(userUpdateDTO);
+        if (userUpdateDTO.getPassword() != null) {
+            userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
+        }
+        if (userUpdateDTO.getRole() != null) {
+            userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
+        }
+        userDAO.updateUser(id, userUpdateDTO);
+    }
 
 }

@@ -3,6 +3,8 @@ package by.overone.veterinary.service;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.dto.UserInfoDTO;
+import by.overone.veterinary.dto.UserUpdateDTO;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
@@ -26,5 +28,5 @@ public interface UserService {
 
     UserDataDTO getUserById(long id);
 
-//    void updateUser(long id, User user) throws ServiceNotFoundException, ServiceException;
+    void updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException;
 }

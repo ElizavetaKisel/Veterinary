@@ -1,4 +1,4 @@
-package by.overone.veterinary.model;
+package by.overone.veterinary.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    private long user_id;
+public class UserUpdateDTO {
     private String login;
     private String password;
     private String email;
     private String role;
-    private String status;
-
 }
