@@ -43,8 +43,8 @@ public class UserController {
         userService.addUser(userRegistrationDTO);
     }
 
-    @PostMapping("/update")
-    public void updateUser(@RequestBody long id, @RequestBody UserUpdateDTO user) throws ValidationException {
+    @PostMapping("/update/{id}")
+    public void updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) throws ValidationException {
         userService.updateUser(id, user);
     }
 }
