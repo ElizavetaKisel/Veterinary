@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         List<UserDataDTO> usersDataDTO;
 
             usersDataDTO = userDAO.getUsers().stream()
-                    .map(user -> new UserDataDTO(user.getId(), user.getLogin(), user.getEmail(), user.getRole()))
+                    .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail(), user.getRole()))
                     .collect(Collectors.toList());
 
         return usersDataDTO;
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public UserDataDTO getUserById(long id) {
         UserDataDTO userDataDTO = new UserDataDTO();
         User user = userDAO.getUserById(id);
-        userDataDTO.setId(user.getId());
+        userDataDTO.setId(user.getUser_id());
         userDataDTO.setLogin(user.getLogin());
         userDataDTO.setEmail(user.getEmail());
         userDataDTO.setRole(user.getRole());

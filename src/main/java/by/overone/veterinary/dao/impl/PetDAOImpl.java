@@ -61,8 +61,8 @@ public class PetDAOImpl implements PetDAO {
             ps.setString(5, Status.ACTIVE.toString());
             return ps;
         }, keyHolder);
-        pet.setId(keyHolder.getKey().longValue());
-        jdbcTemplate.update(ADD_PETS_HAS_USERS_ID_QUERY,pet.getId());
+        pet.setPet_id(keyHolder.getKey().longValue());
+        jdbcTemplate.update(ADD_PETS_HAS_USERS_ID_QUERY,pet.getPet_id());
         return pet;
     }
 

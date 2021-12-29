@@ -56,7 +56,7 @@ public class UserDAOImpl implements UserDAO {
     public User addUser(User user){
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(ADD_USER_QUERY);
+            PreparedStatement ps = connection.prepareStatement(ADD_USER_QUERY, new String[]{"user_id"});
             ps.setString(1, user.getLogin());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getEmail());
@@ -64,8 +64,8 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(5, Status.ACTIVE.toString());
             return ps;
         }, keyHolder);
-         user.setId(keyHolder.getKey().longValue());
-         jdbcTemplate.update(ADD_USER_DETAILS_ID_QUERY,user.getId());
+         user.setUser_id(keyHolder.getKey().longValue());
+         jdbcTemplate.update(ADD_USER_DETAILS_ID_QUERY,user.getUser_id());
         return user;
     }
 

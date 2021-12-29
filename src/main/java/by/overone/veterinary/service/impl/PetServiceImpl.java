@@ -25,7 +25,7 @@ public class PetServiceImpl implements PetService {
         List<PetDataDTO> petsDataDTO;
 
         petsDataDTO = petDAO.getPets().stream()
-                .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .map(pet -> new PetDataDTO(pet.getPet_id(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
@@ -34,7 +34,7 @@ public class PetServiceImpl implements PetService {
     public PetDataDTO getPetById(long id) {
         PetDataDTO petDataDTO = new PetDataDTO();
         Pet pet = petDAO.getPetById(id);
-        petDataDTO.setId(pet.getId());
+        petDataDTO.setId(pet.getPet_id());
         petDataDTO.setName(pet.getName());
         petDataDTO.setType(pet.getType());
         petDataDTO.setBreed(pet.getBreed());
@@ -63,7 +63,7 @@ public class PetServiceImpl implements PetService {
         userService.getUserById(user_id);
         List<PetDataDTO> petsDataDTO;
         petsDataDTO = petDAO.getPetsByUserId(user_id).stream()
-                .map(pet -> new PetDataDTO(pet.getId(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .map(pet -> new PetDataDTO(pet.getPet_id(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
