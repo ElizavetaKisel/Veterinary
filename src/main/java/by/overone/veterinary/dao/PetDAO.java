@@ -16,5 +16,7 @@ public interface PetDAO {
 
     List<Pet> getPetsByUserId(long user_id);
 
+    boolean deletePetByUserId(long user_id);
+
 //    Pet updatePet(long id, Pet pet);
 }

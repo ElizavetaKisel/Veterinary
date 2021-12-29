@@ -1,5 +1,6 @@
 package by.overone.veterinary.service.impl;
 
+import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
@@ -13,6 +14,7 @@ import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    private final PetDAO petDAO;
 
     @Override
     public List<UserDataDTO> getAllUsers() {
@@ -58,10 +61,12 @@ public class UserServiceImpl implements UserService {
         return userInfoDTO;
     }
 
+    @Transactional
     @Override
     public void deleteUser(long id) {
         getUserById(id);
         userDAO.deleteUser(id);
+        petDAO.deletePetByUserId(id);
     }
 
     @Override

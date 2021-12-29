@@ -28,6 +28,8 @@ public class PetDAOImpl implements PetDAO {
     private final static String UPDATE_PET_QUERY = "UPDATE pets SET name=?, type=?, breed=?, age=? WHERE pet_id=?";
     private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users" +
             " ON pet_id = pets_pet_id WHERE pets_pet_id=? and status= 'ACTIVE'";
+    private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
+            "ON pet_id = pets_pet_id SET status=? WHERE users_user_id=? and status = 'ACTIVE'";
 
 
     @Override
@@ -70,6 +72,12 @@ public class PetDAOImpl implements PetDAO {
     @Override
     public boolean deletePet(long id) {
         jdbcTemplate.update(DELETE_PET_QUERY, Status.DELETED.toString(), id);
+        return true;
+    }
+
+    @Override
+    public boolean deletePetByUserId(long user_id) {
+        jdbcTemplate.update(DELETE_PET_QUERY, Status.DELETED.toString(), user_id);
         return true;
     }
 
