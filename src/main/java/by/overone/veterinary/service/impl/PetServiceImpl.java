@@ -70,8 +70,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDataDTO updatePet(long id, PetDataDTO pet)  {
+    public PetDataDTO updatePet(long id, PetDataDTO pet) throws ValidationException {
         getPetById(id);
+        PetValidator.validatePetUpdate(pet);
         return petDAO.updatePet(id, pet);
     }
 }

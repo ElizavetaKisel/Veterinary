@@ -41,7 +41,7 @@ public class UserValidator {
         }
     }
 
-    public static boolean validateUpdate(UserUpdateDTO user) throws ValidationException {
+    public static boolean validateUserUpdate(UserUpdateDTO user) throws ValidationException {
         return validateUpdateLogin(user.getLogin()) && validateUpdateEmail(user.getEmail())
                 && validateUpdatePassword(user.getPassword()) && validateUpdateRole(user.getRole());
     }

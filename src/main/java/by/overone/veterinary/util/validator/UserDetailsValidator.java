@@ -49,7 +49,7 @@ public class UserDetailsValidator {
 
     public static boolean validateSurname(String surname) throws ValidationException {
         if (surname != null) {
-            if (!surname.isBlank()) {
+            if (!surname.isBlank() && surname.matches(SURNAME_REGEX)) {
                 return true;
             } else {
                 throw new ValidationException("Incorrect format of surname");

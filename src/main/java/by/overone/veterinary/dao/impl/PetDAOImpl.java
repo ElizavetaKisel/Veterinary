@@ -35,20 +35,17 @@ public class PetDAOImpl implements PetDAO {
 
     @Override
     public List<Pet> getPets() {
-        List<Pet> pets = jdbcTemplate.query(GET_PETS_QUERY, new BeanPropertyRowMapper<>(Pet.class));
-        return pets;
+        return jdbcTemplate.query(GET_PETS_QUERY, new BeanPropertyRowMapper<>(Pet.class));
     }
 
     @Override
     public List<Pet> getPetsByUserId(long user_id) {
-        List<Pet> pets = jdbcTemplate.query(GET_PETS_BY_USER_ID_QUERY, new Object[]{user_id}, new BeanPropertyRowMapper<>(Pet.class));
-        return pets;
+        return jdbcTemplate.query(GET_PETS_BY_USER_ID_QUERY, new Object[]{user_id}, new BeanPropertyRowMapper<>(Pet.class));
     }
 
     @Override
     public Pet getPetById(long id) {
-        Pet pet = jdbcTemplate.queryForObject(GET_PET_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(Pet.class));
-        return pet;
+        return jdbcTemplate.queryForObject(GET_PET_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(Pet.class));
     }
 
     @Transactional
