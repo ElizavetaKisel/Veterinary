@@ -39,8 +39,8 @@ public class PetController {
         petService.deletePet(id);
     }
 
-    @PostMapping("{id}/update")
-    public PetDataDTO updateUser(@PathVariable long id, @RequestBody PetDataDTO pet) throws ValidationException {
-        return petService.updatePet(id, pet);
+    @PostMapping("/update")
+    public PetDataDTO updateUser(@RequestBody PetDataDTO pet) throws ValidationException {
+        return petService.updatePet(pet);
     }
 }

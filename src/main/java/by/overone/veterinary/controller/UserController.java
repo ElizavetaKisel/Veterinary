@@ -44,13 +44,13 @@ public class UserController {
         userService.addUser(userRegistrationDTO);
     }
 
-    @PostMapping("{id}/update")
-    public UserDataDTO updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) throws ValidationException {
-        return userService.updateUser(id, user);
+    @PostMapping("/update")
+    public UserDataDTO updateUser(@RequestBody UserUpdateDTO user) throws ValidationException {
+        return userService.updateUser(user);
     }
 
-    @PostMapping("{id}/update_details")
-    public UserDetails updateUserDetails(@PathVariable long id, @RequestBody UserDetails user) throws ValidationException {
-        return userService.updateUserDetails(id, user);
+    @PostMapping("/update_details")
+    public UserDetails updateUserDetails(@RequestBody UserDetails user) throws ValidationException {
+        return userService.updateUserDetails(user);
     }
 }
