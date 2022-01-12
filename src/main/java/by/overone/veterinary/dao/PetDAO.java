@@ -19,5 +19,5 @@ public interface PetDAO {
 
     boolean deletePetByUserId(long user_id);
 
-    PetDataDTO updatePet(long id, PetDataDTO pet);
+    PetDataDTO updatePet(PetDataDTO pet);
 }

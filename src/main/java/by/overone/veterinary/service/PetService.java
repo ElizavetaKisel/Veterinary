@@ -18,6 +18,6 @@ public interface PetService {
 
     List<PetDataDTO> getPetsByUserId(long user_id);
 
-    PetDataDTO updatePet(long id, PetDataDTO pet) throws ValidationException;
+    PetDataDTO updatePet(PetDataDTO pet) throws ValidationException;
 
 }

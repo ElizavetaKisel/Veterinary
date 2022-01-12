@@ -10,4 +10,5 @@ public class UserDetails {
     private String surname;
     private String address;
     private String phone_number;
+    private long users_user_id;
 }

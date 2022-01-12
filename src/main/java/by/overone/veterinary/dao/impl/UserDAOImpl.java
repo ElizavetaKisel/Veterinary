@@ -15,7 +15,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,9 +32,6 @@ public class UserDAOImpl implements UserDAO {
     private final static String DELETE_USER_QUERY = "UPDATE users SET status=? WHERE user_id=? and status = 'ACTIVE'";
     private final static String GET_USER_INFO_QUERY = "SELECT * FROM users JOIN user_details " +
             "ON user_id = users_user_id WHERE user_id=? and status = 'ACTIVE'";
-    private final static String START_UPDATE_USER_QUERY = "UPDATE users SET ";
-    private final static String START_UPDATE_USER_DETAILS_QUERY = "UPDATE user_details JOIN users ON user_id = users_user_id SET ";
-    private final static String END_UPDATE_USER_QUERY = " WHERE user_id=?";
     private final static String GET_USER_DETAILS_QUERY = "SELECT * FROM user_details WHERE user_id=?";
 
     @Override
@@ -78,38 +77,47 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public UserDataDTO updateUser(long id, UserUpdateDTO user) {
+    public UserDataDTO updateUser(UserUpdateDTO user) {
+        List <String> sql = new ArrayList<>();
         if (user.getLogin() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_QUERY + "login=?" + END_UPDATE_USER_QUERY, user.getLogin(), id);
+            sql.add("login=" + user.getLogin() + "'");
         }
         if (user.getPassword() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_QUERY + "password=?" + END_UPDATE_USER_QUERY, user.getPassword(), id);
+            sql.add("password='" + user.getPassword() + "'");
         }
         if (user.getEmail() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_QUERY + "email=?" + END_UPDATE_USER_QUERY, user.getEmail(), id);
+            sql.add("email=" + user.getEmail() + "'");
         }
         if (user.getRole() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_QUERY + "role=?" + END_UPDATE_USER_QUERY, user.getRole(), id);
+            sql.add("role='" + user.getRole());
         }
-
-        return jdbcTemplate.queryForObject(GET_USER_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(UserDataDTO.class));
+        String UPDATE_USER_QUERY = "UPDATE users SET " + sql.stream().collect(Collectors.joining(", "))
+                + " WHERE user_id=" + user.getUser_id();
+        jdbcTemplate.update(UPDATE_USER_QUERY);
+        return jdbcTemplate.queryForObject(GET_USER_BY_ID_QUERY, new Object[]{user.getUser_id()},
+                new BeanPropertyRowMapper<>(UserDataDTO.class));
     }
 
     @Override
-    public UserDetails updateUserDetails(long id, UserDetails user) {
+    public UserDetails updateUserDetails(UserDetails user) {
+        List <String> sql = new ArrayList<>();
         if (user.getName() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_DETAILS_QUERY + "name=?" + END_UPDATE_USER_QUERY, user.getName(), id);
+            sql.add("name=" + user.getName() + "'");
         }
         if (user.getSurname() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_DETAILS_QUERY + "surname=?" + END_UPDATE_USER_QUERY, user.getSurname(), id);
+            sql.add("surname='" + user.getSurname() + "'");
         }
         if (user.getAddress() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_DETAILS_QUERY + "address=?" + END_UPDATE_USER_QUERY, user.getAddress(), id);
+            sql.add("address=" + user.getAddress() + "'");
         }
         if (user.getPhone_number() != null) {
-            jdbcTemplate.update(START_UPDATE_USER_DETAILS_QUERY + "phone_number=?" + END_UPDATE_USER_QUERY, user.getPhone_number(), id);
+            sql.add("phone_number=" + user.getPhone_number() + "'");
         }
-
-        return jdbcTemplate.queryForObject(GET_USER_DETAILS_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(UserDetails.class));
+        String UPDATE_PET_QUERY = "UPDATE user_details JOIN users ON user_id = users_user_id SET "
+                + sql.stream().collect(Collectors.joining(", "))
+                + " WHERE user_id=" + user.getUsers_user_id();
+        jdbcTemplate.update(UPDATE_PET_QUERY);
+        return jdbcTemplate.queryForObject(GET_USER_DETAILS_QUERY, new Object[]{user.getUsers_user_id()},
+                new BeanPropertyRowMapper<>(UserDetails.class));
     }
 }

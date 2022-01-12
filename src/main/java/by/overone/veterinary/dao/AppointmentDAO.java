@@ -11,7 +11,7 @@ public interface AppointmentDAO {
 
     AppointmentActiveDTO addAppointment(AppointmentActiveDTO appointmentActiveDTO);
 
-    Appointment updateAppointment(long id, Appointment appointment);
+    Appointment updateAppointment(Appointment appointment);
 
     Appointment getAppointmentById(long id);
 

@@ -8,7 +8,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +23,8 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     private final static String GET_APPOINTMENT_BY_DOCTOR_ID_QUERY = "SELECT * FROM appointments WHERE users_doctor_id=?";
     private final static String GET_APPOINTMENT_BY_USER_ID_QUERY = "SELECT * FROM appointments WHERE users_user_id=?";
     private final static String GET_APPOINTMENT_BY_PET_ID_QUERY = "SELECT * FROM appointments WHERE pet_id=?";
-    private final static String ADD_APPOINTMENTS_QUERY = "INSERT INTO appointments VALUE (0, ?, ?, ?, ?)";
+    private final static String ADD_APPOINTMENTS_QUERY = "INSERT INTO appointments (users_doctor_id, users_user_id, pet_id, reason) " +
+            "VALUE (?, ?, ?, ?)";
 
     @Override
     public List<Appointment> getAppointments() {
@@ -39,28 +42,30 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         jdbcTemplate.update(ADD_APPOINTMENTS_QUERY, params);
         return appointmentActiveDTO;
     }
-
-    private final static String START_UPDATE_APPOINTMENT_QUERY = "UPDATE appointments SET ";
-    private final static String END_UPDATE_APPOINTMENT_QUERY = " WHERE appointment_id=?";
     @Override
-    public Appointment updateAppointment(long id, Appointment appointment) {
+    public Appointment updateAppointment(Appointment appointment) {
+        List <String> sql = new ArrayList<>();
         if (appointment.getUsers_doctor_id() != 0) {
-            jdbcTemplate.update(START_UPDATE_APPOINTMENT_QUERY + "users_doctor_id=?" + END_UPDATE_APPOINTMENT_QUERY, appointment.getUsers_doctor_id(), id);
+            sql.add("users_doctor_id=" + appointment.getUsers_doctor_id());
         }
         if (appointment.getUsers_user_id() != 0) {
-            jdbcTemplate.update(START_UPDATE_APPOINTMENT_QUERY + "users_user_id=?" + END_UPDATE_APPOINTMENT_QUERY, appointment.getUsers_user_id(), id);
+            sql.add("users_user_id=" + appointment.getUsers_user_id());
         }
         if (appointment.getPet_id() != 0) {
-            jdbcTemplate.update(START_UPDATE_APPOINTMENT_QUERY + "pet_id=?" + END_UPDATE_APPOINTMENT_QUERY, appointment.getPet_id(), id);
+           sql.add("pet_id=" + appointment.getPet_id());
         }
         if (appointment.getReason() != null) {
-            jdbcTemplate.update(START_UPDATE_APPOINTMENT_QUERY + "reason=?" + END_UPDATE_APPOINTMENT_QUERY, appointment.getReason(), id);
+            sql.add("reason='" + appointment.getReason() + "'");
         }
-        if (appointment.getReason() != null) {
-            jdbcTemplate.update(START_UPDATE_APPOINTMENT_QUERY + "diagnosis=?" + END_UPDATE_APPOINTMENT_QUERY, appointment.getReason(), id);
+        if (appointment.getDiagnosis() != null) {
+           sql.add("diagnosis='" + appointment.getDiagnosis() + "'");
         }
-
-        return jdbcTemplate.queryForObject(GET_APPOINTMENT_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(Appointment.class));
+        String UPDATE_APPOINTMENT_QUERY = "UPDATE appointments SET " + sql.stream().collect(Collectors.joining(", "))
+                + " WHERE appointment_id=" + appointment.getAppointment_id();
+        System.out.println(UPDATE_APPOINTMENT_QUERY);
+        jdbcTemplate.update(UPDATE_APPOINTMENT_QUERY);
+        return jdbcTemplate.queryForObject(GET_APPOINTMENT_BY_ID_QUERY, new Object[]{appointment.getAppointment_id()},
+                new BeanPropertyRowMapper<>(Appointment.class));
     }
 
     @Override

@@ -5,13 +5,13 @@ import by.overone.veterinary.model.Appointment;
 
 import java.util.List;
 
-public interface AppointmentsService {
+public interface AppointmentService {
 
     List<Appointment> getAppointments();
 
     AppointmentActiveDTO addAppointment(AppointmentActiveDTO appointmentActiveDTO);
 
-    Appointment updateAppointment(long id, Appointment appointment);
+    Appointment updateAppointment(Appointment appointment);
 
     Appointment getAppointmentById(long id);
 

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ public class PetDAOImpl implements PetDAO {
     private final static String ADD_PET_QUERY = "INSERT INTO pets VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (users_user_id, pets_pet_id) VALUE (?, ?)";
     private final static String DELETE_PET_QUERY = "UPDATE pets SET status=? WHERE pet_id=? and status = 'ACTIVE'";
-    private final static String UPDATE_PET_QUERY = "UPDATE pets SET name=?, type=?, breed=?, age=? WHERE pet_id=?";
     private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users" +
             " ON pet_id = pets_pet_id WHERE pets_pet_id=? and status= 'ACTIVE'";
     private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
@@ -75,29 +76,30 @@ public class PetDAOImpl implements PetDAO {
 
     @Override
     public boolean deletePetByUserId(long user_id) {
-        jdbcTemplate.update(DELETE_PET_QUERY, Status.DELETED.toString(), user_id);
+        jdbcTemplate.update(DELETE_PET_BY_USER_ID_QUERY, Status.DELETED.toString(), user_id);
         return true;
     }
 
 
-    private final static String START_UPDATE_PET_QUERY = "UPDATE pets SET ";
-    private final static String END_UPDATE_PET_QUERY = " WHERE pet_id=?";
-
     @Override
-    public PetDataDTO updatePet(long id, PetDataDTO pet) {
-            if (pet.getName() != null) {
-                jdbcTemplate.update(START_UPDATE_PET_QUERY + "name=?" + END_UPDATE_PET_QUERY, pet.getName(), id);
-            }
-            if (pet.getType() != null) {
-                jdbcTemplate.update(START_UPDATE_PET_QUERY + "type=?" + END_UPDATE_PET_QUERY, pet.getType(), id);
-            }
-            if (pet.getBreed() != null) {
-                jdbcTemplate.update(START_UPDATE_PET_QUERY + "breed=?" + END_UPDATE_PET_QUERY, pet.getBreed(), id);
-            }
-            if (pet.getAge() != 0) {
-                jdbcTemplate.update(START_UPDATE_PET_QUERY + "age=?" + END_UPDATE_PET_QUERY, pet.getAge(), id);
-            }
-
-            return jdbcTemplate.queryForObject(GET_PET_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(PetDataDTO.class));
+    public PetDataDTO updatePet(PetDataDTO pet) {
+        List <String> sql = new ArrayList<>();
+        if (pet.getName() != null) {
+            sql.add("name=" + pet.getName() + "'");
+        }
+        if (pet.getType() != null) {
+            sql.add("type='" + pet.getType() + "'");
+        }
+        if (pet.getBreed() != null) {
+            sql.add("breed=" + pet.getPet_id() + "'");
+        }
+        if (pet.getAge() != 0) {
+            sql.add("age='" + pet.getAge());
+        }
+        String UPDATE_PET_QUERY = "UPDATE pets SET " + sql.stream().collect(Collectors.joining(", "))
+                + " WHERE pet_id=" + pet.getPet_id();
+        jdbcTemplate.update(UPDATE_PET_QUERY);
+        return jdbcTemplate.queryForObject(GET_PET_BY_ID_QUERY, new Object[]{pet.getPet_id()},
+                new BeanPropertyRowMapper<>(PetDataDTO.class));
     }
 }

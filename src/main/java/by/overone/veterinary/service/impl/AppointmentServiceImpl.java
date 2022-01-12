@@ -3,7 +3,7 @@ package by.overone.veterinary.service.impl;
 import by.overone.veterinary.dao.AppointmentDAO;
 import by.overone.veterinary.dto.AppointmentActiveDTO;
 import by.overone.veterinary.model.Appointment;
-import by.overone.veterinary.service.AppointmentsService;
+import by.overone.veterinary.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AppointmentsServiceImpl implements AppointmentsService {
+public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentDAO appointmentDAO;
 
@@ -26,9 +26,9 @@ public class AppointmentsServiceImpl implements AppointmentsService {
     }
 
     @Override
-    public Appointment updateAppointment(long id, Appointment appointment) {
-        getAppointmentById(id);
-        return appointmentDAO.updateAppointment(id, appointment);
+    public Appointment updateAppointment(Appointment appointment) {
+        getAppointmentById(appointment.getAppointment_id());
+        return appointmentDAO.updateAppointment(appointment);
     }
 
     @Override

@@ -75,23 +75,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException {
-        getUserById(id);
-        UserValidator.validateUpdate(userUpdateDTO);
+    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) throws ValidationException {
+        getUserById(userUpdateDTO.getUser_id());
+        UserValidator.validateUserUpdate(userUpdateDTO);
         if (userUpdateDTO.getPassword() != null) {
             userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
         }
         if (userUpdateDTO.getRole() != null) {
             userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
         }
-        return userDAO.updateUser(id, userUpdateDTO);
+        return userDAO.updateUser(userUpdateDTO);
     }
 
     @Override
-    public UserDetails updateUserDetails(long id, UserDetails userDetails) throws ValidationException {
-        getUserById(id);
+    public UserDetails updateUserDetails(UserDetails userDetails) throws ValidationException {
+        getUserById(userDetails.getUsers_user_id());
         UserDetailsValidator.validateUserDetails(userDetails);
-        return userDAO.updateUserDetails(id, userDetails);
+        return userDAO.updateUserDetails(userDetails);
     }
 
 }

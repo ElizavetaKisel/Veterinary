@@ -20,8 +20,8 @@ public interface UserDAO {
 
     boolean deleteUser(long id);
 
-    UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO);
+    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
 
-    UserDetails updateUserDetails(long id, UserDetails userDetails);
+    UserDetails updateUserDetails(UserDetails userDetails);
 
 }

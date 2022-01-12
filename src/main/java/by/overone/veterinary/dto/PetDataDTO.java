@@ -15,10 +15,4 @@ public class PetDataDTO {
     private String breed;
     private int age;
 
-//    public PetDataDTO(String name, String type, String breed, int age){
-//        this.name = name;
-//        this.type = type;
-//        this.breed = breed;
-//        this.age = age;
-//    }
 }

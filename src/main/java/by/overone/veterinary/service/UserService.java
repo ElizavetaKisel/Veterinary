@@ -25,7 +25,7 @@ public interface UserService {
 
     UserDataDTO getUserById(long id);
 
-    UserDataDTO updateUser(long id, UserUpdateDTO userUpdateDTO) throws ValidationException;
+    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) throws ValidationException;
 
-    UserDetails updateUserDetails(long id, UserDetails userDetails) throws ValidationException;
+    UserDetails updateUserDetails(UserDetails userDetails) throws ValidationException;
 }
