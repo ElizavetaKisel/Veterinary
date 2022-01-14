@@ -2,6 +2,7 @@ package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Status;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +29,13 @@ public class PetDAOImpl implements PetDAO {
     private final static String ADD_PET_QUERY = "INSERT INTO pets VALUE (0, ?, ?, ?, ?, ?)";
     private final static String ADD_PETS_HAS_USERS_ID_QUERY = "INSERT INTO pets_has_users (users_user_id, pets_pet_id) VALUE (?, ?)";
     private final static String DELETE_PET_QUERY = "UPDATE pets SET status=? WHERE pet_id=? and status = 'ACTIVE'";
-    private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users" +
-            " ON pet_id = pets_pet_id WHERE pets_pet_id=? and status= 'ACTIVE'";
-    private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
-            "ON pet_id = pets_pet_id SET status=? WHERE users_user_id=? and status = 'ACTIVE'";
+    private static final String GET_USERS_BY_PET_ID_QUERY = "SELECT * FROM users join pets_has_users " +
+            "ON user_id = users_user_id WHERE pets_pet_id= ? and status ='ACTIVE'";
 
 
     @Override
     public List<Pet> getPets() {
         return jdbcTemplate.query(GET_PETS_QUERY, new BeanPropertyRowMapper<>(Pet.class));
-    }
-
-    @Override
-    public List<Pet> getPetsByUserId(long user_id) {
-        return jdbcTemplate.query(GET_PETS_BY_USER_ID_QUERY, new Object[]{user_id}, new BeanPropertyRowMapper<>(Pet.class));
     }
 
     @Override
@@ -75,9 +69,8 @@ public class PetDAOImpl implements PetDAO {
     }
 
     @Override
-    public boolean deletePetByUserId(long user_id) {
-        jdbcTemplate.update(DELETE_PET_BY_USER_ID_QUERY, Status.DELETED.toString(), user_id);
-        return true;
+    public List<UserDataDTO> getUsersByPetId(long pet_id) {
+        return jdbcTemplate.query(GET_USERS_BY_PET_ID_QUERY, new Object[]{pet_id},new BeanPropertyRowMapper<>(UserDataDTO.class));
     }
 
 

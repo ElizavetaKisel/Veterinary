@@ -1,10 +1,6 @@
 package by.overone.veterinary.controller;
 
-import by.overone.veterinary.dto.UserDataDTO;
-import by.overone.veterinary.dto.UserInfoDTO;
-import by.overone.veterinary.dto.UserRegistrationDTO;
-import by.overone.veterinary.dto.UserUpdateDTO;
-import by.overone.veterinary.model.User;
+import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.util.validator.exception.ValidationException;
@@ -29,28 +25,38 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/{id}/my_pets")
+    public List<PetDataDTO> petById(@PathVariable long id) {
+        return userService.getPetsByUserId(id);
+    }
+
     @GetMapping("{id}/info")
     public UserInfoDTO userInfo(@PathVariable long id) {
         return userService.getUserInfo(id);
     }
 
-    @DeleteMapping("{id}/delete")
+    @DeleteMapping("{id}")
     public void deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public void addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) throws ValidationException {
         userService.addUser(userRegistrationDTO);
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public UserDataDTO updateUser(@RequestBody UserUpdateDTO user) throws ValidationException {
         return userService.updateUser(user);
     }
 
-    @PostMapping("/update_details")
+    @PutMapping("/update_details")
     public UserDetails updateUserDetails(@RequestBody UserDetails user) throws ValidationException {
         return userService.updateUserDetails(user);
+    }
+
+    @GetMapping("/user/{id}")
+    public List<PetDataDTO> petsByUserId(@PathVariable long id) {
+        return userService.getPetsByUserId(id);
     }
 }

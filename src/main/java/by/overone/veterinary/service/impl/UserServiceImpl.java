@@ -1,12 +1,10 @@
 package by.overone.veterinary.service.impl;
 
-import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
-import by.overone.veterinary.dto.UserDataDTO;
-import by.overone.veterinary.dto.UserRegistrationDTO;
-import by.overone.veterinary.dto.UserUpdateDTO;
+import by.overone.veterinary.dto.*;
+import by.overone.veterinary.exception.EntityNotFoundException;
+import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.User;
-import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.util.validator.UserDetailsValidator;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
-    private final PetDAO petDAO;
 
     @Override
     public List<UserDataDTO> getAllUsers() {
@@ -51,7 +48,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoDTO getUserInfo(long id) {
         UserInfoDTO userInfoDTO;
-        userInfoDTO = userDAO.getUserInfo(id);
+        userInfoDTO = userDAO.getUserInfo(id)
+        .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         return userInfoDTO;
     }
 
@@ -60,13 +58,14 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long id) {
         getUserById(id);
         userDAO.deleteUser(id);
-        petDAO.deletePetByUserId(id);
+        userDAO.deletePetByUserId(id);
     }
 
     @Override
     public UserDataDTO getUserById(long id) {
         UserDataDTO userDataDTO = new UserDataDTO();
-        User user = userDAO.getUserById(id);
+        User user = userDAO.getUserById(id)
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         userDataDTO.setUser_id(user.getUser_id());
         userDataDTO.setLogin(user.getLogin());
         userDataDTO.setEmail(user.getEmail());
@@ -92,6 +91,12 @@ public class UserServiceImpl implements UserService {
         getUserById(userDetails.getUsers_user_id());
         UserDetailsValidator.validateUserDetails(userDetails);
         return userDAO.updateUserDetails(userDetails);
+    }
+
+    @Override
+    public List<PetDataDTO> getPetsByUserId(long user_id) {
+        userDAO.getUserById(user_id);
+        return userDAO.getPetsByUserId(user_id);
     }
 
 }

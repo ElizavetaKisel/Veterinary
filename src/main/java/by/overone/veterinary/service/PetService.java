@@ -1,7 +1,7 @@
 package by.overone.veterinary.service;
 
 import by.overone.veterinary.dto.PetDataDTO;
-import by.overone.veterinary.service.exception.ServiceException;
+import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
 import java.util.List;
@@ -16,8 +16,8 @@ public interface PetService {
 
     void deletePet(long id);
 
-    List<PetDataDTO> getPetsByUserId(long user_id);
-
     PetDataDTO updatePet(PetDataDTO pet) throws ValidationException;
+
+    List<UserDataDTO> getUsersByPetId(long pet_id);
 
 }

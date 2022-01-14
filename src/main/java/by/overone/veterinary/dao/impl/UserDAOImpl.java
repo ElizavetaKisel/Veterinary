@@ -1,7 +1,9 @@
 package by.overone.veterinary.dao.impl;
 
 
+import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
+import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,6 +37,10 @@ public class UserDAOImpl implements UserDAO {
     private final static String GET_USER_INFO_QUERY = "SELECT * FROM users JOIN user_details " +
             "ON user_id = users_user_id WHERE user_id=? and status = 'ACTIVE'";
     private final static String GET_USER_DETAILS_QUERY = "SELECT * FROM user_details WHERE user_id=?";
+    private static final String GET_PETS_BY_USER_ID_QUERY = "SELECT * FROM pets join pets_has_users" +
+            " ON pet_id = pets_pet_id WHERE pets_pet_id=? and status= 'ACTIVE'";
+    private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
+            "ON pet_id = pets_pet_id SET status=? WHERE users_user_id=? and status = 'ACTIVE'";
 
     @Override
     public List<User> getUsers() {
@@ -41,15 +49,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getUserById(long id) {
-        User user = jdbcTemplate.queryForObject(GET_USER_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(User.class));
-        return user;
+    public Optional<User> getUserById(long id) {
+        return jdbcTemplate.query(GET_USER_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).stream().findAny();
     }
 
     @Override
-    public UserInfoDTO getUserInfo(long id) {
-        UserInfoDTO userInfoDTO = jdbcTemplate.queryForObject(GET_USER_INFO_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(UserInfoDTO.class));
-        return userInfoDTO;
+    public Optional<UserInfoDTO> getUserInfo(long id) {
+        return  jdbcTemplate.query(GET_USER_INFO_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(UserInfoDTO.class)).stream().findAny();
     }
 
     @Override
@@ -74,6 +80,11 @@ public class UserDAOImpl implements UserDAO {
     public boolean deleteUser(long id) {
         jdbcTemplate.update(DELETE_USER_QUERY, Status.DELETED.toString(), id);
         return true;
+    }
+
+    @Override
+    public List<PetDataDTO> getPetsByUserId(long user_id) {
+        return jdbcTemplate.query(GET_PETS_BY_USER_ID_QUERY, new Object[]{user_id}, new BeanPropertyRowMapper<>(PetDataDTO.class));
     }
 
     @Override
@@ -119,5 +130,11 @@ public class UserDAOImpl implements UserDAO {
         jdbcTemplate.update(UPDATE_PET_QUERY);
         return jdbcTemplate.queryForObject(GET_USER_DETAILS_QUERY, new Object[]{user.getUsers_user_id()},
                 new BeanPropertyRowMapper<>(UserDetails.class));
+    }
+
+    @Override
+    public boolean deletePetByUserId(long user_id) {
+        jdbcTemplate.update(DELETE_PET_BY_USER_ID_QUERY, Status.DELETED.toString(), user_id);
+        return true;
     }
 }

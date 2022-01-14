@@ -43,7 +43,7 @@ public class AppointmentController {
         appointmentService.addAppointment(appointmentActiveDTO);
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public Appointment updateUser(@RequestBody Appointment appointment) throws ValidationException {
         return appointmentService.updateAppointment(appointment);
     }

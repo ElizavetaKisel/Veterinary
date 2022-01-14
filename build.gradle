@@ -17,6 +17,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     implementation 'commons-codec:commons-codec:1.15'
 
+    implementation 'org.slf4j:slf4j-api:2.0.0-alpha4'
 
     implementation 'org.springframework:spring-webmvc:5.2.18.RELEASE'
     implementation 'org.springframework:spring-jdbc:5.2.18.RELEASE'

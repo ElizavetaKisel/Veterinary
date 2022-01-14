@@ -2,6 +2,7 @@ package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.UserService;
@@ -25,7 +26,8 @@ public class PetServiceImpl implements PetService {
         List<PetDataDTO> petsDataDTO;
 
         petsDataDTO = petDAO.getPets().stream()
-                .map(pet -> new PetDataDTO(pet.getPet_id(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .map(pet -> new PetDataDTO(pet.getPet_id(), petDAO.getUsersByPetId(pet.getPet_id()).stream().map(user -> user.getUser_id()).collect(Collectors.toList()),
+                        pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
@@ -60,19 +62,15 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<PetDataDTO> getPetsByUserId(long user_id) {
-        userService.getUserById(user_id);
-        List<PetDataDTO> petsDataDTO;
-        petsDataDTO = petDAO.getPetsByUserId(user_id).stream()
-                .map(pet -> new PetDataDTO(pet.getPet_id(), pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
-                .collect(Collectors.toList());
-        return petsDataDTO;
-    }
-
-    @Override
     public PetDataDTO updatePet(PetDataDTO pet) throws ValidationException {
         getPetById(pet.getPet_id());
         PetValidator.validatePetUpdate(pet);
         return petDAO.updatePet(pet);
+    }
+
+    @Override
+    public List<UserDataDTO> getUsersByPetId(long pet_id) {
+        petDAO.getPetById(pet_id);
+        return petDAO.getUsersByPetId(pet_id);
     }
 }

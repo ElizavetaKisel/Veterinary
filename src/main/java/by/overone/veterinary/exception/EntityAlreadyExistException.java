@@ -1,9 +1,11 @@
 package by.overone.veterinary.exception;
 
-import java.sql.SQLIntegrityConstraintViolationException;
+import lombok.Data;
 
+@Data
 public class EntityAlreadyExistException extends Exception{
-    public EntityAlreadyExistException(String message, SQLIntegrityConstraintViolationException ex) {
-        super(message, ex);
-    }
+//    private ExceptionCode code;
+//    public EntityAlreadyExistException(ExceptionCode code) {
+//        this.code = code;
+//    }
 }

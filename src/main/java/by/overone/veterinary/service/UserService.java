@@ -1,9 +1,6 @@
 package by.overone.veterinary.service;
 
-import by.overone.veterinary.dto.UserDataDTO;
-import by.overone.veterinary.dto.UserRegistrationDTO;
-import by.overone.veterinary.dto.UserInfoDTO;
-import by.overone.veterinary.dto.UserUpdateDTO;
+import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 
@@ -28,4 +25,6 @@ public interface UserService {
     UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) throws ValidationException;
 
     UserDetails updateUserDetails(UserDetails userDetails) throws ValidationException;
+
+    List<PetDataDTO> getPetsByUserId(long user_id);
 }
