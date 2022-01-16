@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/appointments")
+@RequestMapping("api/appointments")
 public class AppointmentController {
     private final AppointmentService appointmentService;
 
@@ -38,7 +38,7 @@ public class AppointmentController {
         return appointmentService.getAppointmentsByPetId(id);
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public void addAppointment(@RequestBody AppointmentActiveDTO appointmentActiveDTO) throws ValidationException {
         appointmentService.addAppointment(appointmentActiveDTO);
     }

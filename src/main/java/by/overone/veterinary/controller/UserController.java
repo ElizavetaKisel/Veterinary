@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("api/users")
 public class UserController {
     private final UserService userService;
 
@@ -25,7 +25,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/{id}/my_pets")
+    @GetMapping("/{id}/my-pets")
     public List<PetDataDTO> petById(@PathVariable long id) {
         return userService.getPetsByUserId(id);
     }
@@ -50,13 +50,8 @@ public class UserController {
         return userService.updateUser(user);
     }
 
-    @PutMapping("/update_details")
+    @PutMapping("/update-details")
     public UserDetails updateUserDetails(@RequestBody UserDetails user) throws ValidationException {
         return userService.updateUserDetails(user);
-    }
-
-    @GetMapping("/user/{id}")
-    public List<PetDataDTO> petsByUserId(@PathVariable long id) {
-        return userService.getPetsByUserId(id);
     }
 }

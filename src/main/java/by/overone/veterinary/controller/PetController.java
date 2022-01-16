@@ -4,9 +4,12 @@ import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.util.validator.exception.ValidationException;
+import by.overone.veterinary.validator.NewEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +34,7 @@ public class PetController {
     }
 
     @PostMapping
-    public void addPet(@RequestBody PetDataDTO petDataDTO) throws ValidationException {
+    public void addPet(@Validated(NewEntity.class) @RequestBody PetDataDTO petDataDTO) throws ValidationException {
         petService.addPet(1, petDataDTO);
     }
 

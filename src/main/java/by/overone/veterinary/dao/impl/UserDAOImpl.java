@@ -102,7 +102,7 @@ public class UserDAOImpl implements UserDAO {
         if (user.getRole() != null) {
             sql.add("role='" + user.getRole());
         }
-        String UPDATE_USER_QUERY = "UPDATE users SET " + sql.stream().collect(Collectors.joining(", "))
+        String UPDATE_USER_QUERY = "UPDATE users SET " + String.join(", ", sql)
                 + " WHERE user_id=" + user.getUser_id();
         jdbcTemplate.update(UPDATE_USER_QUERY);
         return jdbcTemplate.queryForObject(GET_USER_BY_ID_QUERY, new Object[]{user.getUser_id()},
