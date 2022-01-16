@@ -17,8 +17,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getAppointments() {
-        List<Appointment> appointments =  appointmentDAO.getAppointments();
-       return appointments;
+        return appointmentDAO.getAppointments();
     }
 
     @Override
@@ -34,8 +33,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment getAppointmentById(long id) {
-        Appointment appointment = appointmentDAO.getAppointmentById(id);
-        return appointment;
+        return appointmentDAO.getAppointmentById(id);
     }
 
     @Override

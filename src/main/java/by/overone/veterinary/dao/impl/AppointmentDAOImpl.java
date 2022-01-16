@@ -8,9 +8,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +23,8 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     private final static String GET_APPOINTMENT_BY_DOCTOR_ID_QUERY = "SELECT * FROM appointments WHERE users_doctor_id=?";
     private final static String GET_APPOINTMENT_BY_USER_ID_QUERY = "SELECT * FROM appointments WHERE users_user_id=?";
     private final static String GET_APPOINTMENT_BY_PET_ID_QUERY = "SELECT * FROM appointments WHERE pet_id=?";
-    private final static String ADD_APPOINTMENTS_QUERY = "INSERT INTO appointments (date, time, users_doctor_id, users_user_id, pet_id, reason) " +
-            "VALUE (?, ?, ?, ?, ?, ?)";
+    private final static String ADD_APPOINTMENTS_QUERY = "INSERT INTO appointments (users_doctor_id, users_user_id, pet_id, reason) " +
+            "VALUE (?, ?, ?, ?)";
 
     @Override
     public List<Appointment> getAppointments() {
@@ -37,8 +34,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     @Override
     public AppointmentActiveDTO addAppointment(AppointmentActiveDTO appointmentActiveDTO) {
         Object[] params = new Object[]{
-                appointmentActiveDTO.getDate(),
-                appointmentActiveDTO.getTime(),
                 appointmentActiveDTO.getUsers_doctor_id(),
                 appointmentActiveDTO.getUsers_user_id(),
                 appointmentActiveDTO.getPet_id(),

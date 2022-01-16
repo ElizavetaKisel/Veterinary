@@ -3,6 +3,7 @@ package by.overone.veterinary.util.validator;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.Role;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.util.validator.exception.ValidationException;
 import org.apache.commons.lang3.EnumUtils;
 
