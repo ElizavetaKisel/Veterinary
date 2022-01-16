@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
     public List<UserDataDTO> getAllUsers() {
         List<UserDataDTO> usersDataDTO;
 
-            usersDataDTO = userDAO.getUsers().stream()
-                    .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail(), user.getRole()))
-                    .collect(Collectors.toList());
+        usersDataDTO = userDAO.getUsers().stream()
+                .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail(), user.getRole()))
+                .collect(Collectors.toList());
 
         return usersDataDTO;
     }
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO getUserInfo(long id) {
         UserInfoDTO userInfoDTO;
         userInfoDTO = userDAO.getUserInfo(id)
-        .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         return userInfoDTO;
     }
 
