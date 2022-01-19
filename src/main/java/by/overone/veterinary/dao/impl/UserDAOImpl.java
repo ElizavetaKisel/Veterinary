@@ -9,6 +9,7 @@ import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Criteria;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,8 +17,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,11 +47,22 @@ public class UserDAOImpl implements UserDAO {
     private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
             "ON pet_id = pets_pet_id SET status=? WHERE users_user_id=? and status = 'ACTIVE'";
 
-    @Override
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
     public List<User> getUsers() {
-        List<User> users = jdbcTemplate.query(GET_USERS_QUERY, new BeanPropertyRowMapper<>(User.class));
-        return users;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        criteriaQuery.from(User.class);
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
+//    @Override
+//    public List<User> getUsers() {
+//        List<User> users = jdbcTemplate.query(GET_USERS_QUERY, new BeanPropertyRowMapper<>(User.class));
+//        return users;
+//    }
 
     @Override
     public Optional<User> getUserById(long id) {

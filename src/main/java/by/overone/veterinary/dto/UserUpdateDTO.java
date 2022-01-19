@@ -18,6 +18,5 @@ public class UserUpdateDTO {
     @NotBlank(message = "Email is blank")
     private String email;
     @NotBlank(message = "Role is blank")
-            EnumUtils.isValidEnum(Role .class, role.toUpperCase())
     private String role;
 }

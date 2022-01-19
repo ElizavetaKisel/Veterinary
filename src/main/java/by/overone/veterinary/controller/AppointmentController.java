@@ -3,7 +3,6 @@ package by.overone.veterinary.controller;
 import by.overone.veterinary.dto.AppointmentActiveDTO;
 import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.service.AppointmentService;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,12 +38,12 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public void addAppointment(@RequestBody AppointmentActiveDTO appointmentActiveDTO) throws ValidationException {
+    public void addAppointment(@RequestBody AppointmentActiveDTO appointmentActiveDTO) {
         appointmentService.addAppointment(appointmentActiveDTO);
     }
 
     @PutMapping
-    public Appointment updateUser(@RequestBody Appointment appointment) throws ValidationException {
+    public Appointment updateUser(@RequestBody Appointment appointment) {
         return appointmentService.updateAppointment(appointment);
     }
 }

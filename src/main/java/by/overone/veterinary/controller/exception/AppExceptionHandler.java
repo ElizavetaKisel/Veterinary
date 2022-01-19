@@ -1,7 +1,6 @@
 package by.overone.veterinary.controller.exception;
 
 import by.overone.veterinary.exception.EntityNotFoundException;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
