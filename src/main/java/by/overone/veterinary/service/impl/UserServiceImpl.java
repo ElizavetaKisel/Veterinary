@@ -32,65 +32,65 @@ public class UserServiceImpl implements UserService {
         return usersDataDTO;
     }
 
-    @Override
-    public void addUser(UserRegistrationDTO userRegistrationDTO) {
-        User user = new User();
-        user.setLogin(userRegistrationDTO.getLogin());
-        user.setEmail(userRegistrationDTO.getEmail());
-        user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
-        userDAO.addUser(user);
-    }
-
-    @Override
-    public UserInfoDTO getUserInfo(long id) {
-        UserInfoDTO userInfoDTO;
-        userInfoDTO = userDAO.getUserInfo(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        return userInfoDTO;
-    }
-
-    @Transactional
-    @Override
-    public void deleteUser(long id) {
-        getUserById(id);
-        userDAO.deleteUser(id);
-        userDAO.deletePetByUserId(id);
-    }
-
-    @Override
-    public UserDataDTO getUserById(long id) {
-        UserDataDTO userDataDTO = new UserDataDTO();
-        User user = userDAO.getUserById(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        userDataDTO.setUser_id(user.getUser_id());
-        userDataDTO.setLogin(user.getLogin());
-        userDataDTO.setEmail(user.getEmail());
-        userDataDTO.setRole(user.getRole());
-        return userDataDTO;
-    }
-
-    @Override
-    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) {
-        getUserById(userUpdateDTO.getUser_id());
-        if (userUpdateDTO.getPassword() != null) {
-            userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
-        }
-        if (userUpdateDTO.getRole() != null) {
-            userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
-        }
-        return userDAO.updateUser(userUpdateDTO);
-    }
-
-    @Override
-    public UserDetails updateUserDetails(UserDetails userDetails) {
-        getUserById(userDetails.getUsers_user_id());
-        return userDAO.updateUserDetails(userDetails);
-    }
-
-    @Override
-    public List<PetDataDTO> getPetsByUserId(long user_id) {
-        userDAO.getUserById(user_id);
-        return userDAO.getPetsByUserId(user_id);
-    }
+//    @Override
+//    public void addUser(UserRegistrationDTO userRegistrationDTO) {
+//        User user = new User();
+//        user.setLogin(userRegistrationDTO.getLogin());
+//        user.setEmail(userRegistrationDTO.getEmail());
+//        user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
+//        userDAO.addUser(user);
+//    }
+//
+//    @Override
+//    public UserInfoDTO getUserInfo(long id) {
+//        UserInfoDTO userInfoDTO;
+//        userInfoDTO = userDAO.getUserInfo(id)
+//                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+//        return userInfoDTO;
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void deleteUser(long id) {
+//        getUserById(id);
+//        userDAO.deleteUser(id);
+//        userDAO.deletePetByUserId(id);
+//    }
+//
+//    @Override
+//    public UserDataDTO getUserById(long id) {
+//        UserDataDTO userDataDTO = new UserDataDTO();
+//        User user = userDAO.getUserById(id)
+//                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+//        userDataDTO.setUser_id(user.getUser_id());
+//        userDataDTO.setLogin(user.getLogin());
+//        userDataDTO.setEmail(user.getEmail());
+//        userDataDTO.setRole(user.getRole());
+//        return userDataDTO;
+//    }
+//
+//    @Override
+//    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) {
+//        getUserById(userUpdateDTO.getUser_id());
+//        if (userUpdateDTO.getPassword() != null) {
+//            userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
+//        }
+//        if (userUpdateDTO.getRole() != null) {
+//            userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
+//        }
+//        return userDAO.updateUser(userUpdateDTO);
+//    }
+//
+//    @Override
+//    public UserDetails updateUserDetails(UserDetails userDetails) {
+//        getUserById(userDetails.getUsers_user_id());
+//        return userDAO.updateUserDetails(userDetails);
+//    }
+//
+//    @Override
+//    public List<PetDataDTO> getPetsByUserId(long user_id) {
+//        userDAO.getUserById(user_id);
+//        return userDAO.getPetsByUserId(user_id);
+//    }
 
 }

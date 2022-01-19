@@ -27,9 +27,9 @@ public class UIUserController {
         return "users";
     }
 
-    @PostMapping
-    public String addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
-        userService.addUser(userRegistrationDTO);
-        return "users";
-    }
+//    @PostMapping
+//    public String addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
+//        userService.addUser(userRegistrationDTO);
+//        return "users";
+//    }
 }

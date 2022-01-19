@@ -15,20 +15,20 @@ public interface UserDAO {
 
     List<User> getUsers();
 
-    Optional<User> getUserById(long id);
-
-    Optional<UserInfoDTO> getUserInfo(long id);
-
-    User addUser(User user);
-
-    boolean deleteUser(long id);
-
-    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
-
-    UserDetails updateUserDetails(UserDetails userDetails);
-
-    List<PetDataDTO> getPetsByUserId(long user_id);
-
-    boolean deletePetByUserId(long user_id);
+//    Optional<User> getUserById(long id);
+//
+//    Optional<UserInfoDTO> getUserInfo(long id);
+//
+//    User addUser(User user);
+//
+//    boolean deleteUser(long id);
+//
+//    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
+//
+//    UserDetails updateUserDetails(UserDetails userDetails);
+//
+//    List<PetDataDTO> getPetsByUserId(long user_id);
+//
+//    boolean deletePetByUserId(long user_id);
 
 }
