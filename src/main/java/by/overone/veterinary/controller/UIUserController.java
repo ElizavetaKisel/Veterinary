@@ -3,7 +3,6 @@ package by.overone.veterinary.controller;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserRegistrationDTO;
 import by.overone.veterinary.service.UserService;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,7 @@ public class UIUserController {
     }
 
     @PostMapping
-    public String addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) throws ValidationException {
+    public String addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
         userService.addUser(userRegistrationDTO);
         return "users";
     }

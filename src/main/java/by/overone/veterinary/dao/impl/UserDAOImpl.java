@@ -90,9 +90,6 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public UserDataDTO updateUser(UserUpdateDTO user) {
         List <String> sql = new ArrayList<>();
-        if (user.getLogin() != null) {
-            sql.add("login=" + user.getLogin() + "'");
-        }
         if (user.getPassword() != null) {
             sql.add("password='" + user.getPassword() + "'");
         }

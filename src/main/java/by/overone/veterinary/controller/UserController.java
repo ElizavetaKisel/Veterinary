@@ -3,7 +3,6 @@ package by.overone.veterinary.controller;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,17 +40,17 @@ public class UserController {
     }
 
     @PostMapping
-    public void addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) throws ValidationException {
+    public void addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
         userService.addUser(userRegistrationDTO);
     }
 
     @PutMapping
-    public UserDataDTO updateUser(@RequestBody UserUpdateDTO user) throws ValidationException {
+    public UserDataDTO updateUser(@RequestBody UserUpdateDTO user) {
         return userService.updateUser(user);
     }
 
     @PutMapping("/update-details")
-    public UserDetails updateUserDetails(@RequestBody UserDetails user) throws ValidationException {
+    public UserDetails updateUserDetails(@RequestBody UserDetails user) {
         return userService.updateUserDetails(user);
     }
 }

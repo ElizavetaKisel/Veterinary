@@ -2,7 +2,6 @@ package by.overone.veterinary.service;
 
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.UserDetails;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public interface UserService {
 
     List<UserDataDTO> getAllUsers();
 
-    void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException;
+    void addUser(UserRegistrationDTO userRegistrationDTO);
 
     UserInfoDTO getUserInfo(long id);
 
@@ -22,9 +21,9 @@ public interface UserService {
 
     UserDataDTO getUserById(long id);
 
-    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) throws ValidationException;
+    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
 
-    UserDetails updateUserDetails(UserDetails userDetails) throws ValidationException;
+    UserDetails updateUserDetails(UserDetails userDetails);
 
     List<PetDataDTO> getPetsByUserId(long user_id);
 }

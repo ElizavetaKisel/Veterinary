@@ -53,13 +53,13 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ExceptionResponse> validationHandler(ValidationException e) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setException(e.getClass().getSimpleName());
-        response.setErrorCode("7000");
-        response.setMessage(e.getMessage());
-        log.info("VALIDATION EXCEPTION: ", e);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(ValidationException.class)
+//    public ResponseEntity<ExceptionResponse> validationHandler(ValidationException e) {
+//        ExceptionResponse response = new ExceptionResponse();
+//        response.setException(e.getClass().getSimpleName());
+//        response.setErrorCode("7000");
+//        response.setMessage(e.getMessage());
+//        log.info("VALIDATION EXCEPTION: ", e);
+//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//    }
 }

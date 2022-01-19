@@ -7,9 +7,6 @@ import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
-import by.overone.veterinary.util.validator.UserDetailsValidator;
-import by.overone.veterinary.util.validator.UserValidator;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
@@ -36,8 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserRegistrationDTO userRegistrationDTO) throws ValidationException {
-        UserValidator.validateRegistrationData(userRegistrationDTO);
+    public void addUser(UserRegistrationDTO userRegistrationDTO) {
         User user = new User();
         user.setLogin(userRegistrationDTO.getLogin());
         user.setEmail(userRegistrationDTO.getEmail());
@@ -74,9 +70,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) throws ValidationException {
+    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) {
         getUserById(userUpdateDTO.getUser_id());
-        UserValidator.validateUserUpdate(userUpdateDTO);
         if (userUpdateDTO.getPassword() != null) {
             userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
         }
@@ -87,9 +82,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails updateUserDetails(UserDetails userDetails) throws ValidationException {
+    public UserDetails updateUserDetails(UserDetails userDetails) {
         getUserById(userDetails.getUsers_user_id());
-        UserDetailsValidator.validateUserDetails(userDetails);
         return userDAO.updateUserDetails(userDetails);
     }
 

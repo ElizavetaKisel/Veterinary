@@ -6,8 +6,6 @@ import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.UserService;
-import by.overone.veterinary.util.validator.PetValidator;
-import by.overone.veterinary.util.validator.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +43,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void addPet(long user_id, PetDataDTO petDataDTO) throws ValidationException {
-        PetValidator.validatePet(petDataDTO);
+    public void addPet(long user_id, PetDataDTO petDataDTO) {
         Pet pet = new Pet();
         pet.setName(petDataDTO.getName());
         pet.setType(petDataDTO.getType());
@@ -62,9 +59,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDataDTO updatePet(PetDataDTO pet) throws ValidationException {
+    public PetDataDTO updatePet(PetDataDTO pet){
         getPetById(pet.getPet_id());
-        PetValidator.validatePetUpdate(pet);
         return petDAO.updatePet(pet);
     }
 
