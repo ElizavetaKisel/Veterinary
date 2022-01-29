@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,66 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class UserDAOImpl implements UserDAO {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    public List<User> getUsers() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        criteriaQuery.from(User.class);
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+    @Override
+    public Optional<User> getUserById(long id) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        criteriaQuery.where(criteriaBuilder.equal(criteriaQuery.from(User.class).get("user_id"), id));
+        return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
+    }
+
+    @Override
+    public Optional<User> getUserInfo(long id) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Join<User, UserDetails> info = criteriaQuery.from(User.class).join("details_id");
+        criteriaQuery.where(criteriaBuilder.equal(info.get("details_id"), id));
+        return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
+    }
+
+    @Override
+    public User addUser(User user) {
+        entityManager.persist(user);
+        return user;
+    }
+
+    @Override
+    public boolean deleteUser(long id) {
+        entityManager.remove(entityManager.find(User.class, id));
+        return true;
+    }
+
+    @Override
+    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) {
+        return null;
+    }
+
+    @Override
+    public UserDetails updateUserDetails(UserDetails userDetails) {
+        return null;
+    }
+
+    @Override
+    public List<PetDataDTO> getPetsByUserId(long user_id) {
+        return null;
+    }
+
+    @Override
+    public boolean deletePetByUserId(long user_id) {
+        return false;
+    }
 
 //    private final JdbcTemplate jdbcTemplate;
 //
@@ -46,17 +107,6 @@ public class UserDAOImpl implements UserDAO {
 //            " ON pet_id = pets_pet_id WHERE pets_pet_id=? and status= 'ACTIVE'";
 //    private final static String DELETE_PET_BY_USER_ID_QUERY = "UPDATE pets join pets_has_users " +
 //            "ON pet_id = pets_pet_id SET status=? WHERE users_user_id=? and status = 'ACTIVE'";
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-
-    public List<User> getUsers() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        criteriaQuery.from(User.class);
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
 
 //    @Override
 //    public List<User> getUsers() {

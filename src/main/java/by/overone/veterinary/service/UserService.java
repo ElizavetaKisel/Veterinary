@@ -12,18 +12,18 @@ public interface UserService {
 //     */
 
     List<UserDataDTO> getAllUsers();
-//
-//    void addUser(UserRegistrationDTO userRegistrationDTO);
-//
-//    UserInfoDTO getUserInfo(long id);
-//
-//    void deleteUser(long id);
-//
-//    UserDataDTO getUserById(long id);
-//
-//    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
-//
-//    UserDetails updateUserDetails(UserDetails userDetails);
-//
-//    List<PetDataDTO> getPetsByUserId(long user_id);
+
+    void addUser(UserRegistrationDTO userRegistrationDTO);
+
+    UserInfoDTO getUserInfo(long id);
+
+    void deleteUser(long id);
+
+    UserDataDTO getUserById(long id);
+
+    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
+
+    UserDetails updateUserDetails(UserDetails userDetails);
+
+    List<PetDataDTO> getPetsByUserId(long user_id);
 }

@@ -1,19 +1,27 @@
 package by.overone.veterinary.model;
 
+import by.overone.veterinary.validator.NewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+
+@Entity
 public class UserDetails {
-    @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of name")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long details_id;
+    @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of name", groups = {NewEntity.class})
     private String name;
-    @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of surname")
+    @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of surname", groups = {NewEntity.class})
     private String surname;
     private String address;
-    @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "Phone number is invalid")
+    @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "Phone number is invalid", groups = {NewEntity.class})
     private String phone_number;
-    private long users_user_id;
 }

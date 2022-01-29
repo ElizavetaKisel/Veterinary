@@ -35,11 +35,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
-    }
-
-    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
@@ -61,13 +56,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         return properties;
     }
-
-//    @Bean
-//    public TransactionManager transactionManager(DataSource dataSource) {
-//        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-//        dataSourceTransactionManager.setDataSource(dataSource);
-//        return dataSourceTransactionManager;
-//    }
 
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {

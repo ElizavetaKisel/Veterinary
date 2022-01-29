@@ -2,7 +2,6 @@ package by.overone.veterinary.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -23,7 +22,11 @@ public class User {
     @Column(unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
-    private String role;
-    private String status;
+    private Role role;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @JoinColumn //(name = "details_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserDetails details_id;
 
 }
