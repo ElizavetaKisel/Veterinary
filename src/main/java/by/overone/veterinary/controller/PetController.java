@@ -23,7 +23,7 @@ public class PetController {
 
     @GetMapping("/{id}/owners")
     public List<UserDataDTO> readOwners(@PathVariable long id) {
-        return petService.getUsersByPetId(id);
+        return petService.getPetOwners(id);
     }
 
     @GetMapping("/{id}")
@@ -33,7 +33,7 @@ public class PetController {
 
     @PostMapping
     public void addPet(@Validated(NewEntity.class) @RequestBody PetDataDTO petDataDTO) {
-        petService.addPet(1, petDataDTO);
+        petService.addPet(petDataDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -41,8 +41,8 @@ public class PetController {
         petService.deletePet(id);
     }
 
-    @PutMapping
-    public PetDataDTO updatePet(@RequestBody PetDataDTO pet) {
-        return petService.updatePet(pet);
+    @PatchMapping("{id}")
+    public PetDataDTO updatePet(@PathVariable long id,@RequestBody PetDataDTO pet) {
+        return petService.updatePet(id, pet);
     }
 }

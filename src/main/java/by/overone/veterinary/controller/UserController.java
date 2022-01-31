@@ -25,9 +25,9 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/{id}/my-pets")
+    @GetMapping("/{id}/pets")
     public List<PetDataDTO> petById(@PathVariable long id) {
-        return userService.getPetsByUserId(id);
+        return userService.getUserPets(id);
     }
 
     @GetMapping("{id}/info")
@@ -45,13 +45,13 @@ public class UserController {
         userService.addUser(userRegistrationDTO);
     }
 
-    @PutMapping
-    public UserDataDTO updateUser(@RequestBody UserUpdateDTO user) {
-        return userService.updateUser(user);
+    @PatchMapping("/{id}")
+    public User updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) {
+        return userService.updateUser(id, user);
     }
 
-    @PutMapping("/update-details")
-    public UserDetails updateUserDetails(@RequestBody UserDetails user) {
-        return userService.updateUserDetails(user);
+    @PatchMapping("/{id}/role")
+    public User updateUserDetails(@PathVariable long id,@RequestBody String role) {
+        return userService.updateUserRole(id, role);
     }
 }
