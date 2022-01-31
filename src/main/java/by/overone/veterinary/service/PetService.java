@@ -11,12 +11,12 @@ public interface PetService {
 
     PetDataDTO getPetById(long id);
 
-    void addPet(long user_id, PetDataDTO petDataDTO);
+    void addPet(PetDataDTO petDataDTO);
 
     void deletePet(long id);
 
-    PetDataDTO updatePet(PetDataDTO pet);
+    PetDataDTO updatePet(long id, PetDataDTO pet);
 
-    List<UserDataDTO> getUsersByPetId(long pet_id);
+    List<UserDataDTO> getPetOwners(long id);
 
 }

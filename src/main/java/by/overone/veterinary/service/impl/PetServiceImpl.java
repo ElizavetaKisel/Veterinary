@@ -3,7 +3,11 @@ package by.overone.veterinary.service.impl;
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
+import by.overone.veterinary.dto.UserInfoDTO;
+import by.overone.veterinary.exception.EntityNotFoundException;
+import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.Pet;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +28,7 @@ public class PetServiceImpl implements PetService {
         List<PetDataDTO> petsDataDTO;
 
         petsDataDTO = petDAO.getPets().stream()
-                .map(pet -> new PetDataDTO(pet.getPet_id(), petDAO.getUsersByPetId(pet.getPet_id()).stream().map(user -> user.getUser_id()).collect(Collectors.toList()),
-                        pet.getName(), pet.getType(), pet.getBreed(), pet.getAge()))
+                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners()))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
@@ -33,8 +36,8 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDataDTO getPetById(long id) {
         PetDataDTO petDataDTO = new PetDataDTO();
-        Pet pet = petDAO.getPetById(id);
-        petDataDTO.setPet_id(pet.getPet_id());
+        Pet pet = petDAO.getPetById(id)
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         petDataDTO.setName(pet.getName());
         petDataDTO.setType(pet.getType());
         petDataDTO.setBreed(pet.getBreed());
@@ -43,13 +46,14 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void addPet(long user_id, PetDataDTO petDataDTO) {
+    public void addPet(PetDataDTO petDataDTO) {
         Pet pet = new Pet();
         pet.setName(petDataDTO.getName());
         pet.setType(petDataDTO.getType());
         pet.setBreed(petDataDTO.getBreed());
         pet.setAge(petDataDTO.getAge());
-        petDAO.addPet(user_id, pet);
+        pet.setOwners(petDataDTO.getOwners());
+        petDAO.addPet(pet);
     }
 
     @Override
@@ -59,14 +63,22 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetDataDTO updatePet(PetDataDTO pet){
-        getPetById(pet.getPet_id());
-        return petDAO.updatePet(pet);
+    public PetDataDTO updatePet(long id, PetDataDTO pet){
+        getPetById(id);
+        PetDataDTO petDataDTO = new PetDataDTO();
+        petDAO.updatePet(id, pet);
+        petDataDTO.setName(pet.getName());
+        petDataDTO.setType(pet.getType());
+        petDataDTO.setBreed(pet.getBreed());
+        petDataDTO.setAge(pet.getAge());
+        return petDataDTO;
     }
 
     @Override
-    public List<UserDataDTO> getUsersByPetId(long pet_id) {
-        petDAO.getPetById(pet_id);
-        return petDAO.getUsersByPetId(pet_id);
+    public List<UserDataDTO> getPetOwners(long id) {
+        petDAO.getPetById(id);
+        return petDAO.getPetOwners(id).stream()
+                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
+                .collect(Collectors.toList());
     }
 }
