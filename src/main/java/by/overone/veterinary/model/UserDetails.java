@@ -16,12 +16,14 @@ import javax.validation.constraints.Pattern;
 public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long details_id;
+    @Column(name = "detail_id")
+    private long id;
     @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of name", groups = {NewEntity.class})
     private String name;
     @Pattern(regexp = "^[A-ZА-Я].*$", message = "Incorrect format of surname", groups = {NewEntity.class})
     private String surname;
     private String address;
     @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "Phone number is invalid", groups = {NewEntity.class})
-    private String phone_number;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 }
