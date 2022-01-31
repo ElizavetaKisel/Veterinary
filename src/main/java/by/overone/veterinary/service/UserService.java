@@ -1,6 +1,7 @@
 package by.overone.veterinary.service;
 
 import by.overone.veterinary.dto.*;
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public interface UserService {
 
     UserDataDTO getUserById(long id);
 
-    UserDataDTO updateUser(UserUpdateDTO userUpdateDTO);
+    User updateUser(long id, UserUpdateDTO userUpdateDTO);
 
-    UserDetails updateUserDetails(UserDetails userDetails);
+    User updateUserRole(long id, String role);
 
-    List<PetDataDTO> getPetsByUserId(long user_id);
+    List<PetDataDTO> getUserPets(long id);
 }

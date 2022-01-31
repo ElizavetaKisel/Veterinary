@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         List<UserDataDTO> usersDataDTO;
 
         usersDataDTO = userDAO.getUsers().stream()
-                .map(user -> new UserDataDTO(user.getUser_id(), user.getLogin(), user.getEmail(), user.getRole().toString()))
+                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
                 .collect(Collectors.toList());
 
         return usersDataDTO;
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
         user.setRole(Role.CUSTOMER);
         user.setStatus(Status.ACTIVE);
-        user.setDetails_id(new UserDetails());
+        user.setUserDetails(new UserDetails());
         userDAO.addUser(user);
     }
 
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO getUserInfo(long id) {
         User user = userDAO.getUserInfo(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        return new UserInfoDTO(user.getUser_id(), user.getLogin(), user.getEmail(), user.getRole().toString(), user.getDetails_id());
+        return new UserInfoDTO(user.getId(), user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails());
     }
 
     @Transactional
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long id) {
         getUserById(id);
         userDAO.deleteUser(id);
-        userDAO.deletePetByUserId(id);
+        userDAO.deleteUserPets(id);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class UserServiceImpl implements UserService {
         UserDataDTO userDataDTO = new UserDataDTO();
         User user = userDAO.getUserById(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        userDataDTO.setUser_id(user.getUser_id());
         userDataDTO.setLogin(user.getLogin());
         userDataDTO.setEmail(user.getEmail());
         userDataDTO.setRole(user.getRole().toString());
@@ -75,27 +74,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDataDTO updateUser(UserUpdateDTO userUpdateDTO) {
-        getUserById(userUpdateDTO.getUser_id());
+    public User updateUser(long id, UserUpdateDTO userUpdateDTO) {
+        getUserById(id);
         if (userUpdateDTO.getPassword() != null) {
             userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
         }
-        if (userUpdateDTO.getRole() != null) {
-            userUpdateDTO.setPassword(userUpdateDTO.getRole().toUpperCase());
-        }
-        return userDAO.updateUser(userUpdateDTO);
+       return userDAO.updateUser(id, userUpdateDTO);
+//        return getUserInfo(id);
     }
 
     @Override
-    public UserDetails updateUserDetails(UserDetails userDetails) {
-        getUserById(userDetails.getDetails_id());
-        return userDAO.updateUserDetails(userDetails);
+    public User updateUserRole(long id, String role) {
+        return userDAO.updateUserRole(id, role.toUpperCase());
     }
 
     @Override
-    public List<PetDataDTO> getPetsByUserId(long user_id) {
-        userDAO.getUserById(user_id);
-        return userDAO.getPetsByUserId(user_id);
+    public List<PetDataDTO> getUserPets(long id) {
+        List<PetDataDTO> petsDataDTO;
+
+        petsDataDTO = userDAO.getUserPets(id).stream()
+                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners()))
+                .collect(Collectors.toList());
+
+        return petsDataDTO;
     }
+
+
+//    @Override
+//    public UserDetails updateUserDetails(UserDetails userDetails) {
+//        getUserById(userDetails.getDetails_id());
+//        return userDAO.updateUserDetails(userDetails);
+//    }
+//
+//    @Override
+//    public List<PetDataDTO> getPetsByUserId(long user_id) {
+//        userDAO.getUserById(user_id);
+//        return userDAO.getPetsByUserId(user_id);
+//    }
 
 }
