@@ -23,7 +23,7 @@ public class Pet {
     @Column(nullable = false)
     private int age;
     @Column(nullable = false)
-    private String status;
+    private Status status;
     @Column(nullable = false)
     @ManyToMany(mappedBy = "users")
     private List<User> owners;
