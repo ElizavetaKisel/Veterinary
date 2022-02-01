@@ -51,10 +51,9 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO getUserInfo(long id) {
         User user = userDAO.getUserInfo(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        return new UserInfoDTO(user.getId(), user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails());
+        return new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails());
     }
 
-    @Transactional
     @Override
     public void deleteUser(long id) {
         getUserById(id);
@@ -74,13 +73,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(long id, UserUpdateDTO userUpdateDTO) {
+    public UserInfoDTO updateUser(long id, UserUpdateDTO userUpdateDTO) {
         getUserById(id);
         if (userUpdateDTO.getPassword() != null) {
             userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
         }
-       return userDAO.updateUser(id, userUpdateDTO);
-//        return getUserInfo(id);
+        userDAO.updateUser(id, userUpdateDTO);
+        return getUserInfo(id);
     }
 
     @Override
@@ -90,26 +89,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<PetDataDTO> getUserPets(long id) {
+        getUserById(id);
         List<PetDataDTO> petsDataDTO;
-
         petsDataDTO = userDAO.getUserPets(id).stream()
-                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners()))
+                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), null))
                 .collect(Collectors.toList());
 
         return petsDataDTO;
     }
-
-
-//    @Override
-//    public UserDetails updateUserDetails(UserDetails userDetails) {
-//        getUserById(userDetails.getDetails_id());
-//        return userDAO.updateUserDetails(userDetails);
-//    }
-//
-//    @Override
-//    public List<PetDataDTO> getPetsByUserId(long user_id) {
-//        userDAO.getUserById(user_id);
-//        return userDAO.getPetsByUserId(user_id);
-//    }
 
 }

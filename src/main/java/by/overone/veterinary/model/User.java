@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,14 +32,5 @@ public class User {
     @JoinColumn(name = "detail_id")
     @OneToOne(cascade = CascadeType.ALL)
     private UserDetails userDetails;
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "pets_has_users",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "pet_id") }
-    )
-    private List<Pet> pets;
-    @OneToMany(mappedBy="appointments")
-    private List<Appointment> appointments;
 
 }

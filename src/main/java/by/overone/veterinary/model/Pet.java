@@ -1,5 +1,6 @@
 package by.overone.veterinary.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,11 +24,15 @@ public class Pet {
     @Column(nullable = false)
     private Integer age;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
     @Column(nullable = false)
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch =  FetchType.EAGER)
+    @JoinTable(
+            name = "pets_has_users",
+            joinColumns = { @JoinColumn(name = "pet_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
     private List<User> owners;
-    @OneToMany(mappedBy="appointments")
-    private List<Appointment> appointments;
 
 }

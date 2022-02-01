@@ -25,7 +25,8 @@ public class UserDAOImpl implements UserDAO {
     public List<User> getUsers() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        criteriaQuery.from(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.where(criteriaBuilder.equal(userRoot.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -33,7 +34,8 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> getUserById(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        criteriaQuery.where(criteriaBuilder.equal(criteriaQuery.from(User.class).get("user_id"), id));
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.where(criteriaBuilder.equal(userRoot.get("id"), id), criteriaBuilder.equal(userRoot.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 
@@ -41,8 +43,8 @@ public class UserDAOImpl implements UserDAO {
     public Optional<User> getUserInfo(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Join<User, UserDetails> info = criteriaQuery.from(User.class).join("details_id");
-        criteriaQuery.where(criteriaBuilder.equal(info.get("details_id"), id));
+        Join<User, UserDetails> info = criteriaQuery.from(User.class).join("userDetails");
+        criteriaQuery.where(criteriaBuilder.equal(info.get("id"), id), criteriaBuilder.equal(info.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 
@@ -93,14 +95,18 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<Pet> getUserPets(long id) {
-        User user = entityManager.find(User.class, id);
-        return user.getPets();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
+        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
+        Join<Pet, User> pets = petRoot.join("owners");
+        criteriaQuery.where(criteriaBuilder.equal(pets.get("id"), id), criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public boolean deleteUserPets(long id) {
         User user = entityManager.find(User.class, id);
-        List<Pet> pets = user.getPets();
+        List<Pet> pets = getUserPets(id);
         for (Iterator<Pet> i = pets.iterator(); i.hasNext(); ) {
             Pet pet = i.next();
             if (pet.getOwners().size() > 1) {

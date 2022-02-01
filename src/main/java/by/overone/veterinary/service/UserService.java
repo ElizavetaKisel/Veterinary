@@ -22,7 +22,7 @@ public interface UserService {
 
     UserDataDTO getUserById(long id);
 
-    User updateUser(long id, UserUpdateDTO userUpdateDTO);
+    UserInfoDTO updateUser(long id, UserUpdateDTO userUpdateDTO);
 
     User updateUserRole(long id, String role);
 

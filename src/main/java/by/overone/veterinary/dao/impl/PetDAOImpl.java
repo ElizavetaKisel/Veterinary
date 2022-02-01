@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,8 @@ public class PetDAOImpl implements PetDAO {
     public List<Pet> getPets() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
-        criteriaQuery.from(Pet.class);
+        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
+        criteriaQuery.where(criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -34,7 +36,8 @@ public class PetDAOImpl implements PetDAO {
     public Optional<Pet> getPetById(long id) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
-        criteriaQuery.where(criteriaBuilder.equal(criteriaQuery.from(Pet.class).get("pet_id"), id));
+        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
+        criteriaQuery.where(criteriaBuilder.equal(petRoot.get("id"), id), criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 

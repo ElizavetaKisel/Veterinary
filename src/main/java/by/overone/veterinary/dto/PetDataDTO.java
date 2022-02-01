@@ -1,6 +1,7 @@
 package by.overone.veterinary.dto;
 
 
+import by.overone.veterinary.model.User;
 import by.overone.veterinary.validator.NewEntity;
 import lombok.*;
 
@@ -14,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PetDataDTO {
 
-    private long pet_id;
-    private List<Long> user_id;
     @NotNull(groups = {NewEntity.class})
     @NotBlank
     @Size(min = 2, max = 20)
@@ -31,5 +30,6 @@ public class PetDataDTO {
     @NotNull(groups = {NewEntity.class})
     @NotBlank
     private Integer age;
+    private List<Long> owners;
 
 }
