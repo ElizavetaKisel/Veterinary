@@ -6,9 +6,11 @@ import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
@@ -28,7 +30,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment updateAppointment(Appointment appointment) {
-        getAppointmentById(appointment.getAppointment_id());
+        getAppointmentById(appointment.getId());
         return appointmentDAO.updateAppointment(appointment);
     }
 

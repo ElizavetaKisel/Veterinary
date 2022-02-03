@@ -2,6 +2,9 @@ package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.exception.EntityAlreadyExistException;
+import by.overone.veterinary.exception.EntityNotFoundException;
+import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Status;
 import by.overone.veterinary.model.User;
@@ -10,11 +13,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,8 +48,12 @@ public class PetDAOImpl implements PetDAO {
 
     @Override
     public Pet addPet(Pet pet) {
-        entityManager.persist(pet);
-        return pet;
+        try {
+            entityManager.persist(pet);
+            return pet;
+        }catch (PersistenceException e){
+            throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_USER);
+        }
     }
 
     @Override
@@ -61,21 +70,24 @@ public class PetDAOImpl implements PetDAO {
     }
 
     @Override
-    public Pet updatePet(long id, PetDataDTO petDataDTO) {
-        Pet pet = entityManager.find(Pet.class, id);
-        if (petDataDTO.getName() != null){
-            pet.setName(petDataDTO.getName());
+    public Pet updatePet(long id, Pet pet) {
+        Pet petDB = entityManager.find(Pet.class, id);
+        if (pet.getName() != null){
+            petDB.setName(pet.getName());
         }
-        if (petDataDTO.getType() != null){
-            pet.setType(petDataDTO.getType());
+        if (pet.getType() != null){
+            petDB.setType(pet.getType());
         }
-        if (petDataDTO.getBreed() != null){
-            pet.setBreed(petDataDTO.getBreed());
+        if (pet.getBreed() != null){
+            petDB.setBreed(pet.getBreed());
         }
-        if (petDataDTO.getAge() != null){
-            pet.setAge(petDataDTO.getAge());
+        if (pet.getAge() != null){
+            petDB.setAge(pet.getAge());
         }
-        return pet;
+        if (pet.getOwners() != null){
+            petDB.setOwners(pet.getOwners());
+        }
+        return petDB;
     }
 
 }

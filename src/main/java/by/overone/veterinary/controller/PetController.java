@@ -42,7 +42,7 @@ public class PetController {
     }
 
     @PatchMapping("{id}")
-    public PetDataDTO updatePet(@PathVariable long id,@RequestBody PetDataDTO pet) {
+    public PetDataDTO updatePet(@PathVariable long id, @Validated @RequestBody PetDataDTO pet) {
         return petService.updatePet(id, pet);
     }
 }

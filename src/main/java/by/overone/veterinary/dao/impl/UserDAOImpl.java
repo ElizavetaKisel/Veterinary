@@ -3,12 +3,15 @@ package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.UserUpdateDTO;
+import by.overone.veterinary.exception.EntityAlreadyExistException;
+import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.*;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +47,7 @@ public class UserDAOImpl implements UserDAO {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Join<User, UserDetails> info = criteriaQuery.from(User.class).join("userDetails");
-        criteriaQuery.where(criteriaBuilder.equal(info.get("id"), id), criteriaBuilder.equal(info.get("status"), Status.ACTIVE));
+        criteriaQuery.where(criteriaBuilder.equal(info.get("id"), id));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 

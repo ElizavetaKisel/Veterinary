@@ -2,6 +2,7 @@ package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
+import by.overone.veterinary.exception.EntityAlreadyExistException;
 import by.overone.veterinary.exception.EntityNotFoundException;
 import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.Role;
@@ -11,9 +12,11 @@ import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,18 +40,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(UserRegistrationDTO userRegistrationDTO) {
-        User user = new User();
-        user.setLogin(userRegistrationDTO.getLogin());
-        user.setEmail(userRegistrationDTO.getEmail());
-        user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
-        user.setRole(Role.CUSTOMER);
-        user.setStatus(Status.ACTIVE);
-        user.setUserDetails(new UserDetails());
-        userDAO.addUser(user);
+        try{
+            User user = new User();
+            user.setLogin(userRegistrationDTO.getLogin());
+            user.setEmail(userRegistrationDTO.getEmail());
+            user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
+            user.setRole(Role.CUSTOMER);
+            user.setStatus(Status.ACTIVE);
+            user.setUserDetails(new UserDetails());
+            userDAO.addUser(user);
+        }catch (PersistenceException e){
+            throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_USER);
+        }
     }
 
     @Override
     public UserInfoDTO getUserInfo(long id) {
+        getUserById(id);
         User user = userDAO.getUserInfo(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         return new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails());
@@ -84,6 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUserRole(long id, String role) {
+        getUserById(id);
         return userDAO.updateUserRole(id, role.toUpperCase());
     }
 

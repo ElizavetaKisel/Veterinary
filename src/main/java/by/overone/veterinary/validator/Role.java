@@ -4,8 +4,8 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target({ ElementType.FIELD })
-@Retention(RetentionPolicy.RUNTIME)
+@Target(value = ElementType.FIELD)
+@Retention(value = RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = RoleValidator.class)
 @Documented
 public @interface Role {

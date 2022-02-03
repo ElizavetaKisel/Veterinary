@@ -1,31 +1,94 @@
 package by.overone.veterinary.controller.exception;
 
+import by.overone.veterinary.exception.EntityAlreadyExistException;
 import by.overone.veterinary.exception.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
-public class AppExceptionHandler {
+@RequiredArgsConstructor
+public class AppExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        String message = messageSource.getMessage("00001", null, request.getLocale());
+        response.setMessage(message);
+        log.info("Nor readable ", ex);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+                                                                         HttpHeaders headers, HttpStatus status,
+                                                                         WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        String message = messageSource.getMessage("00002", null, request.getLocale());
+        response.setMessage(message);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+        List<ExceptionResponse> list = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> new ExceptionResponse(error.getField() + " " + error.getDefaultMessage(),
+                        null, null))
+                .collect(Collectors.toList());
+        log.info("Validation error", ex);
+        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        response.setMessage("erroer errrooooor");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> entityNotFoundHandler(EntityNotFoundException e) {
+    public ResponseEntity<ExceptionResponse> entityNotFoundHandler(EntityNotFoundException e, WebRequest request) {
+        log.info("Not found exception: ", e);
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
         String message = "";
         switch (e.getCode().getErrorCode()) {
-            case "0001": message = "User not found";
-            break;
-            case "0002": message = "Pet not found";
-            break;
+            case "11111":
+                message = messageSource.getMessage("11111", null, request.getLocale());
+                break;
+            case "11112":
+                message = messageSource.getMessage("11112", null, request.getLocale());
+                break;
+            case "11113":
+                message = messageSource.getMessage("11113", null, request.getLocale());
+                break;
         }
         response.setMessage(message);
 
@@ -33,32 +96,36 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException e) {
+    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException e, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
-        response.setErrorCode("5000");
-        response.setMessage("Bad SQL");
+        String message = messageSource.getMessage("44444", null, request.getLocale());
+        response.setMessage(message);
         log.info("SQL EXCEPTION: ", e);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ExceptionResponse> entityAlreadyExistHandler(DuplicateKeyException e){
+    @ExceptionHandler(EntityAlreadyExistException.class)
+    public ResponseEntity<ExceptionResponse> entityAlreadyExistHandler(EntityAlreadyExistException e, WebRequest request) {
+        log.info("Already exist exception: ", e);
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
-        response.setErrorCode("6000");
-        response.setMessage("Entity already exist");
-        log.info("ALREADY EXIST EXCEPTION: ", e);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        response.setErrorCode(e.getCode().getErrorCode());
+        String message = "";
+        switch (e.getCode().getErrorCode()) {
+            case "22221":
+                message = messageSource.getMessage("22221", null, request.getLocale());
+                break;
+            case "22222":
+                message = messageSource.getMessage("22222", null, request.getLocale());
+                break;
+            case "33333":
+                message = messageSource.getMessage("33333", null, request.getLocale());
+                break;
+        }
+        response.setMessage(message);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(ValidationException.class)
-//    public ResponseEntity<ExceptionResponse> validationHandler(ValidationException e) {
-//        ExceptionResponse response = new ExceptionResponse();
-//        response.setException(e.getClass().getSimpleName());
-//        response.setErrorCode("7000");
-//        response.setMessage(e.getMessage());
-//        log.info("VALIDATION EXCEPTION: ", e);
-//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//    }
 }

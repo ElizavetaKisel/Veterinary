@@ -2,11 +2,12 @@ package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.User;
-import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController
@@ -41,17 +42,17 @@ public class UserController {
     }
 
     @PostMapping
-    public void addUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
+    public void addUser(@Validated @RequestBody UserRegistrationDTO userRegistrationDTO) {
         userService.addUser(userRegistrationDTO);
     }
 
     @PatchMapping("/{id}")
-    public UserInfoDTO updateUser(@PathVariable long id, @RequestBody UserUpdateDTO user) {
+    public UserInfoDTO updateUser(@PathVariable long id, @Validated @RequestBody UserUpdateDTO user) {
         return userService.updateUser(id, user);
     }
 
     @PatchMapping("/{id}/role")
-    public User updateUserDetails(@PathVariable long id,@RequestBody String role) {
+    public User updateUserRole(@PathVariable long id, @RequestBody String role) {
         return userService.updateUserRole(id, role);
     }
 }
