@@ -1,25 +1,21 @@
 package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.PetDAO;
+import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.EntityNotFoundException;
 import by.overone.veterinary.exception.ExceptionCode;
-import by.overone.veterinary.model.Pet;
-import by.overone.veterinary.model.Status;
-import by.overone.veterinary.model.User;
+import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,12 +24,46 @@ public class PetDAOImpl implements PetDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private UserDAO userDAO;
+
     @Override
     public List<Pet> getPets() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
         Root<Pet> petRoot = criteriaQuery.from(Pet.class);
         criteriaQuery.where(criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+    @Override
+    public List<Pet> getPetsByParams(PetDataDTO petDataDTO) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
+        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
+        Join<Pet, User> join= petRoot.join("owners");
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (petDataDTO.getName() != null) {
+            predicates.add(criteriaBuilder.like(petRoot.get("name"), '%' + petDataDTO.getName() + '%'));
+        }
+        if (petDataDTO.getType() != null) {
+            predicates.add(criteriaBuilder.like(petRoot.get("type"), '%' + petDataDTO.getType() + '%'));
+        }
+        if (petDataDTO.getBreed() != null) {
+            predicates.add(criteriaBuilder.like(petRoot.get("breed"), '%' + petDataDTO.getBreed() + '%'));
+        }
+        if (petDataDTO.getAge() != null) {
+            predicates.add(criteriaBuilder.equal(petRoot.get("age"), petDataDTO.getAge()));
+        }
+        System.out.println(predicates);
+        if (petDataDTO.getOwners() !=null){
+            List<Predicate> predicatesOwners = new ArrayList<>();
+            for (Long o: petDataDTO.getOwners()) {
+                predicatesOwners.add(criteriaBuilder.equal(join.get("id"), o));
+            }
+            predicates.add(criteriaBuilder.or(predicatesOwners.toArray(new Predicate[]{})));
+        }
+        criteriaQuery.select(petRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 

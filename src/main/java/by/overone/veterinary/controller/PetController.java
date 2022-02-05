@@ -17,8 +17,14 @@ public class PetController {
     private final PetService petService;
 
     @GetMapping
-    public List<PetDataDTO> readAll() {
+    public List<PetDataDTO> readAllPets() {
         return petService.getPets();
+    }
+
+    @GetMapping("/params")
+    public List<PetDataDTO> readPetsByParams(@RequestBody PetDataDTO petDataDTO) {
+        System.out.println(petDataDTO.getOwners());
+        return petService.getPetsByParams(petDataDTO);
     }
 
     @GetMapping("/{id}/owners")

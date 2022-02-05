@@ -1,6 +1,5 @@
 package by.overone.veterinary.dto;
 
-import by.overone.veterinary.model.UserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +12,8 @@ public class UserInfoDTO {
     private String login;
     private String email;
     private String role;
-    private UserDetails userDetails;
+    private String name;
+    private String surname;
+    private String address;
+    private String phoneNumber;
 }

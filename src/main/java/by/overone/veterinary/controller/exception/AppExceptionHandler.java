@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +34,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         response.setException(ex.getClass().getSimpleName());
         String message = messageSource.getMessage("00001", null, request.getLocale());
         response.setMessage(message);
-        log.info("Nor readable ", ex);
-        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+        log.info("Not readable ", ex);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @Override
@@ -47,6 +46,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         response.setException(ex.getClass().getSimpleName());
         String message = messageSource.getMessage("00002", null, request.getLocale());
         response.setMessage(message);
+        log.info("Method not allowed ", ex);
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
@@ -68,13 +68,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(ex.getClass().getSimpleName());
-        response.setMessage("erroer errrooooor");
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        response.setMessage("Wrong type");
+        log.info("Wrong type: ", ex);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionResponse> entityNotFoundHandler(EntityNotFoundException e, WebRequest request) {
-        log.info("Not found exception: ", e);
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
@@ -91,6 +91,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                 break;
         }
         response.setMessage(message);
+        log.info("Not found exception: ", e);
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
@@ -102,12 +103,23 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage("44444", null, request.getLocale());
         response.setMessage(message);
         log.info("SQL EXCEPTION: ", e);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> IllegalArgumentHandler(IllegalArgumentException e, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(e.getClass().getSimpleName());
+        String message = messageSource.getMessage("55555", null, request.getLocale());
+        response.setMessage(message);
+        log.info("Illegal argument: ", e);
+
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityAlreadyExistException.class)
     public ResponseEntity<ExceptionResponse> entityAlreadyExistHandler(EntityAlreadyExistException e, WebRequest request) {
-        log.info("Already exist exception: ", e);
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
@@ -124,6 +136,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                 break;
         }
         response.setMessage(message);
+        log.info("Already exist exception: ", e);
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

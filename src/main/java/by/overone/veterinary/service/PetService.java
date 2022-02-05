@@ -9,6 +9,8 @@ public interface PetService {
 
     List<PetDataDTO> getPets();
 
+    List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO);
+
     PetDataDTO getPetById(long id);
 
     void addPet(PetDataDTO petDataDTO);

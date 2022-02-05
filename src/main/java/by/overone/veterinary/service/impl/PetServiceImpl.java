@@ -40,6 +40,16 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO) {
+        List<PetDataDTO> petsDataDTO;
+        System.out.println(petDataDTO.getOwners());
+        petsDataDTO = petDAO.getPetsByParams(petDataDTO).stream()
+                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList())))
+                .collect(Collectors.toList());
+        return petsDataDTO;
+    }
+
+    @Override
     public PetDataDTO getPetById(long id) {
         PetDataDTO petDataDTO = new PetDataDTO();
         Pet pet = petDAO.getPetById(id)
@@ -75,13 +85,13 @@ public class PetServiceImpl implements PetService {
     public PetDataDTO updatePet(long id, PetDataDTO petDataDTO){
         getPetById(id);
         Pet pet = new Pet();
-        petDAO.updatePet(id, pet);
         pet.setName(petDataDTO.getName());
         pet.setType(petDataDTO.getType());
         pet.setBreed(petDataDTO.getBreed());
         pet.setAge(petDataDTO.getAge());
         pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o.longValue())
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
+        petDAO.updatePet(id, pet);
         return getPetById(id);
     }
 

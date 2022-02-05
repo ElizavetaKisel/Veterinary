@@ -12,7 +12,6 @@ import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +38,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO) {
+        List<UserInfoDTO> usersInfoDTO;
+
+        usersInfoDTO = userDAO.getUsersByParams(userInfoDTO).stream()
+                .map(user -> new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails().getName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getAddress(), user.getUserDetails().getPhoneNumber()))
+                .collect(Collectors.toList());
+
+        return usersInfoDTO;
+    }
+
+    @Override
     public void addUser(UserRegistrationDTO userRegistrationDTO) {
         try{
             User user = new User();
@@ -59,7 +70,8 @@ public class UserServiceImpl implements UserService {
         getUserById(id);
         User user = userDAO.getUserInfo(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        return new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails());
+        return new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails().getName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getAddress(), user.getUserDetails().getPhoneNumber());
     }
 
     @Override

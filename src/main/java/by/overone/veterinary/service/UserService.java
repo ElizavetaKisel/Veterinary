@@ -14,6 +14,8 @@ public interface UserService {
 
     List<UserDataDTO> getAllUsers();
 
+    List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO);
+
     void addUser(UserRegistrationDTO userRegistrationDTO);
 
     UserInfoDTO getUserInfo(long id);

@@ -11,6 +11,8 @@ public interface PetDAO {
 
     List<Pet> getPets();
 
+    List<Pet> getPetsByParams(PetDataDTO petDataDTO);
+
     Optional<Pet> getPetById(long id);
 
     Pet addPet(Pet pet);

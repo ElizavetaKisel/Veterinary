@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController
@@ -21,13 +20,18 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/params")
+    public List<UserInfoDTO> readUsersByParams(UserInfoDTO userInfoDTO) {
+        return userService.getUsersByParams(userInfoDTO);
+    }
+
     @GetMapping("/{id}")
     public UserDataDTO userById(@PathVariable long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/pets")
-    public List<PetDataDTO> petById(@PathVariable long id) {
+    public List<PetDataDTO> petByUserId(@PathVariable long id) {
         return userService.getUserPets(id);
     }
 

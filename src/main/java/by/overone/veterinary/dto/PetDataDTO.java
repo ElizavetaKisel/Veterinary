@@ -28,6 +28,7 @@ public class PetDataDTO {
     private String breed;
     @NotNull(groups = {NewEntity.class})
     private Integer age;
+    @NotNull(groups = {NewEntity.class})
     private List<Long> owners;
 
 }

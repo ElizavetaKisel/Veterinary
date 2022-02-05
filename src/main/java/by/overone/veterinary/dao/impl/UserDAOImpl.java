@@ -2,6 +2,8 @@ package by.overone.veterinary.dao.impl;
 
 
 import by.overone.veterinary.dao.UserDAO;
+import by.overone.veterinary.dto.UserDataDTO;
+import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.exception.EntityAlreadyExistException;
 import by.overone.veterinary.exception.ExceptionCode;
@@ -11,8 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +26,45 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-
+    @Override
     public List<User> getUsers() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = criteriaQuery.from(User.class);
         criteriaQuery.where(criteriaBuilder.equal(userRoot.get("status"), Status.ACTIVE));
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+    @Override
+    public List<User> getUsersByParams(UserInfoDTO userInfoDTO) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        Join<User, UserDetails> join = userRoot.join("userDetails");
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (userInfoDTO.getLogin() != null) {
+            predicates.add(criteriaBuilder.like(userRoot.get("login"), '%' + userInfoDTO.getLogin() + '%'));
+        }
+        if (userInfoDTO.getEmail() != null) {
+            predicates.add(criteriaBuilder.like(userRoot.get("email"), '%' + userInfoDTO.getEmail() + '%'));
+        }
+        if (userInfoDTO.getRole() != null) {
+            predicates.add(criteriaBuilder.equal(userRoot.get("role"), Role.valueOf(userInfoDTO.getRole().toUpperCase())));
+        }
+        if (userInfoDTO.getName() != null) {
+            predicates.add(criteriaBuilder.like(join.get("name"), '%' + userInfoDTO.getName() + '%'));
+        }
+        if (userInfoDTO.getSurname() != null) {
+            predicates.add(criteriaBuilder.like(join.get("surname"), '%' + userInfoDTO.getSurname() + '%'));
+        }
+        if (userInfoDTO.getAddress() != null) {
+            predicates.add(criteriaBuilder.like(join.get("address"), '%' + userInfoDTO.getAddress() + '%'));
+        }
+        if (userInfoDTO.getPhoneNumber() != null) {
+            predicates.add(criteriaBuilder.like(join.get("phoneNumber"), '%' + userInfoDTO.getPhoneNumber() + '%'));
+        }
+        criteriaQuery.select(userRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
