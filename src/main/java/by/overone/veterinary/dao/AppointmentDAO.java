@@ -1,19 +1,31 @@
 package by.overone.veterinary.dao;
 
-import by.overone.veterinary.dto.AppointmentActiveDTO;
+import by.overone.veterinary.dto.AppointmentDataDTO;
+import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.model.Appointment;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AppointmentDAO {
     
     List<Appointment> getAppointments();
 
-    AppointmentActiveDTO addAppointment(AppointmentActiveDTO appointmentActiveDTO);
+    List<Appointment> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO);
 
-    Appointment updateAppointment(Appointment appointment);
+    Optional<Appointment> getAppointmentById(long id);
 
-    Appointment getAppointmentById(long id);
+    Appointment addAppointment(Appointment appointment);
+
+    Appointment updateAppointment(long id, AppointmentNewDTO appointmentNewDTO);
+
+    Appointment deleteAppointment(long id);
+
+    Appointment makeAppointment(long userId, long id, long petId, String reason);
+
+    Appointment closeAppointment(long id, String diagnosis);
+
+    Appointment returnAppointment(long id);
 
     List<Appointment> getAppointmentsByUserId(long users_user_id);
 

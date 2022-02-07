@@ -1,6 +1,7 @@
 package by.overone.veterinary.controller;
 
-import by.overone.veterinary.dto.AppointmentActiveDTO;
+import by.overone.veterinary.dto.AppointmentDataDTO;
+import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.service.AppointmentService;
 import lombok.AllArgsConstructor;
@@ -15,13 +16,38 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @GetMapping
-    public List<Appointment> readAll() {
+    public List<AppointmentDataDTO> readAll() {
         return appointmentService.getAppointments();
     }
 
+    @GetMapping("/params")
+    public List<AppointmentDataDTO> readUsersByParams(AppointmentDataDTO appointmentDataDTO) {
+        return appointmentService.getAppointmentsByParams(appointmentDataDTO);
+    }
+
     @GetMapping("/{id}")
-    public Appointment appointmentById(@PathVariable long id) {
+    public AppointmentDataDTO appointmentById(@PathVariable long id) {
         return appointmentService.getAppointmentById(id);
+    }
+
+    @PostMapping
+    public AppointmentDataDTO addAppointment(@RequestBody AppointmentNewDTO appointmentNewDTO) {
+        return appointmentService.addAppointment(appointmentNewDTO);
+    }
+
+    @PatchMapping("/{id}")
+    public AppointmentDataDTO updateAppointment(@PathVariable long id, @RequestBody AppointmentNewDTO appointmentNewDTO) {
+        return appointmentService.updateAppointment(id, appointmentNewDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public AppointmentDataDTO deleteAppointment(@PathVariable long id) {
+        return appointmentService.deleteAppointment(id);
+    }
+
+    @PutMapping("/{id}")
+    public AppointmentDataDTO closeAppointment(@PathVariable long id, @RequestParam String diagnosis) {
+        return appointmentService.closeAppointment(id, diagnosis);
     }
 
     @GetMapping("/user/{id}")
@@ -35,15 +61,5 @@ public class AppointmentController {
     @GetMapping("/pet/{id}")
     public List<Appointment> appointmentsByPetId(@PathVariable long id) {
         return appointmentService.getAppointmentsByPetId(id);
-    }
-
-    @PostMapping
-    public void addAppointment(@RequestBody AppointmentActiveDTO appointmentActiveDTO) {
-        appointmentService.addAppointment(appointmentActiveDTO);
-    }
-
-    @PutMapping
-    public Appointment updateUser(@RequestBody Appointment appointment) {
-        return appointmentService.updateAppointment(appointment);
     }
 }

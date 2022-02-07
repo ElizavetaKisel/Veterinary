@@ -2,6 +2,7 @@ package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.User;
+import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("api/users")
 public class UserController {
     private final UserService userService;
+    private final AppointmentService appointmentService;
 
     @GetMapping
     public List<UserDataDTO> readAll() {
@@ -58,5 +60,15 @@ public class UserController {
     @PatchMapping("/{id}/role")
     public User updateUserRole(@PathVariable long id, @RequestBody String role) {
         return userService.updateUserRole(id, role);
+    }
+
+    @PostMapping("/{userId}/appointments")
+    public AppointmentDataDTO makeAppointment(@PathVariable long userId, @RequestParam long appointmentId,
+                                @RequestParam long petId, @RequestParam String reason) {
+        return appointmentService.makeAppointment(userId, appointmentId, petId, reason);
+    }
+    @PostMapping("/returnAppointment/{appointmentId}")
+    public AppointmentDataDTO returnAppointment(@PathVariable long appointmentId) {
+        return appointmentService.returnAppointment(appointmentId);
     }
 }

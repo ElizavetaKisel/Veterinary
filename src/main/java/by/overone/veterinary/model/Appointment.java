@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -20,19 +19,26 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
     private long id;
-    @JsonFormat(pattern = "yyy-MM-dd")
-    private Date date;
-    @JsonFormat(pattern = "hh:mm")
-    private Time time;
+//    @JsonFormat(pattern = "yyy-MM-dd")
+//    private Date date;
+//    @JsonFormat(pattern = "hh:mm")
+//    private Time time;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name="date_time", nullable = false)
+    private LocalDateTime dateTime;
     @ManyToOne
     @JoinColumn(name="doctor_id", nullable=false)
     private User doctor;
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name="user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name="pet_id", nullable=false)
+    @JoinColumn(name="pet_id")
     private Pet pet;
+    @Column(nullable = false)
     private String reason;
     private String diagnosis;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 }
