@@ -3,11 +3,9 @@ package by.overone.veterinary.util.mapper;
 
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.exception.EntityNotFoundException;
-import by.overone.veterinary.exception.ExceptionCode;
-import by.overone.veterinary.model.Appointment;
-import by.overone.veterinary.model.Pet;
-import by.overone.veterinary.model.User;
+import by.overone.veterinary.model.*;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.ExceptionCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -40,11 +38,12 @@ public class MyMapper{
         return appointmentDataDTO;
     }
 
-    public Appointment newDTOToPet(AppointmentNewDTO appointmentNewDTO){
+    public Appointment newDTOToAppointment(AppointmentNewDTO appointmentNewDTO){
         Appointment appointment = new Appointment();
         appointment.setDateTime(appointmentNewDTO.getDateTime());
         appointment.setDoctor(userDAO.getUserById(appointmentNewDTO.getDoctorId())
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER)));
+                .filter(user -> user.getRole().equals(Role.DOCTOR))
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_DOCTOR)));
         return appointment;
     }
     public UserDataDTO userToDataDTO(User user){
@@ -68,7 +67,7 @@ public class MyMapper{
                 pet.getType(),
                 pet.getBreed(),
                 pet.getAge(),
-                pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList()));
+                pet.getOwners().stream().map(User::getId).collect(Collectors.toList()));
     }
 
     public Pet dtoToPet(PetDataDTO petDataDTO) {
@@ -77,7 +76,7 @@ public class MyMapper{
         pet.setType(petDataDTO.getType());
         pet.setBreed(petDataDTO.getBreed());
         pet.setAge(petDataDTO.getAge());
-        pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o.longValue())
+        pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
         return pet;
     }

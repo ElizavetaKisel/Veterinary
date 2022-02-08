@@ -2,11 +2,8 @@ package by.overone.veterinary.dao.impl;
 
 
 import by.overone.veterinary.dao.UserDAO;
-import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
-import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

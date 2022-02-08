@@ -17,7 +17,7 @@ public interface AppointmentDAO {
 
     Appointment addAppointment(Appointment appointment);
 
-    Appointment updateAppointment(long id, AppointmentNewDTO appointmentNewDTO);
+    Appointment updateAppointment(long id, Appointment appointment);
 
     Appointment deleteAppointment(long id);
 

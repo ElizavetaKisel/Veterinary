@@ -1,7 +1,7 @@
 package by.overone.veterinary.controller.exception;
 
-import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.EntityAlreadyExistException;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -88,6 +88,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                 break;
             case "11113":
                 message = messageSource.getMessage("11113", null, request.getLocale());
+                break;
+            case "11114":
+                message = messageSource.getMessage("11114", null, request.getLocale());
                 break;
         }
         response.setMessage(message);

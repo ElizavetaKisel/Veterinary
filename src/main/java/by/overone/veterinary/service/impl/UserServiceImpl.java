@@ -2,9 +2,9 @@ package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.EntityNotFoundException;
-import by.overone.veterinary.exception.ExceptionCode;
+import by.overone.veterinary.service.exception.EntityAlreadyExistException;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.Role;
 import by.overone.veterinary.model.Status;
 import by.overone.veterinary.model.User;

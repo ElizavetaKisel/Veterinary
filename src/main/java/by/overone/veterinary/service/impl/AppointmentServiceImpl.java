@@ -4,9 +4,9 @@ import by.overone.veterinary.dao.AppointmentDAO;
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.EntityNotFoundException;
-import by.overone.veterinary.exception.ExceptionCode;
+import by.overone.veterinary.service.exception.EntityAlreadyExistException;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.*;
 import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.util.mapper.MyMapper;
@@ -32,7 +32,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentDataDTO> getAppointments() {
         List<AppointmentDataDTO> appointmentsDataDTO;
         appointmentsDataDTO = appointmentDAO.getAppointments().stream()
-                .map(appointment -> myMapper.appointmentToDTO(appointment))
+                .map(myMapper::appointmentToDTO)
                 .collect(Collectors.toList());
 
         return appointmentsDataDTO;
@@ -42,7 +42,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentDataDTO> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
         List<AppointmentDataDTO> appointments;
         appointments = appointmentDAO.getAppointmentsByParams(appointmentDataDTO).stream()
-                .map(appointment -> myMapper.appointmentToDTO(appointment))
+                .map(myMapper::appointmentToDTO)
                 .collect(Collectors.toList());
 
         return appointments;
@@ -51,14 +51,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDataDTO getAppointmentById(long id) {
         Appointment appointment = appointmentDAO.getAppointmentById(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT));
         return myMapper.appointmentToDTO(appointment);
     }
 
     @Override
     public AppointmentDataDTO addAppointment(AppointmentNewDTO appointmentNewDTO) {
         try{
-            Appointment appointment = myMapper.newDTOToPet(appointmentNewDTO);
+            Appointment appointment = myMapper.newDTOToAppointment(appointmentNewDTO);
             appointment.setStatus(Status.NEW);
             return myMapper.appointmentToDTO(appointmentDAO.addAppointment(appointment));
         }catch (PersistenceException e){
@@ -69,9 +69,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDataDTO updateAppointment(long id, AppointmentNewDTO appointmentNewDTO) {
         getAppointmentById(id);
-        userDAO.getUserById(appointmentNewDTO.getDoctorId());
-        Appointment appointment = appointmentDAO.updateAppointment(id, appointmentNewDTO);
-        return myMapper.appointmentToDTO(appointment);
+        Appointment appointment = myMapper.newDTOToAppointment(appointmentNewDTO);
+        return myMapper.appointmentToDTO(appointmentDAO.updateAppointment(id, appointment));
     }
 
     @Override

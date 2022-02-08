@@ -1,24 +1,20 @@
 package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
-import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
-import by.overone.veterinary.dto.UserInfoDTO;
-import by.overone.veterinary.exception.EntityAlreadyExistException;
-import by.overone.veterinary.exception.EntityNotFoundException;
-import by.overone.veterinary.exception.ExceptionCode;
+import by.overone.veterinary.service.exception.EntityAlreadyExistException;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Status;
-import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
-import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,9 +53,13 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public PetDataDTO addPet(PetDataDTO petDataDTO) {
+        try {
         Pet pet = myMapper.dtoToPet(petDataDTO);
         pet.setStatus(Status.ACTIVE);
         return myMapper.petToDTO(petDAO.addPet(pet));
+        }catch (PersistenceException e){
+            throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_PET);
+        }
     }
 
     @Override

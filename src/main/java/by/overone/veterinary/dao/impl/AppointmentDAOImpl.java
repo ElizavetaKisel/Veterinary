@@ -22,7 +22,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
-    private UserDAO userDAO;
 
     @Override
     public List<Appointment> getAppointments() {
@@ -60,7 +59,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         if (appointmentDataDTO.getStatus() != null) {
             predicates.add(criteriaBuilder.equal(appointmentRoot.get("status"), Status.valueOf(appointmentDataDTO.getDiagnosis().toUpperCase())));
         }
-        criteriaQuery.select(appointmentRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+        criteriaQuery.select(appointmentRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -80,26 +79,14 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Override
-    public Appointment updateAppointment(long id, AppointmentNewDTO appointmentNewDTO) {
-        Appointment appointment = entityManager.find(Appointment.class, id);
-        if (appointmentNewDTO.getDateTime() != null){
-            appointment.setDateTime(appointmentNewDTO.getDateTime());
+    public Appointment updateAppointment(long id, Appointment appointment) {
+        Appointment appointmentDB = entityManager.find(Appointment.class, id);
+        if (appointment.getDateTime() != null){
+            appointmentDB.setDateTime(appointment.getDateTime());
         }
-        if (appointmentNewDTO.getDoctorId() != 0){
-            appointment.setDoctor(entityManager.find(User.class, appointmentNewDTO.getDoctorId()));
+        if (appointment.getDoctor() != null){
+            appointmentDB.setDoctor(appointment.getDoctor());
         }
-//        if (appointmentClosedDTO.getUserId() != 0){
-//            appointment.setUser(entityManager.find(User.class, appointmentClosedDTO.getUserId()));
-//        }
-//        if (appointmentClosedDTO.getPetId() != 0){
-//            appointment.setPet(entityManager.find(Pet.class, appointmentClosedDTO.getPetId()));
-//        }
-//        if (appointmentClosedDTO.getReason() != null){
-//            appointment.setReason(appointmentClosedDTO.getReason());
-//        }
-//        if (appointmentClosedDTO.getDiagnosis() != null){
-//            appointment.setDiagnosis(appointmentClosedDTO.getDiagnosis());
-//        }
         return appointment;
     }
 
