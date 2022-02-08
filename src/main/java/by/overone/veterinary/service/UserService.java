@@ -1,5 +1,6 @@
 package by.overone.veterinary.service;
 
+import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
@@ -26,7 +27,7 @@ public interface UserService {
 
     UserInfoDTO updateUser(long id, UserUpdateDTO userUpdateDTO);
 
-    User updateUserRole(long id, String role);
+    UserDataDTO updateUserRole(long id, String role);
 
     List<PetDataDTO> getUserPets(long id);
 }

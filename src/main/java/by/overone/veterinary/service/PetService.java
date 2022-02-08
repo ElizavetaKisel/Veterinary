@@ -13,9 +13,9 @@ public interface PetService {
 
     PetDataDTO getPetById(long id);
 
-    void addPet(PetDataDTO petDataDTO);
+    PetDataDTO addPet(PetDataDTO petDataDTO);
 
-    void deletePet(long id);
+    PetDataDTO deletePet(long id);
 
     PetDataDTO updatePet(long id, PetDataDTO pet);
 

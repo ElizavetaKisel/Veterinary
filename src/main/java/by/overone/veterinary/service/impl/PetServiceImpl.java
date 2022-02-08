@@ -13,6 +13,7 @@ import by.overone.veterinary.model.Status;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.service.UserService;
+import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,13 @@ import java.util.stream.Collectors;
 public class PetServiceImpl implements PetService {
 
     private final PetDAO petDAO;
-    private final UserDAO userDAO;
+    private final MyMapper myMapper;
 
     @Override
     public List<PetDataDTO> getPets() {
         List<PetDataDTO> petsDataDTO;
-
         petsDataDTO = petDAO.getPets().stream()
-                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList())))
+                .map(pet -> myMapper.petToDTO(pet))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
@@ -42,56 +42,37 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO) {
         List<PetDataDTO> petsDataDTO;
-        System.out.println(petDataDTO.getOwners());
         petsDataDTO = petDAO.getPetsByParams(petDataDTO).stream()
-                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList())))
+                .map(pet ->  myMapper.petToDTO(pet))
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
 
     @Override
     public PetDataDTO getPetById(long id) {
-        PetDataDTO petDataDTO = new PetDataDTO();
         Pet pet = petDAO.getPetById(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_PET));
-        petDataDTO.setName(pet.getName());
-        petDataDTO.setType(pet.getType());
-        petDataDTO.setBreed(pet.getBreed());
-        petDataDTO.setAge(pet.getAge());
-        petDataDTO.setOwners(pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList()));
-        return petDataDTO;
+        return  myMapper.petToDTO(pet);
     }
 
     @Override
-    public void addPet(PetDataDTO petDataDTO) {
-            Pet pet = new Pet();
-            pet.setName(petDataDTO.getName());
-            pet.setType(petDataDTO.getType());
-            pet.setBreed(petDataDTO.getBreed());
-            pet.setStatus(Status.ACTIVE);
-            pet.setAge(petDataDTO.getAge());
-            pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o.longValue())
-                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
-            petDAO.addPet(pet);
+    public PetDataDTO addPet(PetDataDTO petDataDTO) {
+        Pet pet = myMapper.dtoToPet(petDataDTO);
+        pet.setStatus(Status.ACTIVE);
+        return myMapper.petToDTO(petDAO.addPet(pet));
     }
 
     @Override
-    public void deletePet(long id) {
+    public PetDataDTO deletePet(long id) {
         getPetById(id);
-        deletePet(id);
+        return myMapper.petToDTO(petDAO.deletePet(id));
     }
+
 
     @Override
     public PetDataDTO updatePet(long id, PetDataDTO petDataDTO){
         getPetById(id);
-        Pet pet = new Pet();
-        pet.setName(petDataDTO.getName());
-        pet.setType(petDataDTO.getType());
-        pet.setBreed(petDataDTO.getBreed());
-        pet.setAge(petDataDTO.getAge());
-        pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o.longValue())
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
-        petDAO.updatePet(id, pet);
+        petDAO.updatePet(id, myMapper.dtoToPet(petDataDTO));
         return getPetById(id);
     }
 
@@ -101,7 +82,7 @@ public class PetServiceImpl implements PetService {
         petDAO.getPetById(id);
         return petDAO.getPetOwners(id).stream()
                 .filter(user -> user.getStatus().equals(Status.ACTIVE))
-                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
+                .map(user -> myMapper.userToDataDTO(user))
                 .collect(Collectors.toList());
     }
 }

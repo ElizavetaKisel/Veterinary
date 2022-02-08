@@ -31,7 +31,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDataDTO> getAppointments() {
         List<AppointmentDataDTO> appointmentsDataDTO;
-
         appointmentsDataDTO = appointmentDAO.getAppointments().stream()
                 .map(appointment -> myMapper.appointmentToDTO(appointment))
                 .collect(Collectors.toList());
@@ -42,7 +41,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDataDTO> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
         List<AppointmentDataDTO> appointments;
-
         appointments = appointmentDAO.getAppointmentsByParams(appointmentDataDTO).stream()
                 .map(appointment -> myMapper.appointmentToDTO(appointment))
                 .collect(Collectors.toList());
@@ -60,10 +58,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDataDTO addAppointment(AppointmentNewDTO appointmentNewDTO) {
         try{
-            Appointment appointment = new Appointment();
-            appointment.setDateTime(appointmentNewDTO.getDateTime());
-            appointment.setDoctor(userDAO.getUserById(appointmentNewDTO.getDoctorId())
-                    .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER)));
+            Appointment appointment = myMapper.newDTOToPet(appointmentNewDTO);
             appointment.setStatus(Status.NEW);
             return myMapper.appointmentToDTO(appointmentDAO.addAppointment(appointment));
         }catch (PersistenceException e){

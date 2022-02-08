@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/role")
-    public User updateUserRole(@PathVariable long id, @RequestBody String role) {
+    public UserDataDTO updateUserRole(@PathVariable long id, @RequestBody String role) {
         return userService.updateUserRole(id, role);
     }
 

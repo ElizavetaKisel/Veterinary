@@ -2,6 +2,7 @@ package by.overone.veterinary.dto;
 
 
 import by.overone.veterinary.validator.NewEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PetDataDTO {
 
     @NotNull(groups = {NewEntity.class})

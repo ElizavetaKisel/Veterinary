@@ -1,12 +1,23 @@
 package by.overone.veterinary.util.mapper;
 
 
-import by.overone.veterinary.dto.AppointmentDataDTO;
+import by.overone.veterinary.dao.UserDAO;
+import by.overone.veterinary.dto.*;
+import by.overone.veterinary.exception.EntityNotFoundException;
+import by.overone.veterinary.exception.ExceptionCode;
 import by.overone.veterinary.model.Appointment;
+import by.overone.veterinary.model.Pet;
+import by.overone.veterinary.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
+@RequiredArgsConstructor
 public class MyMapper{
+
+    private final UserDAO userDAO;
 
     public AppointmentDataDTO appointmentToDTO(Appointment appointment){
         AppointmentDataDTO appointmentDataDTO = new AppointmentDataDTO();
@@ -29,4 +40,45 @@ public class MyMapper{
         return appointmentDataDTO;
     }
 
+    public Appointment newDTOToPet(AppointmentNewDTO appointmentNewDTO){
+        Appointment appointment = new Appointment();
+        appointment.setDateTime(appointmentNewDTO.getDateTime());
+        appointment.setDoctor(userDAO.getUserById(appointmentNewDTO.getDoctorId())
+                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER)));
+        return appointment;
+    }
+    public UserDataDTO userToDataDTO(User user){
+        return new UserDataDTO(user.getLogin(),user.getEmail(),user.getRole().toString());
+    }
+
+    public UserInfoDTO userToInfoDTO(User user){
+        return new UserInfoDTO(
+                user.getLogin(),
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getUserDetails().getName(),
+                user.getUserDetails().getSurname(),
+                user.getUserDetails().getAddress(),
+                user.getUserDetails().getPhoneNumber());
+    }
+
+    public PetDataDTO petToDTO(Pet pet){
+        return new PetDataDTO(
+                pet.getName(),
+                pet.getType(),
+                pet.getBreed(),
+                pet.getAge(),
+                pet.getOwners().stream().map(o -> o.getId()).collect(Collectors.toList()));
+    }
+
+    public Pet dtoToPet(PetDataDTO petDataDTO) {
+        Pet pet = new Pet();
+        pet.setName(petDataDTO.getName());
+        pet.setType(petDataDTO.getType());
+        pet.setBreed(petDataDTO.getBreed());
+        pet.setAge(petDataDTO.getAge());
+        pet.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o.longValue())
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
+        return pet;
+    }
 }

@@ -10,6 +10,7 @@ import by.overone.veterinary.model.Status;
 import by.overone.veterinary.model.User;
 import by.overone.veterinary.model.UserDetails;
 import by.overone.veterinary.service.UserService;
+import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
-
+    private final MyMapper myMapper;
     @Override
     public List<UserDataDTO> getAllUsers() {
-        List<UserDataDTO> usersDataDTO;
-
-        usersDataDTO = userDAO.getUsers().stream()
+        List<UserDataDTO> usersDataDTO = userDAO.getUsers().stream()
                 .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
                 .collect(Collectors.toList());
 
@@ -39,11 +38,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO) {
-        List<UserInfoDTO> usersInfoDTO;
-
-        usersInfoDTO = userDAO.getUsersByParams(userInfoDTO).stream()
-                .map(user -> new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails().getName(),
-                user.getUserDetails().getSurname(), user.getUserDetails().getAddress(), user.getUserDetails().getPhoneNumber()))
+        List<UserInfoDTO> usersInfoDTO = userDAO.getUsersByParams(userInfoDTO).stream()
+                .map(user -> myMapper.userToInfoDTO(user))
                 .collect(Collectors.toList());
 
         return usersInfoDTO;
@@ -70,8 +66,7 @@ public class UserServiceImpl implements UserService {
         getUserById(id);
         User user = userDAO.getUserInfo(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        return new UserInfoDTO(user.getLogin(), user.getEmail(), user.getRole().toString(), user.getUserDetails().getName(),
-                user.getUserDetails().getSurname(), user.getUserDetails().getAddress(), user.getUserDetails().getPhoneNumber());
+        return myMapper.userToInfoDTO(user);
     }
 
     @Override
@@ -83,13 +78,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDataDTO getUserById(long id) {
-        UserDataDTO userDataDTO = new UserDataDTO();
         User user = userDAO.getUserById(id)
                 .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
-        userDataDTO.setLogin(user.getLogin());
-        userDataDTO.setEmail(user.getEmail());
-        userDataDTO.setRole(user.getRole().toString());
-        return userDataDTO;
+        return myMapper.userToDataDTO(user);
     }
 
     @Override
@@ -103,9 +94,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserRole(long id, String role) {
+    public UserDataDTO updateUserRole(long id, String role) {
         getUserById(id);
-        return userDAO.updateUserRole(id, role.toUpperCase());
+        return myMapper.userToDataDTO(userDAO.updateUserRole(id, role.toUpperCase()));
     }
 
     @Override
@@ -113,7 +104,7 @@ public class UserServiceImpl implements UserService {
         getUserById(id);
         List<PetDataDTO> petsDataDTO;
         petsDataDTO = userDAO.getUserPets(id).stream()
-                .map(pet -> new PetDataDTO(pet.getName(), pet.getType(), pet.getBreed(), pet.getAge(), null))
+                .map(pet -> myMapper.petToDTO(pet))
                 .collect(Collectors.toList());
 
         return petsDataDTO;
