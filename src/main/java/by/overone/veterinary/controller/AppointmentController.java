@@ -21,7 +21,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/params")
-    public List<AppointmentDataDTO> readUsersByParams(AppointmentDataDTO appointmentDataDTO) {
+    public List<AppointmentDataDTO> readUsersByParams(@RequestBody AppointmentDataDTO appointmentDataDTO) {
         return appointmentService.getAppointmentsByParams(appointmentDataDTO);
     }
 

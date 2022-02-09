@@ -62,12 +62,12 @@ public class UserController {
         return userService.updateUserRole(id, role);
     }
 
-    @PostMapping("/{userId}/appointments")
+    @PutMapping("/{userId}/appointments")
     public AppointmentDataDTO makeAppointment(@PathVariable long userId, @RequestParam long appointmentId,
                                 @RequestParam long petId, @RequestParam String reason) {
         return appointmentService.makeAppointment(userId, appointmentId, petId, reason);
     }
-    @PostMapping("/returnAppointment/{appointmentId}")
+    @PutMapping("/returnAppointment/{appointmentId}")
     public AppointmentDataDTO returnAppointment(@PathVariable long appointmentId) {
         return appointmentService.returnAppointment(appointmentId);
     }

@@ -1,36 +1,41 @@
 package by.overone.veterinary.util.mapper;
 
 
+import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.*;
 import by.overone.veterinary.service.exception.EntityNotFoundException;
 import by.overone.veterinary.service.exception.ExceptionCode;
+import by.overone.veterinary.service.exception.TimeTableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class MyMapper{
+public class MyMapper {
 
     private final UserDAO userDAO;
+    private final PetDAO petDAO;
 
-    public AppointmentDataDTO appointmentToDTO(Appointment appointment){
+    public AppointmentDataDTO appointmentToDTO(Appointment appointment) {
         AppointmentDataDTO appointmentDataDTO = new AppointmentDataDTO();
         appointmentDataDTO.setId(appointment.getId());
-        appointmentDataDTO.setDateTime(appointment.getDateTime());
+        appointmentDataDTO.setDateTime(appointment.getDateTime().toString().replace("T", " "));
         appointmentDataDTO.setDoctorId(appointment.getDoctor().getId());
-        appointmentDataDTO.setDateTime(appointment.getDateTime());
-        if (appointment.getUser() != null){
+        appointmentDataDTO.setDateTime(appointment.getDateTime().toString().replace("T", " "));
+        if (appointment.getUser() != null) {
             appointmentDataDTO.setUserId(appointment.getUser().getId());
-        }else {
+        } else {
             appointmentDataDTO.setUserId(null);
         }
-        if (appointment.getPet() != null){
+        if (appointment.getPet() != null) {
             appointmentDataDTO.setPetId(appointment.getPet().getId());
-        }else {
+        } else {
             appointmentDataDTO.setPetId(null);
         }
         appointmentDataDTO.setReason(appointment.getReason());
@@ -38,19 +43,58 @@ public class MyMapper{
         return appointmentDataDTO;
     }
 
-    public Appointment newDTOToAppointment(AppointmentNewDTO appointmentNewDTO){
+    public Appointment newDTOToAppointment(AppointmentNewDTO appointmentNewDTO) {
         Appointment appointment = new Appointment();
-        appointment.setDateTime(appointmentNewDTO.getDateTime());
-        appointment.setDoctor(userDAO.getUserById(appointmentNewDTO.getDoctorId())
-                .filter(user -> user.getRole().equals(Role.DOCTOR))
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_DOCTOR)));
+        if (appointmentNewDTO.getDateTime().isBefore(LocalDateTime.now())){
+            throw new TimeTableException(ExceptionCode.WRONG_DATE);
+        }
+        if (appointmentNewDTO.getDateTime().getHour() > 19 || appointmentNewDTO.getDateTime().getHour() < 9){
+            throw new TimeTableException(ExceptionCode.WRONG_TIME);
+        }else {
+            appointment.setDateTime(appointmentNewDTO.getDateTime());
+        }
+        if (appointmentNewDTO.getDoctorId() != null) {
+            appointment.setDoctor(userDAO.getUserById(appointmentNewDTO.getDoctorId())
+                    .filter(user -> user.getRole().equals(Role.DOCTOR))
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_DOCTOR)));
+        } else {
+            appointment.setDoctor(null);
+        }
         return appointment;
-    }
-    public UserDataDTO userToDataDTO(User user){
-        return new UserDataDTO(user.getLogin(),user.getEmail(),user.getRole().toString());
+
     }
 
-    public UserInfoDTO userToInfoDTO(User user){
+    public Appointment dtoToAppointment(AppointmentDataDTO appointmentDataDTO) {
+        Appointment appointment = new Appointment();
+        if (appointmentDataDTO.getDoctorId() != null) {
+            appointment.setDoctor(userDAO.getUserById(appointmentDataDTO.getDoctorId())
+                    .filter(user -> user.getRole().equals(Role.DOCTOR))
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_DOCTOR)));
+        } else {
+            appointment.setDoctor(null);
+        }
+        if (appointmentDataDTO.getUserId() != null) {
+            appointment.setDoctor(userDAO.getUserById(appointmentDataDTO.getDoctorId())
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER)));
+        } else {
+            appointment.setUser(null);
+        }
+        if (appointmentDataDTO.getPetId() != null) {
+            appointment.setPet(petDAO.getPetById(appointmentDataDTO.getDoctorId())
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_PET)));
+        } else {
+            appointment.setPet(null);
+        }
+        appointment.setReason(appointmentDataDTO.getReason());
+        appointment.setDiagnosis(appointmentDataDTO.getDiagnosis());
+        return appointment;
+    }
+
+    public UserDataDTO userToDataDTO(User user) {
+        return new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString());
+    }
+
+    public UserInfoDTO userToInfoDTO(User user) {
         return new UserInfoDTO(
                 user.getLogin(),
                 user.getEmail(),
@@ -61,7 +105,7 @@ public class MyMapper{
                 user.getUserDetails().getPhoneNumber());
     }
 
-    public PetDataDTO petToDTO(Pet pet){
+    public PetDataDTO petToDTO(Pet pet) {
         return new PetDataDTO(
                 pet.getName(),
                 pet.getType(),

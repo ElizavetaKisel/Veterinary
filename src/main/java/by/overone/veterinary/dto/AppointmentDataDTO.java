@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 public class AppointmentDataDTO {
     private long id;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime dateTime;
+    private String dateTime;
     private Long doctorId;
     private Long userId;
     private Long petId;

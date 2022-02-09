@@ -11,7 +11,7 @@ public interface AppointmentDAO {
     
     List<Appointment> getAppointments();
 
-    List<Appointment> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO);
+    List<Appointment> getAppointmentsByParams(Appointment appointment);
 
     Optional<Appointment> getAppointmentById(long id);
 

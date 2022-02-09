@@ -14,5 +14,5 @@ public class AppointmentNewDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime dateTime;
-    private long doctorId;
+    private Long doctorId;
 }

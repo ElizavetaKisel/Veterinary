@@ -11,6 +11,8 @@ import by.overone.veterinary.model.*;
 import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserDAO userDAO;
     private final PetDAO petDAO;
     private final MyMapper myMapper;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<AppointmentDataDTO> getAppointments() {
@@ -41,29 +44,33 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDataDTO> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
         List<AppointmentDataDTO> appointments;
-        appointments = appointmentDAO.getAppointmentsByParams(appointmentDataDTO).stream()
+        appointments = appointmentDAO.getAppointmentsByParams(myMapper.dtoToAppointment(appointmentDataDTO)).stream()
                 .map(myMapper::appointmentToDTO)
                 .collect(Collectors.toList());
 
+        if (appointmentDataDTO.getDateTime() != null) {
+            appointments = appointments.stream()
+                    .filter(app -> app.getDateTime().contains(appointmentDataDTO.getDateTime()))
+                    .collect(Collectors.toList());
+        }
         return appointments;
     }
 
     @Override
     public AppointmentDataDTO getAppointmentById(long id) {
         Appointment appointment = appointmentDAO.getAppointmentById(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT));
         return myMapper.appointmentToDTO(appointment);
     }
 
     @Override
     public AppointmentDataDTO addAppointment(AppointmentNewDTO appointmentNewDTO) {
-        try{
-            Appointment appointment = myMapper.newDTOToAppointment(appointmentNewDTO);
-            appointment.setStatus(Status.NEW);
-            return myMapper.appointmentToDTO(appointmentDAO.addAppointment(appointment));
-        }catch (PersistenceException e){
+        Appointment appointment = myMapper.newDTOToAppointment(appointmentNewDTO);
+        if (!getAppointmentsByParams(modelMapper.map(appointment, AppointmentDataDTO.class)).isEmpty()) {
             throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_APPOINTMENT);
         }
+        appointment.setStatus(Status.NEW);
+        return myMapper.appointmentToDTO(appointmentDAO.addAppointment(appointment));
     }
 
     @Override
@@ -77,23 +84,26 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDataDTO deleteAppointment(long id) {
         getAppointmentById(id);
         Appointment appointment = appointmentDAO.deleteAppointment(id);
-        return  myMapper.appointmentToDTO(appointment);
+        return myMapper.appointmentToDTO(appointment);
     }
 
     @Override
     public AppointmentDataDTO makeAppointment(long userId, long id, long petId, String reason) {
-        getAppointmentById(id);
-        userDAO.getUserById(userId);
-        petDAO.getPetById(petId);
-        Appointment appointment = appointmentDAO.makeAppointment(userId, id, petId, reason);
-        return myMapper.appointmentToDTO(appointment);
+        if (getAppointmentById(id).getStatus().compareTo(Status.NEW.toString()) != 0) {
+            userDAO.getUserById(userId);
+            petDAO.getPetById(petId);
+            Appointment appointment = appointmentDAO.makeAppointment(userId, id, petId, reason);
+            return myMapper.appointmentToDTO(appointment);
+        } else {
+            throw new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT);
+        }
     }
 
     @Override
     public AppointmentDataDTO closeAppointment(long id, String diagnosis) {
         getAppointmentById(id);
         Appointment appointment = appointmentDAO.closeAppointment(id, diagnosis);
-        return  myMapper.appointmentToDTO(appointment);
+        return myMapper.appointmentToDTO(appointment);
     }
 
     @Override

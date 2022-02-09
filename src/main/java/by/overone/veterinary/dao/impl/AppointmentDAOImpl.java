@@ -1,23 +1,27 @@
 package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.AppointmentDAO;
-import by.overone.veterinary.dao.UserDAO;
-import by.overone.veterinary.dto.AppointmentDataDTO;
-import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalDateTime.now;
+
 
 @Repository
 @RequiredArgsConstructor
+//@EnableScheduling
 public class AppointmentDAOImpl implements AppointmentDAO {
 
     @PersistenceContext
@@ -25,39 +29,37 @@ public class AppointmentDAOImpl implements AppointmentDAO {
 
     @Override
     public List<Appointment> getAppointments() {
+        autoCloseAppointment();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        criteriaQuery.from(Appointment.class);
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
-    public List<Appointment> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
+    public List<Appointment> getAppointmentsByParams(Appointment appointment) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
         Root<Appointment> appointmentRoot = criteriaQuery.from(Appointment.class);
 
         List<Predicate> predicates = new ArrayList<>();
-
-        if (appointmentDataDTO.getDateTime() != null) {
-            predicates.add(criteriaBuilder.like(appointmentRoot.get("dateTime"), '%' + appointmentDataDTO.getDateTime().toString() + '%'));
+        if (appointment.getDoctor() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("doctor"), appointment.getDoctor()));
         }
-        if (appointmentDataDTO.getDoctorId() != 0) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("doctorId"), appointmentDataDTO.getDoctorId()));
+        if (appointment.getUser() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("user"), appointment.getUser()));
         }
-        if (appointmentDataDTO.getUserId() != 0) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("userId"), appointmentDataDTO.getUserId()));
+        if (appointment.getPet() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("pet"), appointment.getPet()));
         }
-        if (appointmentDataDTO.getPetId() != 0) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("petId"), appointmentDataDTO.getPetId()));
+        if (appointment.getReason() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("reason"), appointment.getReason()));
         }
-        if (appointmentDataDTO.getReason() != null) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("reason"), appointmentDataDTO.getReason()));
+        if (appointment.getDiagnosis() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("diagnosis"), appointment.getDiagnosis()));
         }
-        if (appointmentDataDTO.getDiagnosis() != null) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("diagnosis"), appointmentDataDTO.getDiagnosis()));
-        }
-        if (appointmentDataDTO.getStatus() != null) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("status"), Status.valueOf(appointmentDataDTO.getDiagnosis().toUpperCase())));
+        if (appointment.getStatus() != null) {
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("status"), Status.valueOf(appointment.getDiagnosis().toUpperCase())));
         }
         criteriaQuery.select(appointmentRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -87,7 +89,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         if (appointment.getDoctor() != null){
             appointmentDB.setDoctor(appointment.getDoctor());
         }
-        return appointment;
+        return appointmentDB;
     }
 
     @Override
@@ -113,6 +115,17 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         appointment.setDiagnosis(diagnosis);
         appointment.setStatus(Status.CLOSED);
         return appointment;
+    }
+
+//    @Scheduled(fixedRate=500000)
+    public void autoCloseAppointment() {
+        LocalDateTime current = now();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        criteriaQuery.from(Appointment.class);
+        entityManager.createQuery(criteriaQuery).getResultList().stream()
+        .filter(appointment -> appointment.getDateTime().isBefore(current))
+        .forEach(appointment -> appointment.setStatus(Status.CLOSED));
     }
 
     @Override

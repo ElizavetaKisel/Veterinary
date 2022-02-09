@@ -2,6 +2,7 @@ package by.overone.veterinary.controller.exception;
 
 import by.overone.veterinary.service.exception.EntityAlreadyExistException;
 import by.overone.veterinary.service.exception.EntityNotFoundException;
+import by.overone.veterinary.service.exception.TimeTableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -141,7 +142,27 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         response.setMessage(message);
         log.info("Already exist exception: ", e);
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
+    }
+
+    @ExceptionHandler(TimeTableException.class)
+    public ResponseEntity<ExceptionResponse> wrongDateTimeHandler(TimeTableException e, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(e.getClass().getSimpleName());
+        response.setErrorCode(e.getCode().getErrorCode());
+        String message = "";
+        switch (e.getCode().getErrorCode()) {
+            case "99991":
+                message = messageSource.getMessage("99991", null, request.getLocale());
+                break;
+            case "99992":
+                message = messageSource.getMessage("99992", null, request.getLocale());
+                break;
+        }
+        response.setMessage(message);
+        log.info("Wrong date: ", e);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }
