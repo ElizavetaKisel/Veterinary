@@ -30,4 +30,7 @@ public interface UserService {
     UserDataDTO updateUserRole(long id, String role);
 
     List<PetDataDTO> getUserPets(long id);
+
+    List<AppointmentDataDTO> getAppointmentsByUserId(long userId);
+
 }

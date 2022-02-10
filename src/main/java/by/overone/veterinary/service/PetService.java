@@ -1,5 +1,6 @@
 package by.overone.veterinary.service;
 
+import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 
@@ -20,5 +21,7 @@ public interface PetService {
     PetDataDTO updatePet(long id, PetDataDTO pet);
 
     List<UserDataDTO> getPetOwners(long id);
+
+    List<AppointmentDataDTO> getAppointmentsByPetId(long petId);
 
 }

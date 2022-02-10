@@ -109,31 +109,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentDAO.returnAppointment(id);
         return myMapper.appointmentToDTO(appointment);
     }
-
-    @Override
-    public List<AppointmentDataDTO> getAppointmentsByUserId(long userId) {
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = appointmentDAO.getAppointmentsByUserId(userId).stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
+    
 
     @Override
     public List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId) {
         List<AppointmentDataDTO> appointmentsDataDTO;
         appointmentsDataDTO = appointmentDAO.getAppointmentsByDoctorId(doctorId).stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
-
-    @Override
-    public List<AppointmentDataDTO> getAppointmentsByPetId(long petId) {
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = appointmentDAO.getAppointmentsByPetId(petId).stream()
                 .map(myMapper::appointmentToDTO)
                 .collect(Collectors.toList());
 

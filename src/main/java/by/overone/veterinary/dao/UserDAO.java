@@ -2,6 +2,7 @@ package by.overone.veterinary.dao;
 
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
+import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.User;
 
@@ -29,5 +30,7 @@ public interface UserDAO {
     List<Pet> getUserPets(long id);
 
     boolean deleteUserPets(long id);
+
+    List<Appointment> getAppointmentsByUserId(long users_user_id);
 
 }

@@ -2,7 +2,6 @@ package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.AppointmentNewDTO;
-import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.service.AppointmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +13,6 @@ import java.util.List;
 @RequestMapping("api/appointments")
 public class AppointmentController {
     private final AppointmentService appointmentService;
-
-//    @GetMapping
-//    public List<AppointmentDataDTO> readAll() {
-//        return appointmentService.getAppointments();
-//    }
 
     @GetMapping
     public List<AppointmentDataDTO> readAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {

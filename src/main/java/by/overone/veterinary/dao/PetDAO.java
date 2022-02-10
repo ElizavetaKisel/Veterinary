@@ -1,6 +1,7 @@
 package by.overone.veterinary.dao;
 
 import by.overone.veterinary.dto.PetDataDTO;
+import by.overone.veterinary.model.Appointment;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.User;
 
@@ -22,4 +23,6 @@ public interface PetDAO {
     List<User> getPetOwners(long id);
 
     Pet updatePet(long id, Pet pet);
+
+    List<Appointment> getAppointmentsByPetId(long pet_id);
 }

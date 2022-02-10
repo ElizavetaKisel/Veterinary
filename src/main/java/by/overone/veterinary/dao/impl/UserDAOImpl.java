@@ -61,7 +61,7 @@ public class UserDAOImpl implements UserDAO {
         if (userInfoDTO.getPhoneNumber() != null) {
             predicates.add(criteriaBuilder.like(join.get("phoneNumber"), '%' + userInfoDTO.getPhoneNumber() + '%'));
         }
-        criteriaQuery.select(userRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()])));
+        criteriaQuery.select(userRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
@@ -142,15 +142,23 @@ public class UserDAOImpl implements UserDAO {
     public boolean deleteUserPets(long id) {
         User user = entityManager.find(User.class, id);
         List<Pet> pets = getUserPets(id);
-        for (Iterator<Pet> i = pets.iterator(); i.hasNext(); ) {
-            Pet pet = i.next();
+        for (Pet pet : pets) {
             if (pet.getOwners().size() > 1) {
-                pet.getOwners().remove(user);
+                entityManager.find(Pet.class, pet.getId()).getOwners().remove(user);
             } else {
-                pet.setStatus(Status.DELETED);
+                entityManager.find(Pet.class, pet.getId()).setStatus(Status.DELETED);
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsByUserId(long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        Join <Appointment, User> join = criteriaQuery.from(Appointment.class).join("user");
+        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), userId));
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
     
 }

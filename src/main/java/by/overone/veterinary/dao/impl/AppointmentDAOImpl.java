@@ -140,15 +140,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Override
-    public List<Appointment> getAppointmentsByUserId(long userId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        Join <Appointment, User> join = criteriaQuery.from(Appointment.class).join("user");
-        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), userId));
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
-
-    @Override
     public List<Appointment> getAppointmentsByDoctorId(long doctorId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
@@ -156,15 +147,5 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         criteriaQuery.where(criteriaBuilder.equal(join.get("id"), doctorId));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
-
-    @Override
-    public List<Appointment> getAppointmentsByPetId(long petId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        Join <Appointment, Pet> join = criteriaQuery.from(Appointment.class).join("pet");
-        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), petId));
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
-
 
 }

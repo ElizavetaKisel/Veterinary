@@ -1,7 +1,6 @@
 package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.model.User;
 import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.UserService;
 import lombok.AllArgsConstructor;
@@ -20,11 +19,6 @@ public class UserController {
     private final UserService userService;
     private final AppointmentService appointmentService;
 
-//    @GetMapping
-//    public List<UserDataDTO> readAll() {
-//        return userService.getAllUsers();
-//    }
-
     @GetMapping
     public List<UserInfoDTO> readUsersByParams(UserInfoDTO userInfoDTO) {
         return userService.getUsersByParams(userInfoDTO);
@@ -42,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}/appointments")
     public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable long id) {
-        return appointmentService.getAppointmentsByUserId(id);
+        return userService.getAppointmentsByUserId(id);
     }
 
     @GetMapping("{id}/info")

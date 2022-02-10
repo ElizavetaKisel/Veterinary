@@ -26,9 +26,5 @@ public interface AppointmentService {
 
     AppointmentDataDTO returnAppointment(long id);
 
-    List<AppointmentDataDTO> getAppointmentsByUserId(long userId);
-
     List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId);
-
-    List<AppointmentDataDTO> getAppointmentsByPetId(long petId);
 }

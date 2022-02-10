@@ -29,20 +29,18 @@ public class UserServiceImpl implements UserService {
     private final MyMapper myMapper;
     @Override
     public List<UserDataDTO> getAllUsers() {
-        List<UserDataDTO> usersDataDTO = userDAO.getUsers().stream()
+
+        return userDAO.getUsers().stream()
                 .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
                 .collect(Collectors.toList());
-
-        return usersDataDTO;
     }
 
     @Override
     public List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO) {
-        List<UserInfoDTO> usersInfoDTO = userDAO.getUsersByParams(userInfoDTO).stream()
-                .map(user -> myMapper.userToInfoDTO(user))
-                .collect(Collectors.toList());
 
-        return usersInfoDTO;
+        return userDAO.getUsersByParams(userInfoDTO).stream()
+                .map(myMapper::userToInfoDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -70,6 +68,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(long id) {
         getUserById(id);
         userDAO.deleteUser(id);
@@ -104,10 +103,20 @@ public class UserServiceImpl implements UserService {
         getUserById(id);
         List<PetDataDTO> petsDataDTO;
         petsDataDTO = userDAO.getUserPets(id).stream()
-                .map(pet -> myMapper.petToDTO(pet))
+                .map(myMapper::petToDTO)
                 .collect(Collectors.toList());
 
         return petsDataDTO;
+    }
+
+    @Override
+    public List<AppointmentDataDTO> getAppointmentsByUserId(long userId) {
+        List<AppointmentDataDTO> appointmentsDataDTO;
+        appointmentsDataDTO = userDAO.getAppointmentsByUserId(userId).stream()
+                .map(myMapper::appointmentToDTO)
+                .collect(Collectors.toList());
+
+        return appointmentsDataDTO;
     }
 
 }
