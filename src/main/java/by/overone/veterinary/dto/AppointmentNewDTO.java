@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class AppointmentNewDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+
     private LocalDateTime dateTime;
     private Long doctorId;
 }

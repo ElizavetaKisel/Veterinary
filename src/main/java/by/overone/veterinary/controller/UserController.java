@@ -3,6 +3,7 @@ package by.overone.veterinary.controller;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.UserService;
+import by.overone.veterinary.validator.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/role")
-    public UserDataDTO updateUserRole(@PathVariable long id, @RequestBody String role) {
+    public UserDataDTO updateUserRole(@PathVariable long id, @Valid @RequestParam @Role String role) {
         return userService.updateUserRole(id, role);
     }
 

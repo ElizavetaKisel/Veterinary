@@ -64,7 +64,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDataDTO addAppointment(AppointmentNewDTO appointmentNewDTO) {
         Appointment appointment = myMapper.newDTOToAppointment(appointmentNewDTO);
-        if (!getAppointmentsByParams(modelMapper.map(appointment, AppointmentDataDTO.class)).isEmpty()) {
+        if (!getAppointmentsByParams(myMapper.appointmentToDTO(appointment)).isEmpty()) {
             throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_APPOINTMENT);
         }
         appointment.setStatus(Status.NEW);

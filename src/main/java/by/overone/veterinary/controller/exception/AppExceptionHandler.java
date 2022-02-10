@@ -68,16 +68,15 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(list, status);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Object> constraintHandle(ConstraintViolationException ex,
-                                                         HttpStatus status) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> constraintHandle(ConstraintViolationException ex) {
         List<ExceptionResponse> list = ex.getConstraintViolations()
                 .stream()
                 .map(error -> new ExceptionResponse(error.getMessage(),
                         null, null))
                 .collect(Collectors.toList());
         log.info("Validation error", ex);
-        return new ResponseEntity<>(list, status);
+        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -87,7 +86,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                                                         WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(ex.getClass().getSimpleName());
-        response.setMessage("Wrong type");
+        String message = messageSource.getMessage("33331", null, request.getLocale());
+        response.setMessage(message);
         log.info("Wrong type: ", ex);
         return new ResponseEntity<>(response, status);
     }
@@ -97,24 +97,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
-        String message = "";
-        switch (e.getCode().getErrorCode()) {
-            case "11111":
-                message = messageSource.getMessage("11111", null, request.getLocale());
-                break;
-            case "11112":
-                message = messageSource.getMessage("11112", null, request.getLocale());
-                break;
-            case "11113":
-                message = messageSource.getMessage("11113", null, request.getLocale());
-                break;
-            case "11114":
-                message = messageSource.getMessage("11114", null, request.getLocale());
-                break;
-        }
+        String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
         response.setMessage(message);
         log.info("Not found exception: ", e);
-
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
@@ -126,7 +111,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage("44444", null, request.getLocale());
         response.setMessage(message);
         log.info("SQL EXCEPTION: ", e);
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -137,7 +121,6 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage("55555", null, request.getLocale());
         response.setMessage(message);
         log.info("Illegal argument: ", e);
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -146,21 +129,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
-        String message = "";
-        switch (e.getCode().getErrorCode()) {
-            case "22221":
-                message = messageSource.getMessage("22221", null, request.getLocale());
-                break;
-            case "22222":
-                message = messageSource.getMessage("22222", null, request.getLocale());
-                break;
-            case "33333":
-                message = messageSource.getMessage("33333", null, request.getLocale());
-                break;
-        }
+        String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
         response.setMessage(message);
         log.info("Already exist exception: ", e);
-
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
@@ -169,18 +140,9 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
-        String message = "";
-        switch (e.getCode().getErrorCode()) {
-            case "99991":
-                message = messageSource.getMessage("99991", null, request.getLocale());
-                break;
-            case "99992":
-                message = messageSource.getMessage("99992", null, request.getLocale());
-                break;
-        }
+        String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
         response.setMessage(message);
         log.info("Wrong date: ", e);
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
