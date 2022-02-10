@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,7 +22,7 @@ import static java.time.LocalDateTime.now;
 
 @Repository
 @RequiredArgsConstructor
-//@EnableScheduling
+@EnableScheduling
 public class AppointmentDAOImpl implements AppointmentDAO {
 
     @PersistenceContext
@@ -117,7 +118,8 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         return appointment;
     }
 
-//    @Scheduled(fixedRate=500000)
+    @Transactional
+    @Scheduled(fixedRate=5000000)
     public void autoCloseAppointment() {
         LocalDateTime current = now();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -139,91 +141,30 @@ public class AppointmentDAOImpl implements AppointmentDAO {
 
     @Override
     public List<Appointment> getAppointmentsByUserId(long userId) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        Join <Appointment, User> join = criteriaQuery.from(Appointment.class).join("user");
+        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), userId));
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public List<Appointment> getAppointmentsByDoctorId(long doctorId) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        Join <Appointment, User> join = criteriaQuery.from(Appointment.class).join("doctor");
+        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), doctorId));
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     @Override
     public List<Appointment> getAppointmentsByPetId(long petId) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
+        Join <Appointment, Pet> join = criteriaQuery.from(Appointment.class).join("pet");
+        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), petId));
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
 
-//    private final JdbcTemplate jdbcTemplate;
-//
-//    private static final String GET_APPOINTMENTS_QUERY = "SELECT * FROM appointments";
-//    private final static String GET_APPOINTMENT_BY_ID_QUERY = "SELECT * FROM appointments WHERE appointment_id=?";
-//    private final static String GET_APPOINTMENT_BY_DOCTOR_ID_QUERY = "SELECT * FROM appointments WHERE appointments_doctor_id=?";
-//    private final static String GET_APPOINTMENT_BY_USER_ID_QUERY = "SELECT * FROM appointments WHERE appointments_appointment_id=?";
-//    private final static String GET_APPOINTMENT_BY_PET_ID_QUERY = "SELECT * FROM appointments WHERE pet_id=?";
-//    private final static String ADD_APPOINTMENTS_QUERY = "INSERT INTO appointments (date, time, appointments_doctor_id, appointments_appointment_id, pet_id, reason) " +
-//            "VALUE (?, ?, ?, ?, ?, ?)";
-//
-//    @Override
-//    public List<Appointment> getAppointments() {
-//        return jdbcTemplate.query(GET_APPOINTMENTS_QUERY, new BeanPropertyRowMapper<>(Appointment.class));
-//    }
-//
-//    @Override
-//    public AppointmentActiveDTO addAppointment(AppointmentActiveDTO appointmentActiveDTO) {
-//        Object[] params = new Object[]{
-//                appointmentActiveDTO.getDate(),
-//                appointmentActiveDTO.getTime(),
-//                appointmentActiveDTO.getAppointments_doctor_id(),
-//                appointmentActiveDTO.getAppointments_appointment_id(),
-//                appointmentActiveDTO.getPet_id(),
-//                appointmentActiveDTO.getReason()
-//        };
-//        jdbcTemplate.update(ADD_APPOINTMENTS_QUERY, params);
-//        return appointmentActiveDTO;
-//    }
-//    @Override
-//    public Appointment updateAppointment(Appointment appointment) {
-//        List <String> sql = new ArrayList<>();
-//        if (appointment.getAppointments_doctor_id() != 0) {
-//            sql.add("appointments_doctor_id=" + appointment.getAppointments_doctor_id());
-//        }
-//        if (appointment.getAppointments_appointment_id() != 0) {
-//            sql.add("appointments_appointment_id=" + appointment.getAppointments_appointment_id());
-//        }
-//        if (appointment.getPet_id() != 0) {
-//           sql.add("pet_id=" + appointment.getPet_id());
-//        }
-//        if (appointment.getReason() != null) {
-//            sql.add("reason='" + appointment.getReason() + "'");
-//        }
-//        if (appointment.getDiagnosis() != null) {
-//           sql.add("diagnosis='" + appointment.getDiagnosis() + "'");
-//        }
-//        String UPDATE_APPOINTMENT_QUERY = "UPDATE appointments SET " + sql.stream().collect(Collectors.joining(", "))
-//                + " WHERE appointment_id=" + appointment.getAppointment_id();
-//        System.out.println(UPDATE_APPOINTMENT_QUERY);
-//        jdbcTemplate.update(UPDATE_APPOINTMENT_QUERY);
-//        return jdbcTemplate.queryForObject(GET_APPOINTMENT_BY_ID_QUERY, new Object[]{appointment.getAppointment_id()},
-//                new BeanPropertyRowMapper<>(Appointment.class));
-//    }
-//
-//    @Override
-//    public Appointment getAppointmentById(long id) {
-//        return jdbcTemplate.queryForObject(GET_APPOINTMENT_BY_ID_QUERY, new Object[]{id}, new BeanPropertyRowMapper<>(Appointment.class));
-//    }
-//
-//    @Override
-//    public List<Appointment> getAppointmentsByAppointmentId(long appointments_appointment_id) {
-//        return jdbcTemplate.query(GET_APPOINTMENT_BY_USER_ID_QUERY, new Object[]{appointments_appointment_id}, new BeanPropertyRowMapper<>(Appointment.class));
-//    }
-//
-//    @Override
-//    public List<Appointment> getAppointmentsByDoctorId(long appointments_doctor_id) {
-//        return jdbcTemplate.query(GET_APPOINTMENT_BY_DOCTOR_ID_QUERY, new Object[]{appointments_doctor_id}, new BeanPropertyRowMapper<>(Appointment.class));
-//    }
-//
-//    @Override
-//    public List<Appointment> getAppointmentsByPetId(long pet_id) {
-//        return jdbcTemplate.query(GET_APPOINTMENT_BY_PET_ID_QUERY, new Object[]{pet_id}, new BeanPropertyRowMapper<>(Appointment.class));
-//    }
 }

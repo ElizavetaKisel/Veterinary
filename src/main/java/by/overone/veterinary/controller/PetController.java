@@ -1,7 +1,9 @@
 package by.overone.veterinary.controller;
 
+import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
+import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.PetService;
 import by.overone.veterinary.validator.NewEntity;
 import lombok.AllArgsConstructor;
@@ -15,16 +17,22 @@ import java.util.List;
 @RequestMapping("api/pets")
 public class PetController {
     private final PetService petService;
+    private final AppointmentService appointmentService;
+
+//    @GetMapping
+//    public List<PetDataDTO> readAllPets() {
+//        return petService.getPets();
+//    }
 
     @GetMapping
-    public List<PetDataDTO> readAllPets() {
-        return petService.getPets();
-    }
-
-    @GetMapping("/params")
-    public List<PetDataDTO> readPetsByParams(@RequestBody PetDataDTO petDataDTO) {
+    public List<PetDataDTO> readPetsByParams(PetDataDTO petDataDTO) {
         System.out.println(petDataDTO.getOwners());
         return petService.getPetsByParams(petDataDTO);
+    }
+
+    @GetMapping("/{id}/appointments")
+    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable long id) {
+        return appointmentService.getAppointmentsByPetId(id);
     }
 
     @GetMapping("/{id}/owners")

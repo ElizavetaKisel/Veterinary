@@ -55,15 +55,14 @@ public class PetDAOImpl implements PetDAO {
         if (petDataDTO.getAge() != null) {
             predicates.add(criteriaBuilder.equal(petRoot.get("age"), petDataDTO.getAge()));
         }
-        System.out.println(predicates);
-        if (petDataDTO.getOwners() !=null){
-            List<Predicate> predicatesOwners = new ArrayList<>();
-            for (Long o: petDataDTO.getOwners()) {
-                predicatesOwners.add(criteriaBuilder.equal(join.get("id"), o));
-            }
-            predicates.add(criteriaBuilder.or(predicatesOwners.toArray(new Predicate[]{})));
-        }
-        criteriaQuery.select(petRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
+//        if (petDataDTO.getOwners() !=null){
+//            List<Predicate> predicatesOwners = new ArrayList<>();
+//            for (Long o: petDataDTO.getOwners()) {
+//                predicatesOwners.add(criteriaBuilder.equal(join.get("id"), o));
+//            }
+//            predicates.add(criteriaBuilder.or(predicatesOwners.toArray(new Predicate[]{})));
+//        }
+        criteriaQuery.distinct(true).select(petRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 

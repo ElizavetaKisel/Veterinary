@@ -8,33 +8,41 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/users")
+@Validated
 public class UserController {
     private final UserService userService;
     private final AppointmentService appointmentService;
 
-    @GetMapping
-    public List<UserDataDTO> readAll() {
-        return userService.getAllUsers();
-    }
+//    @GetMapping
+//    public List<UserDataDTO> readAll() {
+//        return userService.getAllUsers();
+//    }
 
-    @GetMapping("/params")
+    @GetMapping
     public List<UserInfoDTO> readUsersByParams(UserInfoDTO userInfoDTO) {
         return userService.getUsersByParams(userInfoDTO);
     }
 
     @GetMapping("/{id}")
-    public UserDataDTO userById(@PathVariable long id) {
+    public UserDataDTO userById(@PathVariable @Valid @Min(1) long id) {
         return userService.getUserById(id);
     }
 
     @GetMapping("/{id}/pets")
     public List<PetDataDTO> petByUserId(@PathVariable long id) {
         return userService.getUserPets(id);
+    }
+
+    @GetMapping("/{id}/appointments")
+    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable long id) {
+        return appointmentService.getAppointmentsByUserId(id);
     }
 
     @GetMapping("{id}/info")
@@ -67,8 +75,9 @@ public class UserController {
                                 @RequestParam long petId, @RequestParam String reason) {
         return appointmentService.makeAppointment(userId, appointmentId, petId, reason);
     }
-    @PutMapping("/returnAppointment/{appointmentId}")
+    @PutMapping("/appointments/{appointmentId}")
     public AppointmentDataDTO returnAppointment(@PathVariable long appointmentId) {
         return appointmentService.returnAppointment(appointmentId);
     }
+
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,13 +31,15 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(ex.getClass().getSimpleName());
         String message = messageSource.getMessage("00001", null, request.getLocale());
         response.setMessage(message);
         log.info("Not readable ", ex);
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(response, status);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage("00002", null, request.getLocale());
         response.setMessage(message);
         log.info("Method not allowed ", ex);
-        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(response, status);
     }
 
     @Override
@@ -62,16 +65,31 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                         null, null))
                 .collect(Collectors.toList());
         log.info("Validation error", ex);
-        return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(list, status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> constraintHandle(ConstraintViolationException ex,
+                                                         HttpStatus status) {
+        List<ExceptionResponse> list = ex.getConstraintViolations()
+                .stream()
+                .map(error -> new ExceptionResponse(error.getMessage(),
+                        null, null))
+                .collect(Collectors.toList());
+        log.info("Validation error", ex);
+        return new ResponseEntity<>(list, status);
     }
 
     @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex,
+                                                        HttpHeaders headers,
+                                                        HttpStatus status,
+                                                        WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(ex.getClass().getSimpleName());
         response.setMessage("Wrong type");
         log.info("Wrong type: ", ex);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -101,7 +119,8 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException e, WebRequest request) {
+    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException e,
+                                                                 WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         String message = messageSource.getMessage("44444", null, request.getLocale());

@@ -15,14 +15,19 @@ import java.util.List;
 public class AppointmentController {
     private final AppointmentService appointmentService;
 
+//    @GetMapping
+//    public List<AppointmentDataDTO> readAll() {
+//        return appointmentService.getAppointments();
+//    }
+
     @GetMapping
-    public List<AppointmentDataDTO> readAll() {
-        return appointmentService.getAppointments();
+    public List<AppointmentDataDTO> readAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
+        return appointmentService.getAppointmentsByParams(appointmentDataDTO);
     }
 
-    @GetMapping("/params")
-    public List<AppointmentDataDTO> readUsersByParams(@RequestBody AppointmentDataDTO appointmentDataDTO) {
-        return appointmentService.getAppointmentsByParams(appointmentDataDTO);
+    @GetMapping("/appointments/doctor/{id}")
+    public List<AppointmentDataDTO> appointmentsByDoctorId(@PathVariable long id) {
+        return appointmentService.getAppointmentsByDoctorId(id);
     }
 
     @GetMapping("/{id}")
@@ -48,18 +53,5 @@ public class AppointmentController {
     @PutMapping("/{id}")
     public AppointmentDataDTO closeAppointment(@PathVariable long id, @RequestParam String diagnosis) {
         return appointmentService.closeAppointment(id, diagnosis);
-    }
-
-    @GetMapping("/user/{id}")
-    public List<Appointment> appointmentsByUserId(@PathVariable long id) {
-        return appointmentService.getAppointmentsByUserId(id);
-    }
-    @GetMapping("/doctor/{id}")
-    public List<Appointment> appointmentsByDoctorId(@PathVariable long id) {
-        return appointmentService.getAppointmentsByDoctorId(id);
-    }
-    @GetMapping("/pet/{id}")
-    public List<Appointment> appointmentsByPetId(@PathVariable long id) {
-        return appointmentService.getAppointmentsByPetId(id);
     }
 }

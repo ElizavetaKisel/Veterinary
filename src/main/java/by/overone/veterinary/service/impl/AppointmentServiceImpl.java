@@ -12,11 +12,9 @@ import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,18 +111,32 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsByUserId(long users_user_id) {
-        return null;
+    public List<AppointmentDataDTO> getAppointmentsByUserId(long userId) {
+        List<AppointmentDataDTO> appointmentsDataDTO;
+        appointmentsDataDTO = appointmentDAO.getAppointmentsByUserId(userId).stream()
+                .map(myMapper::appointmentToDTO)
+                .collect(Collectors.toList());
+
+        return appointmentsDataDTO;
     }
 
-
     @Override
-    public List<Appointment> getAppointmentsByDoctorId(long appointments_doctor_id) {
-        return null;
+    public List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId) {
+        List<AppointmentDataDTO> appointmentsDataDTO;
+        appointmentsDataDTO = appointmentDAO.getAppointmentsByDoctorId(doctorId).stream()
+                .map(myMapper::appointmentToDTO)
+                .collect(Collectors.toList());
+
+        return appointmentsDataDTO;
     }
 
     @Override
-    public List<Appointment> getAppointmentsByPetId(long pet_id) {
-        return null;
+    public List<AppointmentDataDTO> getAppointmentsByPetId(long petId) {
+        List<AppointmentDataDTO> appointmentsDataDTO;
+        appointmentsDataDTO = appointmentDAO.getAppointmentsByPetId(petId).stream()
+                .map(myMapper::appointmentToDTO)
+                .collect(Collectors.toList());
+
+        return appointmentsDataDTO;
     }
 }

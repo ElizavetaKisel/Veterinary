@@ -1,7 +1,5 @@
 package by.overone.veterinary.dao;
 
-import by.overone.veterinary.dto.PetDataDTO;
-import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.dto.UserInfoDTO;
 import by.overone.veterinary.dto.UserUpdateDTO;
 import by.overone.veterinary.model.Pet;

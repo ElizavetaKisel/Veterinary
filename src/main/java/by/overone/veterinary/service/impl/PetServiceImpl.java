@@ -30,18 +30,24 @@ public class PetServiceImpl implements PetService {
     public List<PetDataDTO> getPets() {
         List<PetDataDTO> petsDataDTO;
         petsDataDTO = petDAO.getPets().stream()
-                .map(pet -> myMapper.petToDTO(pet))
+                .map(myMapper::petToDTO)
                 .collect(Collectors.toList());
         return petsDataDTO;
     }
 
     @Override
     public List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO) {
-        List<PetDataDTO> petsDataDTO;
-        petsDataDTO = petDAO.getPetsByParams(petDataDTO).stream()
-                .map(pet ->  myMapper.petToDTO(pet))
+        List<PetDataDTO> pets;
+        pets = petDAO.getPetsByParams(petDataDTO).stream()
+                .map(myMapper::petToDTO)
                 .collect(Collectors.toList());
-        return petsDataDTO;
+
+        if (petDataDTO.getOwners() != null) {
+            pets = pets.stream()
+                    .filter(pet ->pet.getOwners().containsAll(petDataDTO.getOwners()))
+                    .collect(Collectors.toList());
+        }
+        return pets;
     }
 
     @Override
@@ -82,7 +88,7 @@ public class PetServiceImpl implements PetService {
         petDAO.getPetById(id);
         return petDAO.getPetOwners(id).stream()
                 .filter(user -> user.getStatus().equals(Status.ACTIVE))
-                .map(user -> myMapper.userToDataDTO(user))
+                .map(myMapper::userToDataDTO)
                 .collect(Collectors.toList());
     }
 }

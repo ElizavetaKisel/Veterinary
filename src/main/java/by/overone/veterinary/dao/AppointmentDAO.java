@@ -25,6 +25,8 @@ public interface AppointmentDAO {
 
     Appointment closeAppointment(long id, String diagnosis);
 
+    void autoCloseAppointment();
+
     Appointment returnAppointment(long id);
 
     List<Appointment> getAppointmentsByUserId(long users_user_id);
