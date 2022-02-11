@@ -111,15 +111,4 @@ public class AppointmentServiceImpl implements AppointmentService {
         return myMapper.appointmentToDTO(appointment);
     }
 
-
-    @Override
-    public List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId) {
-        userService.getUserById(doctorId); //should edit with role
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = appointmentDAO.getAppointmentsByDoctorId(doctorId).stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
 }

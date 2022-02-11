@@ -40,11 +40,6 @@ public class UserController {
         return userService.getUserPets(id);
     }
 
-    @GetMapping("/{id}/appointments")
-    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable @Valid @Min(1) long id) {
-        return userService.getAppointmentsByUserId(id);
-    }
-
     @GetMapping("{id}/info")
     public UserInfoDTO userInfo(@PathVariable @Valid @Min(1) long id) {
         return userService.getUserInfo(id);

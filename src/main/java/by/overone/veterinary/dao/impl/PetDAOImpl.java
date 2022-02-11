@@ -107,12 +107,4 @@ public class PetDAOImpl implements PetDAO {
         return petDB;
     }
 
-    @Override
-    public List<Appointment> getAppointmentsByPetId(long petId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        Join <Appointment, Pet> join = criteriaQuery.from(Appointment.class).join("pet");
-        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), petId));
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
 }

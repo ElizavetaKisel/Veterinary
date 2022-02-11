@@ -119,15 +119,4 @@ public class UserServiceImpl implements UserService {
         return petsDataDTO;
     }
 
-    @Override
-    public List<AppointmentDataDTO> getAppointmentsByUserId(long userId) {
-        getUserById(userId);
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = userDAO.getAppointmentsByUserId(userId).stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
-
 }

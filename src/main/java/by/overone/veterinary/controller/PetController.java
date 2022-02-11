@@ -1,6 +1,5 @@
 package by.overone.veterinary.controller;
 
-import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.service.PetService;
@@ -25,11 +24,6 @@ public class PetController {
     @GetMapping
     public List<PetDataDTO> readPetsByParams(PetDataDTO petDataDTO) {
         return petService.getPetsByParams(petDataDTO);
-    }
-
-    @GetMapping("/{id}/appointments")
-    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable @Valid @Min(1) long id) {
-        return petService.getAppointmentsByPetId(id);
     }
 
     @GetMapping("/{id}/owners")

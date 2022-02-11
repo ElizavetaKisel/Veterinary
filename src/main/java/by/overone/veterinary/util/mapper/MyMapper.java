@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
@@ -49,9 +50,9 @@ public class MyMapper {
 
     public Appointment newDTOToAppointment(AppointmentNewDTO appointmentNewDTO) {
         Appointment appointment = new Appointment();
-//        if (appointmentNewDTO.getDateTime().isBefore(LocalDateTime.now())){
-//            throw new TimeTableException(ExceptionCode.WRONG_DATE);
-//        }
+        if (appointmentNewDTO.getDateTime().isBefore(LocalDateTime.now())){
+            throw new MyValidationException(ExceptionCode.WRONG_DATE);
+        }
         if (appointmentNewDTO.getDateTime().getHour() > 19 || appointmentNewDTO.getDateTime().getHour() < 9) {
             throw new MyValidationException(ExceptionCode.WRONG_TIME);
         } else {

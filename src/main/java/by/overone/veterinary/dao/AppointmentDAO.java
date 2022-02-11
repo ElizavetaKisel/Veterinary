@@ -28,5 +28,4 @@ public interface AppointmentDAO {
 
     Appointment returnAppointment(long id);
 
-    List<Appointment> getAppointmentsByDoctorId(long users_doctor_id);
 }

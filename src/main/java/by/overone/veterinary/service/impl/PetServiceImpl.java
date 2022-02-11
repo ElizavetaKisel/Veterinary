@@ -1,7 +1,6 @@
 package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.PetDAO;
-import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 import by.overone.veterinary.service.exception.EntityAlreadyExistException;
@@ -88,14 +87,4 @@ public class PetServiceImpl implements PetService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<AppointmentDataDTO> getAppointmentsByPetId(long petId) {
-        getPetById(petId);
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = petDAO.getAppointmentsByPetId(petId).stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
 }

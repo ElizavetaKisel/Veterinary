@@ -22,6 +22,4 @@ public interface AppointmentService {
     AppointmentDataDTO closeAppointment(long id, String diagnosis);
 
     AppointmentDataDTO returnAppointment(long id);
-
-    List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId);
 }

@@ -113,7 +113,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Transactional
-//    @Scheduled(fixedRate=60*60*1000, initialDelay=10*60*1000)
+    @Scheduled(fixedRate=15*60*1000)
     public void autoCloseAppointment() {
         LocalDateTime current = now();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -132,15 +132,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         appointment.setReason(null);
         appointment.setStatus(Status.NEW);
         return appointment;
-    }
-
-    @Override
-    public List<Appointment> getAppointmentsByDoctorId(long doctorId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        Join <Appointment, User> join = criteriaQuery.from(Appointment.class).join("doctor");
-        criteriaQuery.where(criteriaBuilder.equal(join.get("id"), doctorId));
-        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
 }

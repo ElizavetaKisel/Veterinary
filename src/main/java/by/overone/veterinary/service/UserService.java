@@ -24,6 +24,4 @@ public interface UserService {
 
     List<PetDataDTO> getUserPets(long id);
 
-    List<AppointmentDataDTO> getAppointmentsByUserId(long userId);
-
 }

@@ -31,6 +31,4 @@ public interface UserDAO {
 
     boolean deleteUserPets(long id);
 
-    List<Appointment> getAppointmentsByUserId(long users_user_id);
-
 }
