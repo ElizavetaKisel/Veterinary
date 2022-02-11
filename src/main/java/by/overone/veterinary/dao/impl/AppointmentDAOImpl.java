@@ -118,7 +118,8 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         LocalDateTime current = now();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        criteriaQuery.from(Appointment.class);
+        Root<Appointment> appointmentRoot = criteriaQuery.from(Appointment.class);
+        criteriaQuery.where(criteriaBuilder.notEqual(appointmentRoot.get("status"), Status.DELETED));
         entityManager.createQuery(criteriaQuery).getResultList().stream()
         .filter(appointment -> appointment.getDateTime().isBefore(current))
         .forEach(appointment -> appointment.setStatus(Status.CLOSED));
