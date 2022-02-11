@@ -10,11 +10,11 @@ public interface UserService {
 
     List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO);
 
-    void addUser(UserRegistrationDTO userRegistrationDTO);
+    UserDataDTO addUser(UserRegistrationDTO userRegistrationDTO);
 
     UserInfoDTO getUserInfo(long id);
 
-    void deleteUser(long id);
+    UserDataDTO deleteUser(long id);
 
     UserDataDTO getUserById(long id);
 

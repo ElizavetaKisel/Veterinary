@@ -39,8 +39,8 @@ public class PetController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addPet(@Validated(NewEntity.class) @RequestBody PetDataDTO petDataDTO) {
-        petService.addPet(petDataDTO);
+    public PetDataDTO addPet(@Validated(NewEntity.class) @RequestBody PetDataDTO petDataDTO) {
+        return petService.addPet(petDataDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -47,8 +47,8 @@ public class AppointmentController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public AppointmentDataDTO deleteAppointment(@PathVariable @Valid @Min(1) long id) {
-        return appointmentService.deleteAppointment(id);
+    public void deleteAppointment(@PathVariable @Valid @Min(1) long id) {
+        appointmentService.deleteAppointment(id);
     }
 
     @PutMapping("/{id}")

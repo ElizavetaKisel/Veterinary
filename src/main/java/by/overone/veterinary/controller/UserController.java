@@ -53,8 +53,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addUser(@Validated @RequestBody UserRegistrationDTO userRegistrationDTO) {
-        userService.addUser(userRegistrationDTO);
+    public UserDataDTO addUser(@Validated @RequestBody UserRegistrationDTO userRegistrationDTO) {
+        return userService.addUser(userRegistrationDTO);
     }
 
     @PatchMapping("/{id}")

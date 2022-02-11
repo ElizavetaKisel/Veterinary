@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserRegistrationDTO userRegistrationDTO) {
+    public UserDataDTO addUser(UserRegistrationDTO userRegistrationDTO) {
         try {
             User user = new User();
             user.setLogin(userRegistrationDTO.getLogin());
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
             user.setRole(Role.USER);
             user.setStatus(Status.ACTIVE);
             user.setUserDetails(new UserDetails());
-            userDAO.addUser(user);
+            return myMapper.userToDataDTO(userDAO.addUser(user));
         } catch (PersistenceException e) {
             throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_USER);
         }
@@ -70,10 +70,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(long id) {
+    public UserDataDTO deleteUser(long id) {
         getUserById(id);
-        userDAO.deleteUser(id);
         userDAO.deleteUserPets(id);
+        return myMapper.userToDataDTO(userDAO.deleteUser(id));
     }
 
     @Override
