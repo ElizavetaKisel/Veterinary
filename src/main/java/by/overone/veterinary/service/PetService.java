@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface PetService {
 
-    List<PetDataDTO> getPets();
-
     List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO);
 
     PetDataDTO getPetById(long id);

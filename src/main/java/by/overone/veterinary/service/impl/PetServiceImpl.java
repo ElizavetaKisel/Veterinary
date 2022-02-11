@@ -28,15 +28,6 @@ public class PetServiceImpl implements PetService {
     private final MyMapper myMapper;
 
     @Override
-    public List<PetDataDTO> getPets() {
-        List<PetDataDTO> petsDataDTO;
-        petsDataDTO = petDAO.getPets().stream()
-                .map(myMapper::petToDTO)
-                .collect(Collectors.toList());
-        return petsDataDTO;
-    }
-
-    @Override
     public List<PetDataDTO> getPetsByParams(PetDataDTO petDataDTO) {
         List<PetDataDTO> pets;
         pets = petDAO.getPetsByParams(petDataDTO).stream()

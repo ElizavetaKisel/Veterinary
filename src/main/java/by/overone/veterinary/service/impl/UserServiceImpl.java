@@ -27,13 +27,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
     private final MyMapper myMapper;
-    @Override
-    public List<UserDataDTO> getAllUsers() {
-
-        return userDAO.getUsers().stream()
-                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO) {

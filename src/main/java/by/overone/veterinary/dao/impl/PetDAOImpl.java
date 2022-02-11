@@ -24,9 +24,6 @@ public class PetDAOImpl implements PetDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private UserDAO userDAO;
-
-    @Override
     public List<Pet> getPets() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
@@ -55,13 +52,6 @@ public class PetDAOImpl implements PetDAO {
         if (petDataDTO.getAge() != null) {
             predicates.add(criteriaBuilder.equal(petRoot.get("age"), petDataDTO.getAge()));
         }
-//        if (petDataDTO.getOwners() !=null){
-//            List<Predicate> predicatesOwners = new ArrayList<>();
-//            for (Long o: petDataDTO.getOwners()) {
-//                predicatesOwners.add(criteriaBuilder.equal(join.get("id"), o));
-//            }
-//            predicates.add(criteriaBuilder.or(predicatesOwners.toArray(new Predicate[]{})));
-//        }
         criteriaQuery.distinct(true).select(petRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
     }

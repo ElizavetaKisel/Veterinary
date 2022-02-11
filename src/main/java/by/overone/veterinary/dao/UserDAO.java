@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface UserDAO {
 
-    List<User> getUsers();
-
     List<User> getUsersByParams(UserInfoDTO userInfoDTO);
 
     Optional<User> getUserById(long id);

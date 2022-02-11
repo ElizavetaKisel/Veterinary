@@ -1,6 +1,7 @@
 package by.overone.veterinary.dao.impl;
 
 import by.overone.veterinary.dao.AppointmentDAO;
+import by.overone.veterinary.dto.AppointmentMakeDTO;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
 
@@ -27,15 +28,6 @@ public class AppointmentDAOImpl implements AppointmentDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Override
-    public List<Appointment> getAppointments() {
-        autoCloseAppointment();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
-        criteriaQuery.from(Appointment.class);
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
 
     @Override
     public List<Appointment> getAppointmentsByParams(Appointment appointment) {
@@ -101,11 +93,11 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Override
-    public Appointment makeAppointment(long userId, long id, long petId, String reason) {
+    public Appointment makeAppointment(long id, AppointmentMakeDTO appointmentMakeDTO) {
         Appointment appointment = entityManager.find(Appointment.class, id);
-        appointment.setUser(entityManager.find(User.class, userId));
-        appointment.setPet(entityManager.find(Pet.class, petId));
-        appointment.setReason(reason);
+        appointment.setUser(entityManager.find(User.class, appointmentMakeDTO.getUserId()));
+        appointment.setPet(entityManager.find(Pet.class, appointmentMakeDTO.getPetId()));
+        appointment.setReason(appointment.getReason());
         appointment.setStatus(Status.ACTIVE);
         return appointment;
     }

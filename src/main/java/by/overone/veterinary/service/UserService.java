@@ -1,19 +1,10 @@
 package by.overone.veterinary.service;
 
-import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.model.User;
-import by.overone.veterinary.model.UserDetails;
 
 import java.util.List;
 
 public interface UserService {
-//    /**
-//     *
-//     * @return
-//     */
-
-    List<UserDataDTO> getAllUsers();
 
     List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO);
 

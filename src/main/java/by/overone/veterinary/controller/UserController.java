@@ -1,7 +1,6 @@
 package by.overone.veterinary.controller;
 
 import by.overone.veterinary.dto.*;
-import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.validator.Role;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
 @Validated
 public class UserController {
     private final UserService userService;
-    private final AppointmentService appointmentService;
 
     @GetMapping
     public List<UserInfoDTO> readUsersByParams(UserInfoDTO userInfoDTO) {
@@ -31,22 +29,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}/pets")
-    public List<PetDataDTO> petByUserId(@PathVariable long id) {
+    public List<PetDataDTO> petByUserId(@PathVariable @Valid @Min(1) long id) {
         return userService.getUserPets(id);
     }
 
     @GetMapping("/{id}/appointments")
-    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable long id) {
+    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable @Valid @Min(1) long id) {
         return userService.getAppointmentsByUserId(id);
     }
 
     @GetMapping("{id}/info")
-    public UserInfoDTO userInfo(@PathVariable long id) {
+    public UserInfoDTO userInfo(@PathVariable @Valid @Min(1) long id) {
         return userService.getUserInfo(id);
     }
 
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable long id) {
+    public void deleteUser(@PathVariable @Valid @Min(1) long id) {
         userService.deleteUser(id);
     }
 
@@ -56,23 +54,13 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserInfoDTO updateUser(@PathVariable long id, @Validated @RequestBody UserUpdateDTO user) {
+    public UserInfoDTO updateUser(@PathVariable @Valid @Min(1) long id, @Validated @RequestBody UserUpdateDTO user) {
         return userService.updateUser(id, user);
     }
 
     @PatchMapping("/{id}/role")
-    public UserDataDTO updateUserRole(@PathVariable long id, @Valid @RequestParam @Role String role) {
+    public UserDataDTO updateUserRole(@PathVariable @Valid @Min(1) long id, @Valid @RequestParam @Role String role) {
         return userService.updateUserRole(id, role);
-    }
-
-    @PutMapping("/{userId}/appointments")
-    public AppointmentDataDTO makeAppointment(@PathVariable long userId, @RequestParam long appointmentId,
-                                @RequestParam long petId, @RequestParam String reason) {
-        return appointmentService.makeAppointment(userId, appointmentId, petId, reason);
-    }
-    @PutMapping("/appointments/{appointmentId}")
-    public AppointmentDataDTO returnAppointment(@PathVariable long appointmentId) {
-        return appointmentService.returnAppointment(appointmentId);
     }
 
 }

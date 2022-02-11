@@ -1,6 +1,7 @@
 package by.overone.veterinary.dao;
 
 import by.overone.veterinary.dto.AppointmentDataDTO;
+import by.overone.veterinary.dto.AppointmentMakeDTO;
 import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.model.Appointment;
 
@@ -8,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AppointmentDAO {
-    
-    List<Appointment> getAppointments();
 
     List<Appointment> getAppointmentsByParams(Appointment appointment);
 
@@ -21,7 +20,7 @@ public interface AppointmentDAO {
 
     Appointment deleteAppointment(long id);
 
-    Appointment makeAppointment(long userId, long id, long petId, String reason);
+    Appointment makeAppointment(long id, AppointmentMakeDTO appointmentMakeDTO);
 
     Appointment closeAppointment(long id, String diagnosis);
 

@@ -23,14 +23,6 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager entityManager;
 
     @Override
-    public List<User> getUsers() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> userRoot = criteriaQuery.from(User.class);
-        criteriaQuery.where(criteriaBuilder.equal(userRoot.get("status"), Status.ACTIVE));
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
-    @Override
     public List<User> getUsersByParams(UserInfoDTO userInfoDTO) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);

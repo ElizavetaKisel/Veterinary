@@ -27,17 +27,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserDAO userDAO;
     private final PetDAO petDAO;
     private final MyMapper myMapper;
-    private final ModelMapper modelMapper;
-
-    @Override
-    public List<AppointmentDataDTO> getAppointments() {
-        List<AppointmentDataDTO> appointmentsDataDTO;
-        appointmentsDataDTO = appointmentDAO.getAppointments().stream()
-                .map(myMapper::appointmentToDTO)
-                .collect(Collectors.toList());
-
-        return appointmentsDataDTO;
-    }
 
     @Override
     public List<AppointmentDataDTO> getAppointmentsByParams(AppointmentDataDTO appointmentDataDTO) {
@@ -86,11 +75,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDataDTO makeAppointment(long userId, long id, long petId, String reason) {
+    public AppointmentDataDTO makeAppointment(long id, AppointmentMakeDTO appointmentMakeDTO) {
         if (getAppointmentById(id).getStatus().compareTo(Status.NEW.toString()) != 0) {
-            userDAO.getUserById(userId);
-            petDAO.getPetById(petId);
-            Appointment appointment = appointmentDAO.makeAppointment(userId, id, petId, reason);
+            userDAO.getUserById(appointmentMakeDTO.getUserId());
+            petDAO.getPetById(appointmentMakeDTO.getPetId());
+            Appointment appointment = appointmentDAO.makeAppointment(id, appointmentMakeDTO);
             return myMapper.appointmentToDTO(appointment);
         } else {
             throw new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT);

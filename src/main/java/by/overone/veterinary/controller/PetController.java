@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -23,17 +25,17 @@ public class PetController {
     }
 
     @GetMapping("/{id}/appointments")
-    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable long id) {
+    public List<AppointmentDataDTO> appointmentsByUserId(@PathVariable @Valid @Min(1) long id) {
         return petService.getAppointmentsByPetId(id);
     }
 
     @GetMapping("/{id}/owners")
-    public List<UserDataDTO> readOwners(@PathVariable long id) {
+    public List<UserDataDTO> readOwners(@PathVariable @Valid @Min(1) long id) {
         return petService.getPetOwners(id);
     }
 
     @GetMapping("/{id}")
-    public PetDataDTO petById(@PathVariable long id) {
+    public PetDataDTO petById(@PathVariable @Valid @Min(1) long id) {
         return petService.getPetById(id);
     }
 
@@ -43,12 +45,12 @@ public class PetController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletePet(@PathVariable long id) {
+    public void deletePet(@PathVariable @Valid @Min(1) long id) {
         petService.deletePet(id);
     }
 
     @PatchMapping("{id}")
-    public PetDataDTO updatePet(@PathVariable long id, @Validated @RequestBody PetDataDTO pet) {
+    public PetDataDTO updatePet(@PathVariable @Valid @Min(1) long id, @Validated @RequestBody PetDataDTO pet) {
         return petService.updatePet(id, pet);
     }
 }

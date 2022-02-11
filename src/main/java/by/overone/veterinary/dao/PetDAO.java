@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface PetDAO {
 
-    List<Pet> getPets();
-
     List<Pet> getPetsByParams(PetDataDTO petDataDTO);
 
     Optional<Pet> getPetById(long id);
