@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
@@ -22,9 +23,9 @@ public class AppointmentDataDTO {
     private Long userId;
     @Min(1)
     private Long petId;
-    @Min(5)
+    @Pattern(regexp = "^[\\w].{2,30}$", message = "must contain at least 2 characters")
     private String reason;
-    @Min(5)
+    @Pattern(regexp = "^[\\w].{2,30}$", message = "must contain at least 2 characters")
     private String diagnosis;
     private String status;
 }

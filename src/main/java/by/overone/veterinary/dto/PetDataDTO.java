@@ -2,12 +2,11 @@ package by.overone.veterinary.dto;
 
 
 import by.overone.veterinary.validator.NewEntity;
+import by.overone.veterinary.validator.UpdateEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Data
@@ -17,20 +16,20 @@ import java.util.List;
 public class PetDataDTO {
 
     @NotNull(groups = {NewEntity.class})
-    @NotBlank(groups = {NewEntity.class})
-    @Size(min = 2, max = 20)
+    @Pattern(regexp = "^[\\w].{2,20}$", message = "must contain at least 2 characters",
+            groups = {NewEntity.class ,UpdateEntity.class})
     private String name;
     @NotNull(groups = {NewEntity.class})
-    @NotBlank(groups = {NewEntity.class})
-    @Size(min = 2, max = 20)
+    @Pattern(regexp = "^[\\w].{2,20}$", message = "must contain at least 2 characters",
+            groups = {NewEntity.class ,UpdateEntity.class})
     private String type;
     @NotNull(groups = {NewEntity.class})
-    @NotBlank(groups = {NewEntity.class})
-    @Size(min = 2, max = 20)
+    @Pattern(regexp = "^[\\w].{2,20}$", message = "must contain at least 2 characters",
+            groups = {NewEntity.class ,UpdateEntity.class})
     private String breed;
     @NotNull(groups = {NewEntity.class})
+    @Min(value = 1, groups = {NewEntity.class ,UpdateEntity.class})
     private Integer age;
-    @NotNull(groups = {NewEntity.class})
     private List<Long> owners;
 
 }

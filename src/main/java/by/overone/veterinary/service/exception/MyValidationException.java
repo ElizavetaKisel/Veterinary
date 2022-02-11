@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TimeTableException extends RuntimeException{
+public class MyValidationException extends RuntimeException{
     private ExceptionCode code;
-    public TimeTableException(ExceptionCode code) {
+    public MyValidationException(ExceptionCode code) {
         this.code = code;
     }
 }

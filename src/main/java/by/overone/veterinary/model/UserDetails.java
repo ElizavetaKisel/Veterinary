@@ -25,6 +25,6 @@ public class UserDetails {
     private String surname;
     private String address;
     @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "Phone number is invalid", groups = {NewEntity.class})
-    @Column(name = "phone_number")
+    @Column(unique = true, name = "phone_number")
     private String phoneNumber;
 }

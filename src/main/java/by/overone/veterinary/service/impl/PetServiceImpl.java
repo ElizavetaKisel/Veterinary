@@ -10,6 +10,7 @@ import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.Pet;
 import by.overone.veterinary.model.Status;
 import by.overone.veterinary.service.PetService;
+import by.overone.veterinary.service.exception.MyValidationException;
 import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class PetServiceImpl implements PetService {
 
         if (petDataDTO.getOwners() != null) {
             pets = pets.stream()
-                    .filter(pet ->pet.getOwners().containsAll(petDataDTO.getOwners()))
+                    .filter(pet -> pet.getOwners().containsAll(petDataDTO.getOwners()))
                     .collect(Collectors.toList());
         }
         return pets;
@@ -45,17 +46,20 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDataDTO getPetById(long id) {
         Pet pet = petDAO.getPetById(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_PET));
-        return  myMapper.petToDTO(pet);
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_PET));
+        return myMapper.petToDTO(pet);
     }
 
     @Override
     public PetDataDTO addPet(PetDataDTO petDataDTO) {
-        try {
         Pet pet = myMapper.dtoToPet(petDataDTO);
         pet.setStatus(Status.ACTIVE);
-        return myMapper.petToDTO(petDAO.addPet(pet));
-        }catch (PersistenceException e){
+        if (pet.getOwners().isEmpty()) {
+            throw new MyValidationException(ExceptionCode.EMPTY_OWNERS);
+        }
+        if (getPetsByParams(petDataDTO).isEmpty()) {
+            return myMapper.petToDTO(petDAO.addPet(pet));
+        } else {
             throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_PET);
         }
     }
@@ -68,9 +72,9 @@ public class PetServiceImpl implements PetService {
 
 
     @Override
-    public PetDataDTO updatePet(long id, PetDataDTO petDataDTO){
+    public PetDataDTO updatePet(long id, PetDataDTO petDataDTO) {
         getPetById(id);
-        petDAO.updatePet(id, myMapper.dtoToPet(petDataDTO));
+        petDAO.updatePet(id, petDataDTO);
         return getPetById(id);
     }
 
@@ -86,6 +90,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<AppointmentDataDTO> getAppointmentsByPetId(long petId) {
+        getPetById(petId);
         List<AppointmentDataDTO> appointmentsDataDTO;
         appointmentsDataDTO = petDAO.getAppointmentsByPetId(petId).stream()
                 .map(myMapper::appointmentToDTO)

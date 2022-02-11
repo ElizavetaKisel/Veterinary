@@ -34,6 +34,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
         Root<Appointment> appointmentRoot = criteriaQuery.from(Appointment.class);
+        criteriaQuery.where(criteriaBuilder.notEqual(appointmentRoot.get("status"), Status.DELETED));
 
         List<Predicate> predicates = new ArrayList<>();
         if (appointment.getDoctor() != null) {
@@ -52,7 +53,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
             predicates.add(criteriaBuilder.equal(appointmentRoot.get("diagnosis"), appointment.getDiagnosis()));
         }
         if (appointment.getStatus() != null) {
-            predicates.add(criteriaBuilder.equal(appointmentRoot.get("status"), Status.valueOf(appointment.getDiagnosis().toUpperCase())));
+            predicates.add(criteriaBuilder.equal(appointmentRoot.get("status"), appointment.getStatus()));
         }
         criteriaQuery.select(appointmentRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[]{})));
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -63,7 +64,8 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Appointment> criteriaQuery = criteriaBuilder.createQuery(Appointment.class);
         Root<Appointment> appointmentRoot = criteriaQuery.from(Appointment.class);
-        criteriaQuery.where(criteriaBuilder.equal(appointmentRoot.get("id"), id));
+        criteriaQuery.where(criteriaBuilder.equal(appointmentRoot.get("id"), id),
+                criteriaBuilder.notEqual(appointmentRoot.get("status"), Status.DELETED));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 
@@ -97,7 +99,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         Appointment appointment = entityManager.find(Appointment.class, id);
         appointment.setUser(entityManager.find(User.class, appointmentMakeDTO.getUserId()));
         appointment.setPet(entityManager.find(Pet.class, appointmentMakeDTO.getPetId()));
-        appointment.setReason(appointment.getReason());
+        appointment.setReason(appointmentMakeDTO.getReason());
         appointment.setStatus(Status.ACTIVE);
         return appointment;
     }
@@ -111,7 +113,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
     }
 
     @Transactional
-    @Scheduled(fixedRate=5000000)
+//    @Scheduled(fixedRate=60*60*1000, initialDelay=10*60*1000)
     public void autoCloseAppointment() {
         LocalDateTime current = now();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -127,6 +129,7 @@ public class AppointmentDAOImpl implements AppointmentDAO {
         Appointment appointment = entityManager.find(Appointment.class, id);
         appointment.setUser(null);
         appointment.setPet(null);
+        appointment.setReason(null);
         appointment.setStatus(Status.NEW);
         return appointment;
     }

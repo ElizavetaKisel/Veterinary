@@ -6,17 +6,20 @@ import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.service.AppointmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/appointments")
+@Validated
 public class AppointmentController {
     private final AppointmentService appointmentService;
 
@@ -31,12 +34,14 @@ public class AppointmentController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.FOUND)
     public AppointmentDataDTO appointmentById(@PathVariable @Valid @Min(1) long id) {
         return appointmentService.getAppointmentById(id);
     }
 
     @PostMapping
-    public AppointmentDataDTO addAppointment(@RequestBody @Valid @Min(1) AppointmentNewDTO appointmentNewDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public AppointmentDataDTO addAppointment(@RequestBody @Validated AppointmentNewDTO appointmentNewDTO) {
         return appointmentService.addAppointment(appointmentNewDTO);
     }
 
@@ -47,13 +52,17 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public AppointmentDataDTO deleteAppointment(@PathVariable @Valid @Min(1) long id) {
         return appointmentService.deleteAppointment(id);
     }
 
     @PutMapping("/{id}")
     public AppointmentDataDTO closeAppointment(@PathVariable @Valid @Min(1) long id,
-                                               @RequestParam @Valid @NotBlank @NotNull @Min(5) String diagnosis) {
+                                               @RequestParam @Valid @NotNull
+                                               @Pattern(regexp = "^[\\w].{2,30}$",
+                                                       message = "must contain at least 2 characters")
+                                                       String diagnosis) {
         return appointmentService.closeAppointment(id, diagnosis);
     }
 
@@ -63,6 +72,7 @@ public class AppointmentController {
         return appointmentService.makeAppointment(id, appointmentMakeDTO);
     }
     @PutMapping("/{id}/return")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public AppointmentDataDTO returnAppointment(@PathVariable @Valid @Min(1) long id) {
         return appointmentService.returnAppointment(id);
     }

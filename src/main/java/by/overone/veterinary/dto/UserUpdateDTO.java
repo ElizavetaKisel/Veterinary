@@ -12,16 +12,21 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class UserUpdateDTO {
 
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{6,}$", message = "Incorrect format of password")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{6,}$",
+            message = "must contain at least 6 characters, including at least one capital letter and number")
+    private String oldPassword;
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z]).{6,}$",
+            message = "must contain at least 6 characters, including at least one capital letter and number")
     private String password;
-    @Pattern(regexp = "^[^\\s]+@[\\w]+\\.[a-z]+$", message = "Incorrect format of email")
+    @Pattern(regexp = "^[^\\s]+@[\\w]+\\.[a-z]+$", message = "is invalid")
     private String email;
-    @Pattern(regexp = "^[A-Z].*$", message = "Incorrect format of name")
+    @Pattern(regexp = "^[A-Z].*$", message = "must start with a capital letter")
     private String name;
-    @Pattern(regexp = "^[A-Z].*$", message = "Incorrect format of surname")
+    @Pattern(regexp = "^[A-Z].*$", message = "must start with a capital letter")
     private String surname;
+    @Pattern(regexp = "^[\\w].{2,30}$", message = "must contain at least 2 characters")
     private String address;
-    @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "Phone number is invalid")
+    @Pattern(regexp = "^(\\+375|80)(17|29|33|44)[0-9]{7}$", message = "is invalid")
     @Column(name = "phone_number")
     private String phoneNumber;
 }

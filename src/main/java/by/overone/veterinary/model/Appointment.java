@@ -19,10 +19,6 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
     private long id;
-//    @JsonFormat(pattern = "yyy-MM-dd")
-//    private Date date;
-//    @JsonFormat(pattern = "hh:mm")
-//    private Time time;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @Column(name="date_time", nullable = false)
     private LocalDateTime dateTime;
@@ -35,7 +31,6 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name="pet_id")
     private Pet pet;
-    @Column(nullable = false)
     private String reason;
     private String diagnosis;
     @Enumerated(EnumType.STRING)

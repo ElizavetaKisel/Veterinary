@@ -1,18 +1,19 @@
 package by.overone.veterinary.util.mapper;
 
 
+import by.overone.veterinary.dao.AppointmentDAO;
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.*;
+import by.overone.veterinary.service.AppointmentService;
 import by.overone.veterinary.service.exception.EntityNotFoundException;
 import by.overone.veterinary.service.exception.ExceptionCode;
-import by.overone.veterinary.service.exception.TimeTableException;
+import by.overone.veterinary.service.exception.MyValidationException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
 
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,17 +41,20 @@ public class MyMapper {
         }
         appointmentDataDTO.setReason(appointment.getReason());
         appointmentDataDTO.setDiagnosis(appointment.getDiagnosis());
+        if (appointment.getStatus() != null) {
+            appointmentDataDTO.setStatus(appointment.getStatus().toString());
+        }
         return appointmentDataDTO;
     }
 
     public Appointment newDTOToAppointment(AppointmentNewDTO appointmentNewDTO) {
         Appointment appointment = new Appointment();
-        if (appointmentNewDTO.getDateTime().isBefore(LocalDateTime.now())){
-            throw new TimeTableException(ExceptionCode.WRONG_DATE);
-        }
-        if (appointmentNewDTO.getDateTime().getHour() > 19 || appointmentNewDTO.getDateTime().getHour() < 9){
-            throw new TimeTableException(ExceptionCode.WRONG_TIME);
-        }else {
+//        if (appointmentNewDTO.getDateTime().isBefore(LocalDateTime.now())){
+//            throw new TimeTableException(ExceptionCode.WRONG_DATE);
+//        }
+        if (appointmentNewDTO.getDateTime().getHour() > 19 || appointmentNewDTO.getDateTime().getHour() < 9) {
+            throw new MyValidationException(ExceptionCode.WRONG_TIME);
+        } else {
             appointment.setDateTime(appointmentNewDTO.getDateTime());
         }
         if (appointmentNewDTO.getDoctorId() != null) {
@@ -74,19 +78,24 @@ public class MyMapper {
             appointment.setDoctor(null);
         }
         if (appointmentDataDTO.getUserId() != null) {
-            appointment.setDoctor(userDAO.getUserById(appointmentDataDTO.getDoctorId())
+            appointment.setUser(userDAO.getUserById(appointmentDataDTO.getUserId())
                     .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER)));
         } else {
             appointment.setUser(null);
         }
         if (appointmentDataDTO.getPetId() != null) {
-            appointment.setPet(petDAO.getPetById(appointmentDataDTO.getDoctorId())
+            appointment.setPet(petDAO.getPetById(appointmentDataDTO.getPetId())
                     .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_PET)));
         } else {
             appointment.setPet(null);
         }
         appointment.setReason(appointmentDataDTO.getReason());
         appointment.setDiagnosis(appointmentDataDTO.getDiagnosis());
+        if (appointmentDataDTO.getStatus() != null) {
+            if (EnumUtils.isValidEnum(Status.class, appointmentDataDTO.getStatus().toUpperCase())) {
+                appointment.setStatus(Status.valueOf(appointmentDataDTO.getStatus().toUpperCase()));
+            }
+        }
         return appointment;
     }
 

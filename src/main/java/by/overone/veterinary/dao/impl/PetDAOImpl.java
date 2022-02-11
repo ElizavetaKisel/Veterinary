@@ -4,6 +4,7 @@ import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.service.exception.EntityAlreadyExistException;
+import by.overone.veterinary.service.exception.EntityNotFoundException;
 import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.*;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,20 +25,14 @@ public class PetDAOImpl implements PetDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+    private UserDAO userDAO;
 
-    public List<Pet> getPets() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
-        Root<Pet> petRoot = criteriaQuery.from(Pet.class);
-        criteriaQuery.where(criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
-        return entityManager.createQuery(criteriaQuery).getResultList();
-    }
     @Override
     public List<Pet> getPetsByParams(PetDataDTO petDataDTO) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
         Root<Pet> petRoot = criteriaQuery.from(Pet.class);
-        Join<Pet, User> join= petRoot.join("owners");
+        criteriaQuery.where(criteriaBuilder.notEqual(petRoot.get("status"), Status.DELETED));
 
         List<Predicate> predicates = new ArrayList<>();
 
@@ -61,7 +57,8 @@ public class PetDAOImpl implements PetDAO {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Pet> criteriaQuery = criteriaBuilder.createQuery(Pet.class);
         Root<Pet> petRoot = criteriaQuery.from(Pet.class);
-        criteriaQuery.where(criteriaBuilder.equal(petRoot.get("id"), id), criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
+        criteriaQuery.where(criteriaBuilder.equal(petRoot.get("id"), id),
+                criteriaBuilder.equal(petRoot.get("status"), Status.ACTIVE));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
 
@@ -89,22 +86,23 @@ public class PetDAOImpl implements PetDAO {
     }
 
     @Override
-    public Pet updatePet(long id, Pet pet) {
+    public Pet updatePet(long id, PetDataDTO petDataDTO) {
         Pet petDB = entityManager.find(Pet.class, id);
-        if (pet.getName() != null){
-            petDB.setName(pet.getName());
+        if (petDataDTO.getName() != null){
+            petDB.setName(petDataDTO.getName());
         }
-        if (pet.getType() != null){
-            petDB.setType(pet.getType());
+        if (petDataDTO.getType() != null){
+            petDB.setType(petDataDTO.getType());
         }
-        if (pet.getBreed() != null){
-            petDB.setBreed(pet.getBreed());
+        if (petDataDTO.getBreed() != null){
+            petDB.setBreed(petDataDTO.getBreed());
         }
-        if (pet.getAge() != null){
-            petDB.setAge(pet.getAge());
+        if (petDataDTO.getAge() != null){
+            petDB.setAge(petDataDTO.getAge());
         }
-        if (pet.getOwners() != null){
-            petDB.setOwners(pet.getOwners());
+        if (petDataDTO.getOwners() != null){
+            petDB.setOwners(petDataDTO.getOwners().stream().map(o -> userDAO.getUserById(o)
+                    .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER))).collect(Collectors.toList()));
         }
         return petDB;
     }

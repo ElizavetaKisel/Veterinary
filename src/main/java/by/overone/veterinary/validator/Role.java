@@ -4,7 +4,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target(value = ElementType.PARAMETER)
+@Target(value = {ElementType.PARAMETER, ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = RoleValidator.class)
 @Documented

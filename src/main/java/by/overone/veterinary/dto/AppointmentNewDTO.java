@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -17,10 +16,8 @@ public class AppointmentNewDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @NotNull
-    @NotBlank
     private LocalDateTime dateTime;
     @NotNull
-    @NotBlank
     @Min(1)
     private Long doctorId;
 }

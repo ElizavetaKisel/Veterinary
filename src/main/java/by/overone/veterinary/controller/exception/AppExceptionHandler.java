@@ -2,7 +2,8 @@ package by.overone.veterinary.controller.exception;
 
 import by.overone.veterinary.service.exception.EntityAlreadyExistException;
 import by.overone.veterinary.service.exception.EntityNotFoundException;
-import by.overone.veterinary.service.exception.TimeTableException;
+import by.overone.veterinary.service.exception.MyValidationException;
+import by.overone.veterinary.service.exception.UpdateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
@@ -13,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
@@ -29,6 +32,19 @@ import java.util.stream.Collectors;
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final MessageSource messageSource;
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
+                                                                   HttpHeaders headers,
+                                                                   HttpStatus status,
+                                                                   WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        String message = messageSource.getMessage("00000", null, request.getLocale());
+        response.setMessage(message);
+        log.info("No handler found", ex);
+        return new ResponseEntity<>(response, status);
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -92,6 +108,19 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, status);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                          HttpHeaders headers,
+                                                                          HttpStatus status,
+                                                                          WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(ex.getClass().getSimpleName());
+        String message = messageSource.getMessage("55555", null, request.getLocale());
+        response.setMessage(message);
+        log.info("Missing parameter: ", ex);
+        return new ResponseEntity<>(response, status);
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionResponse> entityNotFoundHandler(EntityNotFoundException e, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
@@ -104,24 +133,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException e,
-                                                                 WebRequest request) {
+    public ResponseEntity<ExceptionResponse> sqlExceptionHandler(SQLException ex) {
+        log.error("SQL exception: ", ex);
         ExceptionResponse response = new ExceptionResponse();
-        response.setException(e.getClass().getSimpleName());
-        String message = messageSource.getMessage("44444", null, request.getLocale());
-        response.setMessage(message);
-        log.info("SQL EXCEPTION: ", e);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ExceptionResponse> IllegalArgumentHandler(IllegalArgumentException e, WebRequest request) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setException(e.getClass().getSimpleName());
-        String message = messageSource.getMessage("55555", null, request.getLocale());
-        response.setMessage(message);
-        log.info("Illegal argument: ", e);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        response.setException(ex.getClass().getSimpleName());
+        response.setErrorCode("12345");
+        response.setMessage("SQL exception");
+        return new ResponseEntity<>(response, HttpStatus.BAD_GATEWAY);
     }
 
     @ExceptionHandler(EntityAlreadyExistException.class)
@@ -132,17 +150,28 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
         response.setMessage(message);
         log.info("Already exist exception: ", e);
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
+        return new ResponseEntity<>(response, HttpStatus.LOCKED);
     }
 
-    @ExceptionHandler(TimeTableException.class)
-    public ResponseEntity<ExceptionResponse> wrongDateTimeHandler(TimeTableException e, WebRequest request) {
+    @ExceptionHandler(MyValidationException.class)
+    public ResponseEntity<ExceptionResponse> wrongDateTimeHandler(MyValidationException e, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
         response.setException(e.getClass().getSimpleName());
         response.setErrorCode(e.getCode().getErrorCode());
         String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
         response.setMessage(message);
-        log.info("Wrong date: ", e);
+        log.info("My valid exception: ", e);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UpdateException.class)
+    public ResponseEntity<ExceptionResponse> wrongDateTimeHandler(UpdateException e, WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse();
+        response.setException(e.getClass().getSimpleName());
+        response.setErrorCode(e.getCode().getErrorCode());
+        String message = messageSource.getMessage(e.getCode().getErrorCode(), null, request.getLocale());
+        response.setMessage(message);
+        log.info("Update exception: ", e);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

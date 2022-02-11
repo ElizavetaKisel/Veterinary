@@ -20,7 +20,7 @@ public interface PetDAO {
 
     List<User> getPetOwners(long id);
 
-    Pet updatePet(long id, Pet pet);
+    Pet updatePet(long id, PetDataDTO petDataDTO);
 
     List<Appointment> getAppointmentsByPetId(long pet_id);
 }

@@ -1,17 +1,18 @@
 package by.overone.veterinary.service.impl;
 
 import by.overone.veterinary.dao.AppointmentDAO;
-import by.overone.veterinary.dao.PetDAO;
-import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
+import by.overone.veterinary.service.PetService;
+import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.service.exception.EntityAlreadyExistException;
 import by.overone.veterinary.service.exception.EntityNotFoundException;
 import by.overone.veterinary.service.exception.ExceptionCode;
 import by.overone.veterinary.model.*;
 import by.overone.veterinary.service.AppointmentService;
+import by.overone.veterinary.service.exception.MyValidationException;
 import by.overone.veterinary.util.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentDAO appointmentDAO;
-    private final UserDAO userDAO;
-    private final PetDAO petDAO;
+    private final UserService userService;
+    private final PetService petService;
     private final MyMapper myMapper;
 
     @Override
@@ -69,21 +70,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDataDTO deleteAppointment(long id) {
-        getAppointmentById(id);
+        if (!getAppointmentById(id).getStatus().equals(Status.NEW.toString())) {
+            throw new MyValidationException(ExceptionCode.NOT_NEW_APP);
+        }
         Appointment appointment = appointmentDAO.deleteAppointment(id);
         return myMapper.appointmentToDTO(appointment);
     }
 
     @Override
     public AppointmentDataDTO makeAppointment(long id, AppointmentMakeDTO appointmentMakeDTO) {
-        if (getAppointmentById(id).getStatus().compareTo(Status.NEW.toString()) != 0) {
-            userDAO.getUserById(appointmentMakeDTO.getUserId());
-            petDAO.getPetById(appointmentMakeDTO.getPetId());
-            Appointment appointment = appointmentDAO.makeAppointment(id, appointmentMakeDTO);
-            return myMapper.appointmentToDTO(appointment);
+        if (EnumUtils.isValidEnum(Status.class, getAppointmentById(id).getStatus())) {
+            if (!getAppointmentById(id).getStatus().equals(Status.NEW.toString())) {
+                throw new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT);
+            }
         } else {
-            throw new EntityNotFoundException(ExceptionCode.NOT_EXISTING_APPOINTMENT);
+            throw new MyValidationException(ExceptionCode.WRONG_STATUS);
         }
+        if (!userService.getUserById(appointmentMakeDTO.getUserId()).getRole().equals(Role.CUSTOMER.toString())) {
+            throw new EntityNotFoundException(ExceptionCode.NOT_EXISTING_CUSTOMER);
+        }
+        if (!petService.getPetById(appointmentMakeDTO.getPetId()).getOwners().contains(appointmentMakeDTO.getUserId())){
+            throw new MyValidationException(ExceptionCode.NOT_PET_OWNER);
+        }
+        petService.getPetById(appointmentMakeDTO.getPetId());
+        Appointment appointment = appointmentDAO.makeAppointment(id, appointmentMakeDTO);
+        return myMapper.appointmentToDTO(appointment);
+
     }
 
     @Override
@@ -98,10 +110,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentDAO.returnAppointment(id);
         return myMapper.appointmentToDTO(appointment);
     }
-    
+
 
     @Override
     public List<AppointmentDataDTO> getAppointmentsByDoctorId(long doctorId) {
+        userService.getUserById(doctorId); //should edit with role
         List<AppointmentDataDTO> appointmentsDataDTO;
         appointmentsDataDTO = appointmentDAO.getAppointmentsByDoctorId(doctorId).stream()
                 .map(myMapper::appointmentToDTO)

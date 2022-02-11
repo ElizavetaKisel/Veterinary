@@ -29,6 +29,14 @@ public class UserServiceImpl implements UserService {
     private final MyMapper myMapper;
 
     @Override
+    public List<UserDataDTO> getAllUsers() {
+
+        return userDAO.getUsers().stream()
+                .map(user -> new UserDataDTO(user.getLogin(), user.getEmail(), user.getRole().toString()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<UserInfoDTO> getUsersByParams(UserInfoDTO userInfoDTO) {
 
         return userDAO.getUsersByParams(userInfoDTO).stream()
@@ -38,16 +46,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(UserRegistrationDTO userRegistrationDTO) {
-        try{
+        try {
             User user = new User();
             user.setLogin(userRegistrationDTO.getLogin());
             user.setEmail(userRegistrationDTO.getEmail());
             user.setPassword(DigestUtils.md5Hex(userRegistrationDTO.getPassword()));
-            user.setRole(Role.CUSTOMER);
+            user.setRole(Role.USER);
             user.setStatus(Status.ACTIVE);
             user.setUserDetails(new UserDetails());
             userDAO.addUser(user);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_USER);
         }
     }
@@ -56,7 +64,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO getUserInfo(long id) {
         getUserById(id);
         User user = userDAO.getUserInfo(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         return myMapper.userToInfoDTO(user);
     }
 
@@ -71,18 +79,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDataDTO getUserById(long id) {
         User user = userDAO.getUserById(id)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionCode.NOT_EXISTING_USER));
         return myMapper.userToDataDTO(user);
     }
 
     @Override
     public UserInfoDTO updateUser(long id, UserUpdateDTO userUpdateDTO) {
-        getUserById(id);
-        if (userUpdateDTO.getPassword() != null) {
-            userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
+        try {
+            getUserById(id);
+            if (userUpdateDTO.getPassword() != null) {
+                userUpdateDTO.setPassword(DigestUtils.md5Hex(userUpdateDTO.getPassword()));
+                if (userUpdateDTO.getOldPassword()!=null){
+                    userUpdateDTO.setOldPassword(DigestUtils.md5Hex(userUpdateDTO.getOldPassword()));
+                }else {
+                    throw new EntityNotFoundException(ExceptionCode.EMPTY_PASSWORD);
+                }
+            }
+            userDAO.updateUser(id, userUpdateDTO);
+            return getUserInfo(id);
+        } catch (PersistenceException e) {
+            throw new EntityAlreadyExistException(ExceptionCode.ALREADY_EXISTING_USER);
         }
-        userDAO.updateUser(id, userUpdateDTO);
-        return getUserInfo(id);
     }
 
     @Override
@@ -104,6 +121,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AppointmentDataDTO> getAppointmentsByUserId(long userId) {
+        getUserById(userId);
         List<AppointmentDataDTO> appointmentsDataDTO;
         appointmentsDataDTO = userDAO.getAppointmentsByUserId(userId).stream()
                 .map(myMapper::appointmentToDTO)

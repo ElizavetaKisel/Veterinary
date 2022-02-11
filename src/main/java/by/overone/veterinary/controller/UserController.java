@@ -4,6 +4,7 @@ import by.overone.veterinary.dto.*;
 import by.overone.veterinary.service.UserService;
 import by.overone.veterinary.validator.Role;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,18 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/all")
+    public List<UserDataDTO> readUsers() {
+        return userService.getAllUsers();
+    }
+
     @GetMapping
-    public List<UserInfoDTO> readUsersByParams(UserInfoDTO userInfoDTO) {
+    public List<UserInfoDTO> readUsersByParams(@Validated UserInfoDTO userInfoDTO) {
         return userService.getUsersByParams(userInfoDTO);
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.FOUND)
     public UserDataDTO userById(@PathVariable @Valid @Min(1) long id) {
         return userService.getUserById(id);
     }
@@ -44,11 +51,13 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable @Valid @Min(1) long id) {
         userService.deleteUser(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void addUser(@Validated @RequestBody UserRegistrationDTO userRegistrationDTO) {
         userService.addUser(userRegistrationDTO);
     }
