@@ -1,4 +1,4 @@
-package by.overone.veterinary.service.exception;
+package by.overone.veterinary.controller.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

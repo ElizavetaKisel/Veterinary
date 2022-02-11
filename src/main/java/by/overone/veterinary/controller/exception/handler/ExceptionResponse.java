@@ -1,4 +1,4 @@
-package by.overone.veterinary.controller.exception;
+package by.overone.veterinary.controller.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

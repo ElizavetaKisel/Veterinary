@@ -1,9 +1,9 @@
-package by.overone.veterinary.controller.exception;
+package by.overone.veterinary.controller.exception.handler;
 
-import by.overone.veterinary.service.exception.EntityAlreadyExistException;
-import by.overone.veterinary.service.exception.EntityNotFoundException;
-import by.overone.veterinary.service.exception.MyValidationException;
-import by.overone.veterinary.service.exception.UpdateException;
+import by.overone.veterinary.controller.exception.EntityAlreadyExistException;
+import by.overone.veterinary.controller.exception.EntityNotFoundException;
+import by.overone.veterinary.controller.exception.MyValidationException;
+import by.overone.veterinary.controller.exception.UpdateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;

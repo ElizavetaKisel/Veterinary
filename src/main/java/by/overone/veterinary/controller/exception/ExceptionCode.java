@@ -1,4 +1,4 @@
-package by.overone.veterinary.service.exception;
+package by.overone.veterinary.controller.exception;
 
 public enum ExceptionCode {
     NOT_EXISTING_USER ("11111"),

@@ -1,15 +1,13 @@
 package by.overone.veterinary.util.mapper;
 
 
-import by.overone.veterinary.dao.AppointmentDAO;
 import by.overone.veterinary.dao.PetDAO;
 import by.overone.veterinary.dao.UserDAO;
 import by.overone.veterinary.dto.*;
 import by.overone.veterinary.model.*;
-import by.overone.veterinary.service.AppointmentService;
-import by.overone.veterinary.service.exception.EntityNotFoundException;
-import by.overone.veterinary.service.exception.ExceptionCode;
-import by.overone.veterinary.service.exception.MyValidationException;
+import by.overone.veterinary.controller.exception.EntityNotFoundException;
+import by.overone.veterinary.controller.exception.ExceptionCode;
+import by.overone.veterinary.controller.exception.MyValidationException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Component;
