@@ -58,6 +58,13 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+        return transactionManager;
+    }
+
+    @Bean
     public MessageSource messageSource(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("message_source/messages");
