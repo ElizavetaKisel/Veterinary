@@ -1,6 +1,5 @@
 package by.overone.veterinary.service;
 
-import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.PetDataDTO;
 import by.overone.veterinary.dto.UserDataDTO;
 

@@ -1,11 +1,8 @@
 package by.overone.veterinary.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -14,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "pets")
-public class Pet {
+public class   Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pet_id")

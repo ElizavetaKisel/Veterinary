@@ -51,7 +51,7 @@ public class UserDAOImpl implements UserDAO {
             predicates.add(criteriaBuilder.like(userRoot.get("email"), '%' + userInfoDTO.getEmail() + '%'));
         }
         if (userInfoDTO.getRole() != null) {
-            if (EnumUtils.isValidEnum(Role.class, userInfoDTO.getRole())) {
+            if (EnumUtils.isValidEnum(Role.class, userInfoDTO.getRole().toUpperCase())) {
                 predicates.add(criteriaBuilder.equal(userRoot.get("role"), Role.valueOf(userInfoDTO.getRole().toUpperCase())));
             } else {
                 throw new MyValidationException(ExceptionCode.WRONG_ROLE);

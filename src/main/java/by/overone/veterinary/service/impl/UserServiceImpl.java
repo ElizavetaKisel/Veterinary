@@ -69,7 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDataDTO deleteUser(long id) {
         getUserById(id);
         userDAO.deleteUserPets(id);

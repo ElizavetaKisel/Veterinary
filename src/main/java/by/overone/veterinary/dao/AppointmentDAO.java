@@ -1,8 +1,6 @@
 package by.overone.veterinary.dao;
 
-import by.overone.veterinary.dto.AppointmentDataDTO;
 import by.overone.veterinary.dto.AppointmentMakeDTO;
-import by.overone.veterinary.dto.AppointmentNewDTO;
 import by.overone.veterinary.model.Appointment;
 
 import java.util.List;
