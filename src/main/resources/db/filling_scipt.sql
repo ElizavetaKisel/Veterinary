@@ -1,0 +1,54 @@
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (1,'lizaveta1512@gmail.com','lizaveta1512','cce437ac1196431b449bc3fc127b154b','ADMIN','ACTIVE',1);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (2,'tomas22@mail.ru','tomas22','7eef76fb90af0367e27416245a8be68a','CUSTOMER','ACTIVE',2);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (5,'lena123@tut.by','lena123','02fd446980a97a7b799d479a222c0e67','DOCTOR','ACTIVE',5);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (6,'sergey40@gmail.com','sergeyS','f0de45ab678f5d5759b3c325900f4b7d','USER','ACTIVE',6);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (7,'uliana323@gmail.com','uliana323','ef4243e7fa1dc922787b9750493966fe','CUSTOMER','ACTIVE',7);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (10,'stas888@gmail.com','stas888','9fc11f7e0bec6c0d9d4885c2eea885d3','DOCTOR','ACTIVE',10);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (11,'vasil009@mail.ru','vasil009','b02d30d8951157f645b37dfaaa98d2df','CUSTOMER','DELETED',11);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (12,'veronica012@mail.ru','veronica012','359b2d72493efb9cf9e3114eb804f5dc','CUSTOMER','DELETED',12);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (13,'sasha13@yandex.ru','sasha13','93b04ca4861979fd5ac61327f60ca650','USER','ACTIVE',13);
+INSERT INTO `users` (`user_id`,`email`,`login`,`password`,`role`,`status`,`detail_id`) VALUES (14,'misha40@yandex.ru','Misha40','ceaa9bd22a577cd8daf0b086aeabbafa','DOCTOR','ACTIVE',14);
+
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (1,NULL,NULL,NULL,NULL);
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (2,'Syrganova 23, 12','Tomas','+375337671123','Jonsan');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (5,'Domodedovo 18, 10','Elena','+375447765544','Krugina');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (6,NULL,NULL,NULL,NULL);
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (7,'Voitko 100-12','Uliana','80291193342','Yanushkevich');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (10,'Krinica 50','Stanislav','+375291121316','Voitko');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (11,'Tolstogo 118, 10','Vasiliy','80448761200','Semenov');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (12,'Tolstogo 118, 10','Veronica','+375291120555','Semenova');
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (13,NULL,NULL,NULL,NULL);
+INSERT INTO `user_details` (`detail_id`,`address`,`name`,`phone_number`,`surname`) VALUES (14,'Kulman 18, 30','Mihail','80447783535','Petrov');
+
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (1,3,'pygmy','Selli','ACTIVE','pig');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (6,7,'siam','Lorra','ACTIVE','cat');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (8,5,'doberman','Bobic','ACTIVE','dog');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (11,6,'abyssinian','Felix','DELETED','cat');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (12,6,'abyssinian','Nora','DELETED','cat');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (13,17,'abyssinian','Sifora','ACTIVE','cat');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (16,10,'bengal','Morris','DELETED','cat');
+INSERT INTO `pets` (`pet_id`,`age`,`breed`,`name`,`status`,`type`) VALUES (17,8,'bengal','Marti','ACTIVE','cat');
+
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (1,7);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (6,7);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (8,2);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (13,2);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (16,13);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (11,12);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (12,12);
+INSERT INTO `pets_has_users` (`pet_id`,`user_id`) VALUES (17,7);
+
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (1,'2022-02-10 10:00:00.000000',NULL,'analyzes','CLOSED',5,8,2);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (2,'2022-02-10 11:00:00.000000','eat poisoning','dont eat','CLOSED',5,12,11);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (3,'2022-02-10 12:00:00.000000','done','sterilization','CLOSED',5,6,7);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (4,'2022-02-10 13:00:00.000000','done','sterilization','CLOSED',5,1,7);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (5,'2022-02-10 14:00:00.000000',NULL,NULL,'DELETED',5,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (6,'2022-02-10 15:00:00.000000',NULL,'','DELETED',10,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (7,'2022-02-10 16:00:00.000000',NULL,NULL,'CLOSED',10,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (8,'2022-02-10 17:00:00.000000','herpess','hair loss','CLOSED',10,11,12);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (9,'2022-02-11 12:00:00.000000',NULL,NULL,'CLOSED',10,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (10,'2022-02-11 13:00:00.000000','all good','analyzes','CLOSED',10,8,2);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (11,'2022-02-12 10:15:00.000000',NULL,NULL,'CLOSED',5,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (12,'2022-02-12 11:20:00.000000',NULL,NULL,'CLOSED',5,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (13,'2022-02-12 14:00:00.000000',NULL,NULL,'CLOSED',5,NULL,NULL);
+INSERT INTO `appointments` (`appointment_id`,`date_time`,`diagnosis`,`reason`,`status`,`doctor_id`,`pet_id`,`user_id`) VALUES (14,'2022-02-12 18:00:00.000000',NULL,NULL,'CLOSED',5,NULL,NULL);
